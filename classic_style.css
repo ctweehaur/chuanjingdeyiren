@@ -49,7 +49,7 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
     letter-spacing: 0.3px;
 }
 
-/* 💡 已修改：正文外框改为靠左对齐，并拉宽左右内边距 */
+/* 正文框：靠左对齐，拉宽内边距 */
 .poem-container { 
     background: #fefcf5; 
     border-radius: var(--border-radius-md); 
@@ -60,7 +60,7 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
     text-align: left; 
 }
 
-/* 💡 已修改：正文行改为靠左对齐，并设置首行全自动空两格 (2em) */
+/* 正文段落：靠左对齐，首行全自动空两格 (2em) */
 .poem-line { 
     margin-bottom: 24px; 
     text-align: left; 
@@ -69,8 +69,8 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
 
 .line-text { font-size: 26px; line-height: 1.5; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 2px; }
 
-/* 💡 完美瘦身：已彻底移除 .word.exam-focus 虚线框的所有相关代码 */
-.word { cursor: pointer; padding: 4px 6px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; }
+/* 词语基础样式（已彻底删除虚线框代码） */
+.word { cursor: pointer; padding: 4px 6px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; text-indent: 0; }
 .word::after { content: ''; position: absolute; bottom: 2px; left: 10%; width: 80%; height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
 .word:hover { background-color: #eff6ff; color: var(--primary-blue); transform: translateY(-2px); }
 .word:hover::after { background-color: var(--primary-blue-hover); width: 100%; left: 0; }
@@ -78,6 +78,7 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
 .word.active::after { display: none; }
 .punctuation { color: #94a3b8; margin: 0 4px; }
 
+/* 💡 白话翻译对齐系统样式表 */
 .translation-block { margin-top: 24px; border-top: 2px dashed #e2e0d4; background: #fef9f0; border-radius: 16px; overflow: hidden; }
 .translation-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; cursor: pointer; background: #fef9f0; transition: background 0.2s; }
 .translation-header:hover { background: #fdf3e4; }
@@ -86,10 +87,48 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
 .toggle-icon { font-size: 18px; color: #b85c00; transition: transform 0.3s; }
 .translation-content { padding: 0 20px 20px 20px; display: none; border-top: 1px solid #f0e4d4; }
 .translation-content.show { display: block; animation: fadeSlideDown 0.3s ease; }
-.trans-text-line { margin-bottom: 14px; text-align: left; }
-.trans-py { font-size: 12px; color: #d97706; margin-bottom: 4px; }
-.trans-zh { font-size: 15px; color: #2d3748; margin-bottom: 4px; font-weight: 500; line-height: 1.6; }
-.trans-en { font-size: 13px; color: #718096; font-style: italic; }
+
+.trans-text-line { margin-bottom: 20px; text-align: left; }
+
+.trans-ruby-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    column-gap: 4px;
+    margin-bottom: 8px;
+}
+
+.ruby-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 24px;
+}
+
+.trans-py { 
+    font-size: 12px; 
+    color: #d97706; 
+    margin-bottom: 2px; 
+    line-height: 1;
+    height: 14px; 
+}
+
+.trans-zh-char { 
+    font-size: 16px; 
+    color: #2d3748; 
+    font-weight: 500; 
+    line-height: 1.2;
+}
+
+.trans-en { 
+    font-size: 13px; 
+    color: #718096; 
+    font-style: italic; 
+    padding-left: 2px;
+    margin-top: 4px;
+}
+
 .trans-divider { height: 1px; background: #f0e4d4; margin: 12px 0; }
 
 @keyframes fadeSlideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }

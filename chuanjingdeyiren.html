@@ -1,178 +1,335 @@
-:root {
-    --primary-blue: #3b82f6; --primary-blue-hover: #2563eb;
-    --bg-color: #f3f6f8; --card-bg: #ffffff;
-    --text-main: #1e293b; --text-secondary: #64748b; --text-poem: #0f172a;
-    --accent-green: #10b981; --accent-orange: #f59e0b; --accent-red: #ef4444; --accent-purple: #8b5cf6;
-    --border-radius-lg: 20px; --border-radius-md: 12px;
-    --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.05);
-}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
+    <link rel="stylesheet" href="classic_style.css">
+    
+    <script src="chuanjingdeyiren_text.js"></script>
+    <script src="chuanjingdeyiren_translation.js"></script>
+    <script src="chuanjingdeyiren_analysis.js"></script>
+    <script src="chuanjingdeyiren_quiz.js"></script>
+    <script src="chuanjingdeyiren_shortq.js"></script>
+</head>
+<body>
+ 
+<div class="app-container">
+    <div class="header-section">
+        <h1 class="title">穿井得一人</h1>
+        <p class="author">《吕氏春秋·察今》 / 吕不韦 (先秦)</p>
+    </div>
+    
+    <div class="poem-container">
+        <div id="dynamic-poem-container"></div>
+        
+        <div class="translation-block" id="translationBlock">
+            <div class="translation-header" id="translationHeader">
+                <div class="translation-title"><span>📖</span> 白话翻译</div>
+                <div class="toggle-icon" id="toggleIcon">▶</div>
+            </div>
+            <div class="translation-content" id="translationContent"></div>
+        </div>
+    </div>
+    
+    <div class="controls-wrapper">
+        <div class="control-panel"><div class="control-label">🗣️ 拼音辅助 <span>(Pinyin)</span></div><label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label></div>
+        <div class="control-panel"><div class="control-label">🔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
+    </div>
 
-body { font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg-color); background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 40px 20px; box-sizing: border-box; }
-.app-container { background: var(--card-bg); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-soft); width: 100%; max-width: 780px; padding: 40px; text-align: center; }
+    <div class="action-group">
+        <button class="action-btn btn-analysis" id="toggle-analysis-btn"><span class="btn-icon">📜</span> 展开全诗赏析</button>
+        <button class="action-btn btn-quiz" id="toggle-quiz-btn"><span class="btn-icon">🎯</span> 客观题自测</button>
+        <button class="action-btn btn-shortq" id="toggle-shortq-btn"><span class="btn-icon">✍️</span> 简答题特训</button>
+    </div>
+ 
+    <div class="collapsible-content" id="analysis-content"></div>
+    <div class="collapsible-content" id="quiz-content"><div id="quiz-dynamic-container"></div></div>
+    <div class="collapsible-content" id="shortq-content"></div>
+</div>
+ 
+<div class="floating-tooltip" id="tooltip">
+    <div class="exp-header"><span class="exp-word" id="disp-word"></span><span class="exp-pinyin" id="disp-pinyin"></span><span class="exam-tag" id="exam-tag">考点</span></div>
+    <div class="exp-zh" id="disp-zh"></div>
+    <div class="exp-en" id="disp-en"></div>
+</div>
+ 
+<script>
+    // 绝对悬浮引擎
+    function alignText(zh, py) {
+        if (!zh) return '';
+        const chars = zh.trim().split('');
+        const pys = py ? py.trim().split(/\s+/) : [];
+        let pIdx = 0;
+        let html = '';
+        for (let c of chars) {
+            if (/[，。？！：“”‘’（）《》、\-]/.test(c)) {
+                html += `<span class="punctuation">${c}</span>`;
+            } else {
+                const p = pys[pIdx] || '';
+                html += `<span class="char-box"><span class="py-text">${p}</span><span class="zh-text">${c}</span></span>`;
+                pIdx++;
+            }
+        }
+        return html;
+    }
 
-.header-section { margin-bottom: 10px; }
-.title { font-size: 32px; color: var(--text-poem); margin: 0 0 10px 0; font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 2px; }
-.author { font-size: 16px; color: var(--text-secondary); margin: 0 0 20px 0; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.author::before, .author::after { content: ""; height: 1px; width: 40px; background-color: #cbd5e1; }
+    window.onload = function() {
+        renderPoem();
+        renderTranslation();
+        renderAnalysis();
+        renderShortQ();
+        renderQuizCards();
+        initInteractions();
+    };
 
-.controls-wrapper { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 30px; }
-.control-panel { display: flex; justify-content: center; align-items: center; gap: 10px; background: #f8fafc; padding: 10px 18px; border-radius: 30px; border: 1px solid #e2e8f0; }
-.control-label { font-size: 14px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 6px;}
-.control-label span { color: var(--text-secondary); font-size: 12px; font-weight: normal; }
+    function renderPoem() {
+        const container = document.getElementById('dynamic-poem-container');
+        let html = '<div class="poem-paragraph">';
+        poemData.forEach(w => {
+            if(w.punc) {
+                html += `<span class="punctuation">${w.text.trim()}</span>`;
+            } else {
+                let examClass = w.exam ? ' word exam-focus' : ' word';
+                let examAttr = w.exam ? ' data-exam="true"' : '';
+                html += `<span class="${examClass}" data-text="${w.text.trim()}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
+            }
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
 
-.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 24px; }
-.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-#pinyin-toggle:checked + .slider { background-color: var(--accent-orange); }
-#pinyin-toggle:checked + .slider:before { transform: translateX(20px); }
-#en-toggle:checked + .slider { background-color: var(--accent-purple); }
-#en-toggle:checked + .slider:before { transform: translateX(20px); }
+    function renderTranslation() {
+        const container = document.getElementById('translationContent');
+        let html = '';
+        translationData.forEach((item, index) => {
+            if(index > 0) html += '<div class="trans-divider"></div>';
+            html += `
+                <div class="trans-text-line">
+                    <div class="trans-zh">${alignText(item.zh, item.py)}</div>
+                    <div class="trans-en">${item.en}</div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
 
-/* --- 绝对定位注音引擎 --- */
-.char-box {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    vertical-align: bottom;
-    margin-top: 18px; 
-    padding: 0 2px;
-}
-.char-box .py-text {
-    position: absolute;
-    top: -16px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 13px;
-    color: var(--accent-orange);
-    font-weight: 500;
-    white-space: nowrap;
-    line-height: 1;
-}
-.char-box .zh-text {
-    font-size: 26px;
-    line-height: 1.2;
-}
+    // 【核心修复】：移除了原先包含“板块”圆圈的无用结构，使视觉效果更具纯净美感
+    function renderAnalysis() {
+        const container = document.getElementById('analysis-content');
+        let html = '';
+        analysisData.forEach(item => {
+            html += `
+                <div class="analysis-card">
+                    <div class="ana-title-group">
+                        <h4 class="ana-header">${alignText(item.header, item.headerPy)}</h4>
+                        <div class="ana-en">${item.en}</div>
+                    </div>
+                    <div class="ana-text-group">
+                        <p class="ana-zh">${alignText(item.textZh, item.textPy)}</p>
+                        <div class="ana-en">${item.textEn}</div>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
 
-body.hide-pinyin .py-text { display: none !important; }
-body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en, body.hide-english .sa-en, body.hide-english .strategy-en, body.hide-english .exp-en, body.hide-english .ana-en, body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !important; }
+    function renderShortQ() {
+        const container = document.getElementById('shortq-content');
+        let html = '';
+        shortQData.forEach(item => {
+            html += `
+                <div class="sa-card">
+                    <div class="sa-q-header">
+                        <div class="sa-q-num">${item.id}</div>
+                        <div class="q-text-group">
+                            <h4 class="q-zh">${alignText(item.qZh, item.qPy)}</h4>
+                            <div class="q-en">${item.qEn}</div>
+                        </div>
+                    </div>
+                    <div class="strategy-box">
+                        <div class="strategy-title">💡 答题思路</div>
+                        <div class="strategy-zh">${alignText(item.sZh, item.sPy)}</div>
+                        <div class="strategy-en">${item.sEn}</div>
+                    </div>
+                    <button class="sa-answer-btn" onclick="toggleAnswer(this)">📖 点击查看标准答案</button>
+                    <div class="sa-answer-box">
+                        <div class="sa-model-answer">
+                            <div class="sa-badge">标准答案</div>
+                            <div class="sa-zh">${alignText(item.aZh, item.aPy)}</div>
+                            <div class="sa-en">${item.aEn}</div>
+                        </div>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
 
-/* 正文排版 */
-.poem-container { background: #fefcf5; border-radius: var(--border-radius-md); padding: 35px 30px; margin-bottom: 25px; border: 1px solid #ede9d0; margin-top: 15px; text-align: left; }
-.poem-paragraph { text-align: left !important; font-size: 26px; line-height: 3.2; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 1px; margin: 0; padding-left: 2em; }
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+    function renderQuizCards() {
+        const container = document.getElementById('quiz-dynamic-container');
+        if (!container) return;
+        container.innerHTML = '';
+        quizQuestions.forEach(q => {
+            const shuffledOpts = shuffleArray([...q.options]);
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+            card.setAttribute('data-qid', q.id);
+            let optionsHtml = '';
+            const letters = ['A', 'B', 'C', 'D'];
+            shuffledOpts.forEach((opt, idx) => {
+                const optLetter = letters[idx];
+                optionsHtml += `
+                    <button class="option-btn" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}">
+                        <div class="opt-zh">${optLetter}. ${alignText(opt.text, opt.py)}</div>
+                        <div class="quiz-option-en">${opt.en}</div>
+                    </button>`;
+            });
+            card.innerHTML = `
+                <div class="question-header">
+                    <h4 class="q-zh">${q.id}. ${alignText(q.text, q.py)}</h4>
+                    <div class="q-en">${q.en}</div>
+                </div>
+                <div class="options-area">${optionsHtml}</div>
+                <div class="feedback"></div>`;
+            container.appendChild(card);
+            
+            const optsDiv = card.querySelector('.options-area');
+            const btns = optsDiv.querySelectorAll('.option-btn');
+            const fbDiv = card.querySelector('.feedback');
+            btns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (this.disabled) return;
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    const correctBtn = Array.from(btns).find(b => b.getAttribute('data-correct') === 'true');
+                    const correctOptText = correctBtn ? correctBtn.getAttribute('data-opt-text') : '正确选项';
+                    const correctOptPy = correctBtn ? correctBtn.getAttribute('data-opt-py') : '';
+                    
+                    btns.forEach(b => b.disabled = true);
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                        const explanation = this.getAttribute('data-explanation-correct');
+                        const explanationPy = this.getAttribute('data-explanation-correct-py');
+                        fbDiv.className = 'feedback success';
+                        fbDiv.innerHTML = `✅ 回答正确！<br>📖 ${alignText(explanation, explanationPy)}<div class="fb-en">💬 Correct: ${explanation}</div>`;
+                    } else {
+                        this.classList.add('wrong');
+                        const wrongExp = this.getAttribute('data-explanation-wrong');
+                        const wrongExpPy = this.getAttribute('data-explanation-wrong-py');
+                        const correctExp = correctBtn ? correctBtn.getAttribute('data-explanation-correct') : "";
+                        const correctExpPy = correctBtn ? correctBtn.getAttribute('data-explanation-correct-py') : "";
+                        fbDiv.className = 'feedback error';
+                        fbDiv.innerHTML = `❌ 回答错误。正确答案是：${alignText(correctOptText, correctOptPy)}<br><br>📖 你选择的选项分析：${alignText(wrongExp, wrongExpPy)}<br>📖 正确选项解析：${alignText(correctExp, correctExpPy)}`;
+                    }
+                });
+            });
+        });
+    }
 
-.word { cursor: pointer; padding: 2px 2px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; }
-.word::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
-.word:hover { background-color: #eff6ff; color: var(--primary-blue); transform: translateY(-2px); }
-.word:hover::after { background-color: var(--primary-blue-hover); }
-.word.active { background-color: var(--primary-blue); color: #ffffff; transform: scale(1.05); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
-.word.active::after { display: none; }
-.word.active .py-text { color: #fef08a; } 
+    function initInteractions() {
+        const translationHeader = document.getElementById('translationHeader');
+        const translationContent = document.getElementById('translationContent');
+        const toggleIcon = document.getElementById('toggleIcon');
+        translationHeader.addEventListener('click', function() {
+            if (translationContent.classList.contains('show')) {
+                translationContent.classList.remove('show');
+                toggleIcon.textContent = '▶';
+            } else {
+                translationContent.classList.add('show');
+                toggleIcon.textContent = '▼';
+            }
+        });
+        
+        const pinyinToggle = document.getElementById('pinyin-toggle');
+        const enToggle = document.getElementById('en-toggle');
+        document.body.classList.add('hide-pinyin', 'hide-english');
+        pinyinToggle.addEventListener('change', function() { 
+            if (this.checked) document.body.classList.remove('hide-pinyin'); 
+            else document.body.classList.add('hide-pinyin'); 
+        });
+        enToggle.addEventListener('change', function() { 
+            if (this.checked) document.body.classList.remove('hide-english'); 
+            else document.body.classList.add('hide-english'); 
+        });
 
-.punctuation { color: #94a3b8; display: inline-block; font-size: 26px; line-height: 1.2; vertical-align: bottom; margin: 0 2px; }
+        const words = document.querySelectorAll('.word');
+        const tooltip = document.getElementById('tooltip');
+        const dispWord = document.getElementById('disp-word');
+        const dispPinyin = document.getElementById('disp-pinyin');
+        const dispZh = document.getElementById('disp-zh');
+        const dispEn = document.getElementById('disp-en');
+        const examTag = document.getElementById('exam-tag');
+        
+        words.forEach(word => {
+            word.addEventListener('click', function(e) {
+                e.stopPropagation();
+                words.forEach(w => w.classList.remove('active'));
+                this.classList.add('active');
+                
+                dispWord.innerText = this.getAttribute('data-text');
+                dispPinyin.innerText = this.getAttribute('data-pinyin');
+                dispZh.innerHTML = `<strong>解析：</strong> ${this.getAttribute('data-zh')}`;
+                dispEn.innerText = this.getAttribute('data-en');
+                examTag.style.display = (this.getAttribute('data-exam') === 'true') ? 'inline-block' : 'none';
+                
+                tooltip.style.display = 'block';
+                const rect = this.getBoundingClientRect();
+                tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 20}px`;
+                tooltip.style.left = `${rect.left + window.scrollX + rect.width/2}px`;
+                setTimeout(() => tooltip.classList.add('show'), 10);
+            });
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!tooltip.contains(e.target) && !e.target.closest('.word')) {
+                tooltip.classList.remove('show');
+                words.forEach(w => w.classList.remove('active'));
+                setTimeout(() => { if (!tooltip.classList.contains('show')) tooltip.style.display = 'none'; }, 300);
+            }
+        });
 
-/* --- 赏析卡片排版终极优化 --- */
-.analysis-card { 
-    background: #f8fafc; 
-    border-radius: var(--border-radius-md); 
-    padding: 28px 24px; 
-    margin-bottom: 20px; 
-    border-left: 5px solid var(--accent-green); 
-    text-align: left; 
-}
-.ana-title-group { 
-    margin-bottom: 16px; 
-    border-bottom: 1px dashed #cbd5e1; 
-    padding-bottom: 12px; 
-}
-/* 移除了原先包含“板块”圆圈的背景设计，改为纯粹、大气的标题排版 */
-.ana-header { 
-    margin: 0; 
-    font-size: 20px; 
-    font-weight: 700; 
-    color: var(--text-poem);
-    letter-spacing: 1px;
-}
-.ana-text-group {
-    margin-top: 12px;
-}
-.ana-zh { 
-    margin: 0; 
-    font-size: 24px; /* 提升赏析正文字号，使其跟对齐引擎完美融合 */
-    line-height: 3.2; 
-    color: var(--text-main); 
-}
-.ana-en { 
-    font-size: 14px; 
-    color: #718096; 
-    font-style: italic; 
-    margin-top: 8px; 
-    line-height: 1.5;
-}
+        const panels = [
+            { btnId: 'toggle-analysis-btn', contentId: 'analysis-content', defaultHTML: '<span class="btn-icon">📜</span> 展开全诗赏析', defaultBg: 'linear-gradient(135deg, #10b981, #059669)' },
+            { btnId: 'toggle-quiz-btn', contentId: 'quiz-content', defaultHTML: '<span class="btn-icon">🎯</span> 客观题自测', defaultBg: 'linear-gradient(135deg, #3b82f6, #2563eb)' },
+            { btnId: 'toggle-shortq-btn', contentId: 'shortq-content', defaultHTML: '<span class="btn-icon">✍️</span> 简答题特训', defaultBg: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' }
+        ];
+        
+        panels.forEach(panel => {
+            const btn = document.getElementById(panel.btnId);
+            btn.addEventListener('click', function() {
+                const content = document.getElementById(panel.contentId);
+                const isOpen = content.style.display === 'block';
+                panels.forEach(p => {
+                    document.getElementById(p.contentId).style.display = 'none';
+                    const pb = document.getElementById(p.btnId);
+                    pb.innerHTML = p.defaultHTML;
+                    pb.style.background = p.defaultBg;
+                });
+                if (!isOpen) { 
+                    content.style.display = 'block'; 
+                    btn.innerHTML = '<span class="btn-icon">⬆️</span> 收起当前面板'; 
+                    btn.style.background = '#64748b';
+                }
+            });
+        });
+    }
 
-/* 翻译面板样式 */
-.translation-block { margin-top: 24px; border-top: 2px dashed #e2e0d4; background: #fef9f0; border-radius: 16px; overflow: hidden; text-align: left; }
-.translation-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; cursor: pointer; background: #fef9f0; transition: background 0.2s; }
-.translation-header:hover { background: #fdf3e4; }
-.translation-title { font-size: 14px; font-weight: 600; color: #b85c00; display: flex; align-items: center; gap: 8px; }
-.translation-title span { font-size: 18px; }
-.toggle-icon { font-size: 18px; color: #b85c00; transition: transform 0.3s; }
-.translation-content { padding: 0 20px 20px 20px; display: none; border-top: 1px solid #f0e4d4; }
-.translation-content.show { display: block; animation: fadeSlideDown 0.3s ease; }
-.trans-text-line { margin-bottom: 14px; font-size: 24px; color: #2d3748; line-height: 3.2; }
-.trans-en { font-size: 14px; color: #718096; font-style: italic; margin-top: 8px; line-height: 1.5; }
-.trans-divider { height: 1px; background: #f0e4d4; margin: 12px 0; }
-
-@keyframes fadeSlideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-
-/* 问答题与自测模块样式 */
-.quiz-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 25px; text-align: left;}
-.question-header { margin-bottom: 18px; line-height: 3.2; }
-.q-zh { font-size: 24px; font-weight: 600; margin: 8px 0 4px; }
-.q-en { font-size: 14px; color: #94a3b8; font-style: italic; margin-top: 6px; }
-
-.option-btn { display: flex; flex-direction: column; width: 100%; text-align: left; background: #f8fafc; border: 2px solid transparent; padding: 12px 18px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; line-height: 3.2; }
-.opt-zh { font-size: 22px; color: var(--text-main); font-weight: 500; }
-.quiz-option-en { font-size: 14px; color: #94a3b8; font-style: italic; margin-top: 6px; }
-.option-btn:hover:not(:disabled) { background: #f1f5f9; border-color: #cbd5e1; transform: translateX(4px); }
-.option-btn.correct { background: #ecfdf5; border-color: #34d399; }
-.option-btn.wrong { background: #fef2f2; border-color: #f87171; }
-.option-btn:disabled { cursor: default; }
-
-.feedback { margin-top: 18px; padding: 16px; border-radius: 10px; font-size: 15px; line-height: 2.2; display: none; animation: fadeIn 0.3s ease;}
-.feedback.success { background-color: #ecfdf5; color: #065f46; border-left: 4px solid #10b981; display: block; }
-.feedback.error { background-color: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b; display: block; }
-.fb-en { font-size: 13px; font-style: italic; color: #64748b; margin-top: 6px; line-height: 1.5; }
-
-.sa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 25px; text-align: left; }
-.sa-q-header { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px; line-height: 3.2; }
-.sa-q-num { background: #f3e8ff; color: #7c3aed; font-weight: bold; padding: 6px 12px; border-radius: 8px; font-size: 16px; min-width: 50px; text-align: center;}
-
-.strategy-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 18px; border-radius: 8px; margin-bottom: 18px; line-height: 3.2;}
-.strategy-title { font-weight: bold; color: #b85c00; margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-.strategy-zh { font-size: 22px; color: #92400e; }
-.strategy-en { font-size: 14px; font-style: italic; color: #9a3412; line-height: 1.5; margin-top: 8px; }
-
-.sa-answer-btn { width: 100%; background: #f8fafc; border: 2px solid #cbd5e1; color: var(--text-secondary); padding: 12px; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; margin-top: 5px; }
-.sa-answer-btn:hover { background: #e6f0ff; border-color: var(--primary-blue); color: var(--primary-blue); }
-
-.sa-answer-box { margin-top: 15px; display: none; animation: fadeIn 0.3s ease; }
-.sa-model-answer { background: #ecfdf5; border: 1px solid #a7f3d0; padding: 20px; border-radius: 10px; color: #065f46; position: relative; line-height: 3.2; }
-.sa-model-answer .sa-zh { font-size: 24px; margin: 0; }
-.sa-model-answer .sa-en { font-size: 14px; font-style: italic; color: #065f46; margin-top: 8px; line-height: 1.5; }
-.sa-badge { position: absolute; top: -12px; right: 20px; background: #10b981; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-
-.floating-tooltip { position: absolute; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 20px; width: 300px; box-shadow: 0 20px 40px rgba(0,0,0,0.12); text-align: left; display: none; z-index: 9999; opacity: 0; transform: translateY(15px) translateX(-50%); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; }
-.floating-tooltip.show { display: block; opacity: 1; transform: translateY(0) translateX(-50%); }
-.exp-header { display: flex; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; }
-.exp-word { font-size: 26px; font-weight: bold; color: var(--primary-blue); margin-right: 12px; font-family: 'STKaiti', 'KaiTi', '楷体', serif; }
-.exp-pinyin { color: var(--accent-orange); font-size: 16px; font-weight: bold; background: #fffbeb; padding: 2px 8px; border-radius: 6px; }
-.exp-zh { color: var(--text-main); font-size: 15px; margin-bottom: 10px; line-height: 1.6; }
-.exp-en { color: var(--text-secondary); font-size: 14px; font-style: italic; line-height: 1.5; background: #f8fafc; padding: 8px; border-radius: 6px; }
-.exam-tag { background-color: var(--accent-red); color: white; font-size: 12px; padding: 3px 8px; border-radius: 20px; margin-left: auto; display: none; font-weight: bold;}
-
-@keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-@media (max-width: 600px) { .app-container { padding: 25px 15px; } .poem-paragraph { padding-left: 1.5em; font-size: 20px; letter-spacing: 2px; } .action-btn { width: 100%; } .sa-q-header { flex-direction: column; align-items: flex-start; } }
+    function toggleAnswer(btn) {
+        const answerBox = btn.nextElementSibling;
+        if (answerBox.style.display === 'block') {
+            answerBox.style.display = 'none';
+            btn.innerHTML = '📖 点击查看标准答案';
+        } else {
+            answerBox.style.display = 'block';
+            btn.innerHTML = '📖 收起答案';
+        }
+    }
+</script>
+</body>
+</html>

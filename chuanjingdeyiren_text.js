@@ -1,84 +1,62 @@
-// ============================================================================
-// 穿井得一人 - 核心正文数据（简化版）
-// ============================================================================
-
-const poemData = {
-    title: "穿井得一人",
-    author: "《吕氏春秋·察今》 / 吕不韦 (先秦)",
-    lines: [
-        "宋之丁氏，家无井而出溉汲，常一人居外。",
-        "及其家穿井，告人曰：“吾穿井得一人。”",
-        "有闻而传之者曰：“丁氏穿井得一人。”",
-        "国人道之，闻之于宋君。",
-        "宋君令人问之于丁氏。",
-        "丁氏对曰：“得一人之使，非得一人于井中也。”",
-        "求闻之若此，不若无闻也。"
+const poemData = [
+    [
+        { text: "宋", py: "sòng", zh: "春秋时的诸侯国，宋国。", en: "State of Song." },
+        { text: "之", py: "zhī", zh: "的。", en: "(possessive) of." },
+        { text: "丁氏", py: "dīng shì", zh: "姓丁的人家。", en: "The Ding family." },
+        { text: "，", punc: true },
+        { text: "家", py: "jiā", zh: "家里。", en: "Household." },
+        { text: "无井", py: "wú jǐng", zh: "没有水井。", en: "had no well." },
+        { text: "而", py: "ér", zh: "于是，就。", en: "so" },
+        { text: "出", py: "chū", zh: "外出。", en: "went out." },
+        { text: "溉汲", py: "gài jí", zh: "浇灌田地、从远处打水。", en: "irrigate and fetch water." },
+        { text: "，", punc: true },
+        { text: "常", py: "cháng", zh: "经常。", en: "often." },
+        { text: "一人", py: "yī rén", zh: "一个人。", en: "one person." },
+        { text: "居外", py: "jū wài", zh: "住在外面。", en: "stayed outside." },
+        { text: "。", punc: true }
     ],
-    // 词义库（点击查词用）
-    wordMeanings: {
-        "宋": { pinyin: "sòng", zh: "春秋时的诸侯国名，宋国。", en: "The State of Song." },
-        "之": { pinyin: "zhī", zh: "结构助词，相当于‘的’。", en: "possessive particle 'of'." },
-        "丁氏": { pinyin: "dīng shì", zh: "姓丁的一户人家。", en: "The Ding family." },
-        "家": { pinyin: "jiā", zh: "家里。", en: "family" },
-        "无井": { pinyin: "wú jǐng", zh: "没有水井。", en: "had no well" },
-        "而": { pinyin: "ér", zh: "连词，于是、就。", en: "so" },
-        "出": { pinyin: "chū", zh: "外出。", en: "went out" },
-        "溉汲": { pinyin: "gài jí", zh: "灌溉和打水。", en: "irrigate and fetch water" },
-        "常": { pinyin: "cháng", zh: "经常。", en: "often" },
-        "一人": { pinyin: "yī rén", zh: "一个人。", en: "one person", exam: true },
-        "居外": { pinyin: "jū wài", zh: "住在外面。", en: "stayed outside" },
-        "及": { pinyin: "jí", zh: "等到。", en: "when" },
-        "其": { pinyin: "qí", zh: "他的。", en: "his" },
-        "穿井": { pinyin: "chuān jǐng", zh: "开凿水井。", en: "dug a well" },
-        "告人": { pinyin: "gào rén", zh: "告诉别人。", en: "told others" },
-        "曰": { pinyin: "yuē", zh: "说。", en: "said" },
-        "吾": { pinyin: "wú", zh: "我。", en: "I", exam: true },
-        "得": { pinyin: "dé", zh: "获得、得到。", en: "gained", exam: true },
-        "有": { pinyin: "yǒu", zh: "有人。", en: "there is" },
-        "闻而传之者": { pinyin: "wén ér chuán zhī zhě", zh: "听到并传播的人。", en: "someone who heard and spread" },
-        "国人": { pinyin: "guó rén", zh: "国都的人。", en: "people of the state" },
-        "道之": { pinyin: "dào zhī", zh: "谈论这件事。", en: "talked about it" },
-        "闻之于宋君": { pinyin: "wén zhī yú sòng jūn", zh: "被宋君听到。", en: "was heard by the ruler" },
-        "宋君": { pinyin: "sòng jūn", zh: "宋国国君。", en: "ruler of Song" },
-        "令人": { pinyin: "lìng rén", zh: "派人。", en: "sent someone" },
-        "问之": { pinyin: "wèn zhī", zh: "询问此事。", en: "asked about it" },
-        "于丁氏": { pinyin: "yú dīng shì", zh: "向丁家。", en: "from the Ding family" },
-        "对曰": { pinyin: "duì yuē", zh: "回答说。", en: "replied" },
-        "一人之使": { pinyin: "yī rén zhī shǐ", zh: "一个人的劳力。", en: "one person's labor", exam: true },
-        "非": { pinyin: "fēi", zh: "不是。", en: "not" },
-        "于井中": { pinyin: "yú jǐng zhōng", zh: "在井里。", en: "in the well" },
-        "求闻": { pinyin: "qiú wén", zh: "寻求传闻。", en: "seeking news", exam: true },
-        "若此": { pinyin: "ruò cǐ", zh: "像这样。", en: "like this", exam: true },
-        "不若": { pinyin: "bù ruò", zh: "不如。", en: "worse than" },
-        "无闻": { pinyin: "wú wén", zh: "没听到。", en: "hearing nothing" },
-        "也": { pinyin: "yě", zh: "啊（语气词）。", en: "" }
-    },
-    examWords: ["一人", "吾", "得", "一人之使", "求闻", "若此"]
-};
-
-// 辅助函数
-function getLineText(lineIndex) {
-    return poemData.lines[lineIndex] || "";
-}
-
-function getFullText() {
-    return poemData.lines.join("");
-}
-
-function isExamWord(word) {
-    return poemData.examWords.includes(word);
-}
-
-function getWordMeaning(word) {
-    return poemData.wordMeanings[word] || { 
-        pinyin: "", 
-        zh: "暂无释义", 
-        en: "No definition available" 
-    };
-}
-
-window.poemData = poemData;
-window.getLineText = getLineText;
-window.getFullText = getFullText;
-window.isExamWord = isExamWord;
-window.getWordMeaning = getWordMeaning;
+    [
+        { text: "及", py: "jí", zh: "等到。", en: "when" },
+        { text: "其", py: "qí", zh: "他的。", en: "his" },
+        { text: "家", py: "jiā", zh: "家里。", en: "family" },
+        { text: "穿井", py: "chuān jǐng", zh: "开凿水井。", en: "dug a well." },
+        { text: "，", punc: true },
+        { text: "告人", py: "gào rén", zh: "告诉别人。", en: "told people." },
+        { text: "曰", py: "yuē", zh: "说。", en: "said." },
+        { text: "吾", py: "wú", zh: "我。", en: "I.", exam: true },
+        { text: "穿井得一人", py: "chuān jǐng dé yī rén", zh: "挖井后多得到一个劳动力。", en: "gained one person's labor after digging the well.", exam: true },
+        { text: "。", punc: true }
+    ],
+    [
+        { text: "有", py: "yǒu", zh: "有人。", en: "someone" },
+        { text: "闻而传之者", py: "wén ér chuán zhī zhě", zh: "听到并传播这件事的人。", en: "heard and spread it." },
+        { text: "曰", py: "yuē", zh: "说。", en: "said." },
+        { text: "丁氏穿井得一人", py: "dīng shì chuān jǐng dé yī rén", zh: "丁家挖井挖出一个人（误传）。", en: "The Ding family dug up a person from the well.", exam: true },
+        { text: "。", punc: true }
+    ],
+    [
+        { text: "国人", py: "guó rén", zh: "国都的人，全国百姓。", en: "People of the state." },
+        { text: "道之", py: "dào zhī", zh: "谈论这件事。", en: "talked about it." },
+        { text: "，", punc: true },
+        { text: "闻之于宋君", py: "wén zhī yú sòng jūn", zh: "被宋国国君听到了。", en: "it was heard by the ruler of Song." },
+        { text: "。", punc: true }
+    ],
+    [
+        { text: "宋君令人问之于丁氏", py: "sòng jūn lìng rén wèn zhī yú dīng shì", zh: "宋君派人向丁家询问这件事。", en: "The ruler sent someone to ask Ding." },
+        { text: "。", punc: true }
+    ],
+    [
+        { text: "丁氏对曰", py: "dīng shì duì yuē", zh: "丁氏回答说。", en: "Ding replied." },
+        { text: "：“", punc: true },
+        { text: "得一人之使", py: "dé yī rén zhī shǐ", zh: "得到一个人的劳力。", en: "gained the labor of one person.", exam: true },
+        { text: "，", punc: true },
+        { text: "非得一人于井中也", py: "fēi dé yī rén yú jǐng zhōng yě", zh: "不是在井中得到一个人。", en: "not getting a person from the well." },
+        { text: "。”", punc: true }
+    ],
+    [
+        { text: "求闻之若此", py: "qiú wén zhī ruò cǐ", zh: "寻求消息像这样（以讹传讹）。", en: "seeking news like this.", exam: true },
+        { text: "，", punc: true },
+        { text: "不若无闻也", py: "bú ruò wú wén yě", zh: "不如没有听到。", en: "better not to have heard it." },
+        { text: "。", punc: true }
+    ]
+];

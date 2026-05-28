@@ -23,7 +23,8 @@
     
     <!-- 正文与分词栏 -->
     <div class="poem-container">
-        <div id="dynamic-poem-lines"></div>
+        <!-- 💡 已经优化：现在是一个真正的完整段落 -->
+        <p class="poem-paragraph" id="dynamic-poem-paragraph"></p>
         
         <!-- 白话翻译栏 -->
         <div class="translation-block" id="translationBlock">
@@ -76,27 +77,23 @@
         initCoreInteractions();
     };
 
+    // 💡 智能拼接版：将多行数据合并为一个流式排版的纯正段落
     function renderHeaderAndPoem() {
         document.getElementById('dynamic-header').innerHTML = `
             <h1 class="title">${poemData.title}</h1>
             <p class="author">${poemData.author}</p>
         `;
         
-        const linesContainer = document.getElementById('dynamic-poem-lines');
-        linesContainer.innerHTML = '';
+        const paragraphContainer = document.getElementById('dynamic-poem-paragraph');
+        paragraphContainer.innerHTML = '';
         
         poemData.lines.forEach(line => {
-            const lineDiv = document.createElement('div');
-            lineDiv.className = 'poem-line';
-            const textDiv = document.createElement('div');
-            textDiv.className = 'line-text';
-            
             line.words.forEach(word => {
                 if(word.isPunctuation) {
                     const span = document.createElement('span');
                     span.className = 'punctuation';
                     span.innerText = word.text;
-                    textDiv.appendChild(span);
+                    paragraphContainer.appendChild(span);
                 } else {
                     const span = document.createElement('span');
                     span.className = `word ${word.examFocus ? 'exam-focus' : ''}`;
@@ -105,15 +102,12 @@
                     span.setAttribute('data-zh', word.zh);
                     span.setAttribute('data-en', word.en);
                     if(word.exam) span.setAttribute('data-exam', 'true');
-                    textDiv.appendChild(span);
+                    paragraphContainer.appendChild(span);
                 }
             });
-            lineDiv.appendChild(textDiv);
-            linesContainer.appendChild(lineDiv);
         });
     }
 
-    // 💡 智能修复版：安全对齐每一个拼音与汉字，彻底解决断行变垂直长列的Bug
     function renderTranslation() {
         const container = document.getElementById('translationContent');
         container.innerHTML = '';
@@ -304,7 +298,7 @@
         const dispEn = document.getElementById('disp-en');
         const examTag = document.getElementById('exam-tag');
 
-        document.getElementById('dynamic-poem-lines').addEventListener('click', function(e) {
+        document.getElementById('dynamic-poem-paragraph').addEventListener('click', function(e) {
             const wordBtn = e.target.closest('.word');
             if (!wordBtn) return;
             

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
+    <!-- 引入独立CSS -->
     <link rel="stylesheet" href="classic_style.css">
     
+    <!-- 引入独立的 5 个 JS 数据包 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -21,6 +23,7 @@
     </div>
     
     <div class="poem-container">
+        <!-- 古文原文动态容器 -->
         <div id="dynamic-poem-container"></div>
         
         <div class="translation-block" id="translationBlock">
@@ -86,7 +89,7 @@
         renderTranslation();
         renderAnalysis();
         renderShortQ();
-        renderQuizCards(); // 首次渲染
+        renderQuizCards(); // 首次加载动态生成客观题
         initInteractions();
     };
 
@@ -173,7 +176,7 @@
         container.innerHTML = html;
     }
 
-    // 经典乱序洗牌算法
+    // 乱序数组洗牌算法
     function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -182,7 +185,7 @@
         return arr;
     }
     
-    // 【全新架构渲染】：既完美锁死对齐，又让英文换行排列在中文正下方
+    // 【终极重构对齐逻辑】：兼顾字母完美对齐，且英文必定在中文正下方自然换行
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container || originalQuizQuestions.length === 0) return;
@@ -191,7 +194,7 @@
         const currentQuestions = JSON.parse(JSON.stringify(originalQuizQuestions));
         
         currentQuestions.forEach(q => {
-            shuffleArray(q.options); // 随机打乱选项
+            shuffleArray(q.options); // 打乱当前题目的选项顺序
             
             const card = document.createElement('div');
             card.className = 'quiz-card';
@@ -202,26 +205,41 @@
             q.options.forEach((opt, idx) => {
                 const optLetter = letters[idx];
                 optionsHtml += `
-                    <button class="option-btn" style="display: block; text-align: left; width: 100%; padding: 12px 16px;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
-                        <div style="display: flex; align-items: flex-start; text-align: left; width: 100%;">
-                            <div style="min-width: 24px; font-size: 16px; font-weight: bold; color: #475569; margin-top: 15px; text-align: left;">${optLetter}</div>
-                            <div class="opt-zh" style="flex: 1; text-align: left; line-height: 1.8;">${alignText(opt.text, opt.py)}</div>
+                    <button class="option-btn" style="display: block !important; width: 100% !important; padding: 14px 18px !important; text-align: left !important;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
+                        
+                        <!-- 第一层：中文字符流（利用空拼音盒完美抹平 A. B. C. D. 的高度偏差） -->
+                        <div style="display: flex !important; align-items: flex-start !important; text-align: left !important; width: 100% !important;">
+                            <div style="min-width: 26px !important; max-width: 26px !important; display: inline-block !important; text-align: left !important; flex-shrink: 0 !important;">
+                                <span class="char-box" style="margin: 0 !important;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: var(--text-main); font-size: 16px !important;">${optLetter}</span></span>
+                            </div>
+                            <div class="opt-zh" style="flex: 1 !important; text-align: left !important; white-space: normal !important;">
+                                ${alignText(opt.text, opt.py)}
+                            </div>
                         </div>
-                        <div class="quiz-option-en" style="margin-left: 24px; margin-top: 6px; text-align: left; color: #475569; font-size: 14.5px; line-height: 1.4;">${opt.en}</div>
+                        
+                        <!-- 第二层：独立英文换行流（强制空出26px宽度，对齐上方汉字句子） -->
+                        <div class="quiz-option-en" style="margin-left: 26px !important; margin-top: 6px !important; text-align: left !important; color: var(--text-secondary); font-size: 13px !important; line-height: 1.4 !important; white-space: normal !important; display: block !important;">
+                            ${opt.en}
+                        </div>
                     </button>`;
             });
             
             card.innerHTML = `
-                <div style="text-align: left; width: 100%;">
-                    <div style="display: flex; align-items: flex-start; text-align: left; width: 100%;">
-                        <div style="min-width: 24px; font-size: 18px; font-weight: bold; color: #1e293b; margin-top: 15px; text-align: left;">${q.id}.</div>
-                        <div class="q-text-body" style="flex: 1; text-align: left;">
-                            <h4 class="q-zh" style="margin: 0; text-align: left; line-height: 1.8;">${alignText(q.text, q.py)}</h4>
+                <!-- 大题干容器逻辑 -->
+                <div style="text-align: left !important; width: 100% !important; margin-bottom: 16px !important;">
+                    <div style="display: flex !important; align-items: flex-start !important; text-align: left !important; width: 100% !important;">
+                        <div style="min-width: 26px !important; max-width: 26px !important; display: inline-block !important; text-align: left !important; flex-shrink: 0 !important;">
+                            <span class="char-box" style="margin: 0 !important;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: var(--text-poem); font-size: 18px !important;">${q.id}.</span></span>
+                        </div>
+                        <div class="q-text-body" style="flex: 1 !important; text-align: left !important; white-space: normal !important;">
+                            <h4 class="q-zh" style="margin: 0 !important; text-align: left !important; font-weight: 600 !important;">${alignText(q.text, q.py)}</h4>
                         </div>
                     </div>
-                    <div class="q-en" style="margin-left: 24px; margin-top: 6px; color: #64748b; font-size: 14.5px; text-align: left; line-height: 1.4;">${q.en}</div>
+                    <div class="q-en" style="margin-left: 26px !important; margin-top: 6px !important; color: #94a3b8; font-size: 13px !important; font-style: italic !important; text-align: left !important; line-height: 1.4 !important; display: block !important;">
+                        ${q.en}
+                    </div>
                 </div>
-                <div class="options-area" style="margin-top: 16px;">${optionsHtml}</div>
+                <div class="options-area">${optionsHtml}</div>
                 <div class="feedback"></div>`;
             container.appendChild(card);
             

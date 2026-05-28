@@ -81,7 +81,7 @@
     // ========== 等待所有数据加载完成后初始化 ==========
     document.addEventListener('DOMContentLoaded', function() {
         
-        // ---------- 1. 渲染诗文 ----------
+        // ---------- 1. 渲染诗文（修复版：每行只有一个 .line-text） ----------
         function renderPoem() {
             if (!window.poemData) {
                 console.error('poemData 未加载');
@@ -92,19 +92,25 @@
             if (!container) return;
             
             let html = '';
+            
+            // 遍历每一行（line）
             poemData.lines.forEach((line, lineIdx) => {
+                // 每一行只有一个 .line-text 容器
                 let lineHtml = '<div class="poem-line"><div class="line-text">';
+                
+                // 遍历该行中的所有词（words）
                 line.words.forEach(word => {
                     if (word.isPunctuation) {
                         lineHtml += `<span class="punctuation">${word.text}</span>`;
                     } else {
                         const examAttr = word.exam ? 'data-exam="true"' : '';
                         lineHtml += `<span class="word" data-pinyin="${word.pinyin}" 
-                            data-zh="${word.zh.replace(/"/g, '&quot;')}" 
-                            data-en="${word.en.replace(/"/g, '&quot;')}" 
+                            data-zh="${(word.zh || '').replace(/"/g, '&quot;')}" 
+                            data-en="${(word.en || '').replace(/"/g, '&quot;')}" 
                             ${examAttr}>${word.text}</span>`;
                     }
                 });
+                
                 lineHtml += '</div></div>';
                 html += lineHtml;
             });
@@ -337,7 +343,6 @@
         
         // ---------- 8. 翻译块折叠 ----------
         function initTranslationToggle() {
-            // 使用事件委托，因为翻译块是动态渲染的
             document.body.addEventListener('click', function(e) {
                 const header = e.target.closest('#translationHeader');
                 if (header) {
@@ -356,7 +361,7 @@
             });
         }
         
-        // ---------- 9. 简答题答案切换（备用） ----------
+        // ---------- 9. 简答题答案切换 ----------
         function initShortAnswerDelegation() {
             document.body.addEventListener('click', function(e) {
                 const btn = e.target.closest('.sa-answer-btn');

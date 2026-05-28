@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="description" content="互动古文学习：穿井得一人 · 吕氏春秋 · 中英双语·词解版">
-    <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
+    <title>互动古文：穿井得一人 · 吕氏春秋</title>
     <link rel="stylesheet" href="classic_style.css">
 </head>
 <body>
@@ -59,12 +58,16 @@
     document.addEventListener('DOMContentLoaded', function() {
         
         function renderPoem() {
-            if (!window.poemData) return;
+            if (!window.poemData) {
+                console.error('poemData 未加载');
+                return;
+            }
             const container = document.getElementById('poemContainer');
             if (!container) return;
             
             let html = '';
             poemData.lines.forEach((line, lineIdx) => {
+                if (!line.words) return;
                 let lineHtml = '<div class="poem-line"><div class="line-text">';
                 line.words.forEach(word => {
                     if (word.isPunctuation) {

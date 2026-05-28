@@ -146,34 +146,68 @@
         });
     }
 
-    // 💡 已经优化：全诗赏析标题完美逐字对齐，赏析文本不再显示多余拼音
+    // 💡 终极进化版：将文章赏析全部拆散，每一行、每一个字词、每一句翻译做到绝绝对齐
     function renderAnalysis() {
         const container = document.getElementById('analysis-content');
         container.innerHTML = '';
-        analysisData.forEach(item => {
-            const pyWords = item.py.split(/\s+/).filter(p => p.trim() !== '');
-            const zhChars = Array.from(item.header).filter(c => c.trim() !== '');
+        
+        analysisData.forEach(card => {
+            // 1. 渲染标题部分
+            const titlePyWords = card.py.split(/\s+/).filter(p => p.trim() !== '');
+            const titleZhChars = Array.from(card.header).filter(c => c.trim() !== '');
             let titleRubyHtml = '';
-            
-            zhChars.forEach((zh, idx) => {
+            titleZhChars.forEach((zh, idx) => {
                 titleRubyHtml += `
                     <div class="ruby-item">
-                        <div class="trans-py">${pyWords[idx] || '&nbsp;'}</div>
+                        <div class="ana-py" style="margin-bottom:2px;">${titlePyWords[idx] || '&nbsp;'}</div>
                         <div class="trans-zh-char" style="font-size:18px; font-weight:bold; color:var(--text-poem);">${zh}</div>
                     </div>
                 `;
             });
 
+            // 2. 逐行编译正文与流向列表
+            let paragraphsHtml = '';
+            card.contents.forEach(line => {
+                const linePyWords = line.py.split(/\s+/).filter(p => p.trim() !== '' && !/[，。？！：“”‘’（）；、！,;.?!"'🏷️❶❷❸❹➔•]/u.test(p));
+                const lineZhChars = Array.from(line.zh).filter(c => c.trim() !== '');
+                
+                let lineRubyHtml = '';
+                let pyIdx = 0;
+                
+                lineZhChars.forEach((zh) => {
+                    const isPuncOrSymbol = /[，。？！：“”‘’（）；、！,;.?!"'🏷️❶❷❸❹➔•]/u.test(zh);
+                    let currentPy = '&nbsp;';
+                    
+                    if (!isPuncOrSymbol) {
+                        if (pyIdx < linePyWords.length) {
+                            currentPy = linePyWords[pyIdx];
+                            pyIdx++;
+                        }
+                    }
+                    
+                    lineRubyHtml += `
+                        <div class="ruby-item" style="min-width: 18px; row-gap: 2px;">
+                            <div class="ana-py" style="font-size: 11px; color: #b45309; height: 12px;">${isPuncOrSymbol ? '&nbsp;' : currentPy}</div>
+                            <div class="trans-zh-char" style="font-size: 14px; color: var(--text-main); font-weight: inherit;">${zh}</div>
+                        </div>
+                    `;
+                });
+
+                paragraphsHtml += `
+                    <div style="margin-bottom: 12px; text-indent: ${line.isListItem ? '0' : '2em'}; padding-left: ${line.isListItem ? '15px' : '0'};">
+                        <div class="trans-ruby-wrapper">${lineRubyHtml}</div>
+                        <div class="ana-en" style="font-size: 12px; color: var(--text-secondary); font-style: italic; margin-top: 2px; text-indent: 0;">${line.en}</div>
+                    </div>
+                `;
+            });
+
             container.innerHTML += `
-                <div class="analysis-card">
-                    <div class="ana-title-group" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
+                <div class="analysis-card" style="padding: 25px 30px;">
+                    <div class="ana-title-group" style="display:flex; flex-direction:column; align-items:flex-start; gap:4px; margin-bottom:15px; border-bottom:1px dashed #cbd5e1; padding-bottom:10px;">
                         <div class="trans-ruby-wrapper">${titleRubyHtml}</div>
-                        <div class="ana-en" style="margin-top:0; padding-left:2px;">${item.en}</div>
+                        <div class="ana-en" style="margin-top:2px; font-weight:600; color:var(--text-secondary);">${card.en}</div>
                     </div>
-                    <div class="trans-text-line" style="margin-top:15px; border-top:1px dashed #cbd5e1; padding-top:15px;">
-                        <p class="ana-zh" style="font-size:15px; line-height:1.8; color:var(--text-main); margin:0;">${item.contentZh}</p>
-                        <div class="trans-en" style="margin-top:8px;">${item.contentEn}</div>
-                    </div>
+                    <div>${paragraphsHtml}</div>
                 </div>
             `;
         });
@@ -369,7 +403,7 @@
         const answerBox = btn.nextElementSibling;
         if (answerBox.style.display === 'block') {
             answerBox.style.display = 'none';
-            btn.innerHTML = '📖 点击查看 standard 答案';
+            btn.innerHTML = '📖 点击查看标准答案';
         } else {
             answerBox.style.display = 'block';
             btn.innerHTML = '📖 收起答案';

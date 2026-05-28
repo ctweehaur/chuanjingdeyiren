@@ -49,25 +49,29 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
     letter-spacing: 0.3px;
 }
 
-/* 正文框样式 */
+/* 正文大容器样式 */
 .poem-container { 
     background: #fefcf5; 
     border-radius: var(--border-radius-md); 
-    padding: 30px 40px; 
+    padding: 35px 40px; 
     margin-bottom: 25px; 
     border: 1px solid #ede9d0; 
     margin-top: 15px;
     text-align: left; 
 }
 
-/* 正文段落样式 */
-.poem-line { 
-    margin-bottom: 24px; 
-    text-align: left; 
-    text-indent: 2em; 
+/* 💡 新增：真正的一整段流式排版，首行空两格，后面文字自由换行 */
+.poem-paragraph {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    text-indent: 2em; /* 核心：只有开头空两格 */
+    font-size: 26px; 
+    line-height: 1.8; /* 稍微拉开行距，单段阅读更舒适 */
+    color: var(--text-poem); 
+    font-family: 'STKaiti', 'KaiTi', '楷体', serif; 
+    letter-spacing: 2px;
 }
-
-.line-text { font-size: 26px; line-height: 1.5; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 2px; }
 
 .word { cursor: pointer; padding: 4px 6px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; text-indent: 0; }
 .word::after { content: ''; position: absolute; bottom: 2px; left: 10%; width: 80%; height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
@@ -75,9 +79,8 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
 .word:hover::after { background-color: var(--primary-blue-hover); width: 100%; left: 0; }
 .word.active { background-color: var(--primary-blue); color: #ffffff; transform: scale(1.05); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
 .word.active::after { display: none; }
-.punctuation { color: #94a3b8; margin: 0 4px; }
+.punctuation { color: #94a3b8; margin: 0 4px; display: inline-block; text-indent: 0; }
 
-/* 💡 白话翻译交互排版修复系统 */
 .translation-block { margin-top: 24px; border-top: 2px dashed #e2e0d4; background: #fef9f0; border-radius: 16px; overflow: hidden; }
 .translation-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; cursor: pointer; background: #fef9f0; transition: background 0.2s; }
 .translation-header:hover { background: #fdf3e4; }
@@ -89,7 +92,6 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
 
 .trans-text-line { margin-bottom: 24px; text-align: left; }
 
-/* 修复横向流式排版 */
 .trans-ruby-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -211,7 +213,7 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
 
 @media (max-width: 600px) {
     .app-container { padding: 25px 15px; }
-    .line-text { font-size: 20px; letter-spacing: 2px; }
+    .poem-paragraph { font-size: 20px; letter-spacing: 2px; line-height: 1.6; }
     .action-btn { width: 100%; }
     .sa-q-header { flex-direction: column; align-items: flex-start; }
 }

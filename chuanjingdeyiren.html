@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
-    <!-- 引入独立CSS -->
+    <title>互动古文：穿井得一人 · 吕氏春秋</title>
     <link rel="stylesheet" href="classic_style.css">
-    
-    <!-- 引入独立的 5 个 JS 数据包 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -34,14 +31,14 @@
     </div>
     
     <div class="controls-wrapper">
-        <div class="control-panel"><div class="control-label">🗣️ 拼音辅助 <span>(Pinyin)</span></div><label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label></div>
-        <div class="control-panel"><div class="control-label">🔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
+        <div class="control-panel"><div class="control-label">🗣️ 拼音辅助</div><label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label></div>
+        <div class="control-panel"><div class="control-label">🔤 英文辅助</div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
     </div>
 
     <div class="action-group">
-        <button class="action-btn btn-analysis" id="toggle-analysis-btn"><span class="btn-icon">📜</span> 展开全诗赏析</button>
-        <button class="action-btn btn-quiz" id="toggle-quiz-btn"><span class="btn-icon">🎯</span> 客观题自测</button>
-        <button class="action-btn btn-shortq" id="toggle-shortq-btn"><span class="btn-icon">✍️</span> 简答题特训</button>
+        <button class="action-btn btn-analysis" id="toggle-analysis-btn">📜 展开全诗赏析</button>
+        <button class="action-btn btn-quiz" id="toggle-quiz-btn">🎯 客观题自测</button>
+        <button class="action-btn btn-shortq" id="toggle-shortq-btn">✍️ 简答题特训</button>
     </div>
  
     <div class="collapsible-content" id="analysis-content"></div>
@@ -50,37 +47,20 @@
 </div>
  
 <div class="floating-tooltip" id="tooltip">
-    <div class="exp-header"><span class="exp-word" id="disp-word"></span><span class="exp-pinyin" id="disp-pinyin"></span><span class="exam-tag" id="exam-tag">考点</span></div>
+    <div class="exp-header"><span class="exp-word" id="disp-word"></span><span class="exp-pinyin" id="disp-pinyin"></span></div>
     <div class="exp-zh" id="disp-zh"></div>
     <div class="exp-en" id="disp-en"></div>
 </div>
  
 <script>
+    let originalQuizQuestions = [];
+
     function alignText(zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
         const pys = py ? py.trim().split(/\s+/) : [];
         let pIdx = 0;
         let html = '';
-        for (let c of chars) {
-            if (/[，。？！：“”‘’（）《》、\-\:]/.test(c)) {
-                html += `<span class="punctuation">${c}</span>`;
-            } else {
-                const p = pys[pIdx] || '';
-                html += `<span class="char-box"><span class="py-text">${p}</span><span class="zh-text">${c}</span></span>`;
-                pIdx++;
-            }
-        }
-        return html;
-    }
-
-    // 题号/字母的前缀对齐处理
-    function alignTextWithPrefix(prefix, zh, py) {
-        if (!zh) return '';
-        const chars = zh.trim().split('');
-        const pys = py ? py.trim().split(/\s+/) : [];
-        let html = `<span class="char-box" style="margin-right: 8px !important;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: #1e293b;">${prefix}</span></span>`;
-        let pIdx = 0;
         for (let c of chars) {
             if (/[，。？！：“”‘’（）《》、\-\:]/.test(c)) {
                 html += `<span class="punctuation">${c}</span>`;
@@ -103,10 +83,7 @@
         let html = '<div class="poem-paragraph">&emsp;&emsp;';
         poemData.forEach(w => {
             if(w.punc) html += `<span class="punctuation">${w.text.trim()}</span>`;
-            else {
-                let examClass = w.exam ? ' word exam-focus' : ' word';
-                html += `<span class="${examClass}" data-text="${w.text.trim()}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"> ${alignText(w.text, w.py)}</span>`;
-            }
+            else html += `<span class="word" data-text="${w.text.trim()}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"> ${alignText(w.text, w.py)}</span>`;
         });
         container.innerHTML = html + '</div>';
     }
@@ -125,7 +102,7 @@
         const container = document.getElementById('analysis-content');
         let html = '';
         analysisData.forEach(item => {
-            html += `<div class="analysis-card"><div class="ana-title-group"><h4 class="ana-header">${alignText(item.header, item.headerPy)}</h4><div class="ana-en">${item.en}</div></div><div class="ana-text-group"><p class="ana-zh">${alignText(item.textZh, item.textPy)}</p><div class="ana-en">${item.textEn}</div></div></div>`;
+            html += `<div class="analysis-card"><div class="ana-title-group"><h4>${alignText(item.header, item.headerPy)}</h4><div class="ana-en">${item.en}</div></div><div class="ana-text-group"><p>${alignText(item.textZh, item.textPy)}</p><div class="ana-en">${item.textEn}</div></div></div>`;
         });
         container.innerHTML = html;
     }
@@ -134,28 +111,20 @@
         const container = document.getElementById('shortq-content');
         let html = '';
         shortQData.forEach(item => {
-            html += `<div class="sa-card"><div class="sa-q-header"><div class="sa-q-num">${item.id}</div><div class="q-text-group"><h4 class="q-zh">${alignText(item.qZh, item.qPy)}</h4><div class="q-en">${item.qEn}</div></div></div><div class="strategy-box"><div class="strategy-title">💡 答题思路</div><div class="strategy-zh">${alignText(item.sZh, item.sPy)}</div><div class="strategy-en">${item.sEn}</div></div><button class="sa-answer-btn" onclick="toggleAnswer(this)">📖 点击查看标准答案</button><div class="sa-answer-box"><div class="sa-model-answer"><div class="sa-badge">标准答案</div><div class="sa-zh">${alignText(item.aZh, item.aPy)}</div><div class="sa-en">${item.aEn}</div></div></div></div>`;
+            html += `<div class="sa-card"><h4>${item.id}. ${alignText(item.qZh, item.qPy)}</h4><div class="q-en">${item.qEn}</div><button class="sa-answer-btn" onclick="toggleAnswer(this)">📖 查看答案</button><div class="sa-answer-box"><div class="sa-zh">${alignText(item.aZh, item.aPy)}</div><div class="sa-en">${item.aEn}</div></div></div>`;
         });
         container.innerHTML = html;
     }
 
-    function shuffleArray(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
-    
-    // 【最终渲染版】：放弃 Flex，回归 Block 换行流，确保英文句子必定在下方且不影响上方对齐
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container || originalQuizQuestions.length === 0) return;
         container.innerHTML = '';
         const currentQuestions = JSON.parse(JSON.stringify(originalQuizQuestions));
+        currentQuestions.sort(() => Math.random() - 0.5);
         
         currentQuestions.forEach(q => {
-            shuffleArray(q.options);
+            q.options.sort(() => Math.random() - 0.5);
             const card = document.createElement('div');
             card.className = 'quiz-card';
             let optionsHtml = '';
@@ -163,22 +132,53 @@
             
             q.options.forEach((opt, idx) => {
                 optionsHtml += `
-                    <button class="option-btn" style="display: block; width: 100%; padding: 14px 18px; text-align: left; margin-bottom: 12px; border-radius: 10px;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
-                        <!-- 字母+中文拼音层：inline-block，绝对垂直居中 -->
-                        <div style="display: block; text-align: left;">
-                            <span style="font-weight: bold; color: #1e293b; margin-right: 8px;">${letters[idx]}</span>
-                            <span style="display: inline-block;">${alignText(opt.text, opt.py)}</span>
+                    <button class="option-btn" data-correct="${opt.correct}">
+                        <div style="display: flex; align-items: flex-start; width: 100%;">
+                            <span style="font-weight:bold; margin-right:8px;">${letters[idx]}</span>
+                            <span>${alignText(opt.text, opt.py)}</span>
                         </div>
-                        <!-- 英文层：block，强制在下一行 -->
-                        <div class="trans-en" style="margin-left: 28px; margin-top: 6px; color: #475569; font-size: 14px; line-height: 1.4;">${opt.en}</div>
+                        <div class="trans-en" style="width:100%; margin-left:28px; margin-top:6px; color:#64748b;">${opt.en}</div>
                     </button>`;
             });
             
-            card.innerHTML = `<div style="text-align: left; margin-bottom: 16px;"><span style="font-weight: bold; font-size: 18px; margin-right: 8px;">${q.id}.</span><span style="display: inline-block;">${alignText(q.text, q.py)}</span><div class="trans-en" style="margin-left: 28px; margin-top: 6px; color: #64748b; font-size: 14px; line-height: 1.4;">${q.en}</div></div>${optionsHtml}<div class="feedback"></div>`;
+            card.innerHTML = `<div style="margin-bottom:12px;"><strong>${q.id}.</strong> ${alignText(q.text, q.py)}<div class="trans-en" style="margin-left:20px; color:#94a3b8;">${q.en}</div></div>${optionsHtml}<div class="feedback"></div>`;
             container.appendChild(card);
             
-            // 事件逻辑... (保持原有逻辑)
+            card.querySelectorAll('.option-btn').forEach(btn => {
+                btn.onclick = function() {
+                    if (this.parentElement.querySelector('.option-btn[disabled]')) return;
+                    card.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+                    const isCorrect = this.getAttribute('data-correct') === 'true';
+                    this.style.background = isCorrect ? '#dcfce7' : '#fee2e2';
+                    card.querySelector('.feedback').innerHTML = isCorrect ? '✅ 正确！' : '❌ 错误。';
+                };
+            });
         });
+    }
+
+    function initInteractions() {
+        document.getElementById('pinyin-toggle').onchange = e => document.body.classList.toggle('hide-pinyin', !e.target.checked);
+        document.getElementById('en-toggle').onchange = e => document.body.classList.toggle('hide-english', !e.target.checked);
+        document.body.classList.add('hide-pinyin', 'hide-english');
+        
+        // 模态框逻辑
+        document.querySelectorAll('.word').forEach(w => {
+            w.onclick = function(e) {
+                const tt = document.getElementById('tooltip');
+                document.getElementById('disp-word').innerText = this.getAttribute('data-text');
+                document.getElementById('disp-pinyin').innerText = this.getAttribute('data-pinyin');
+                document.getElementById('disp-zh').innerText = this.getAttribute('data-zh');
+                document.getElementById('disp-en').innerText = this.getAttribute('data-en');
+                tt.style.display = 'block';
+                tt.style.left = e.pageX + 'px';
+                tt.style.top = e.pageY + 20 + 'px';
+            };
+        });
+    }
+
+    function toggleAnswer(btn) {
+        const box = btn.nextElementSibling;
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
     }
 </script>
 </body>

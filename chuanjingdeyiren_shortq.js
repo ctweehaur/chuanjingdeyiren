@@ -1,4 +1,3 @@
-// 穿井得一人 - 简答题特训数据（5题完整豆腐块绝对对齐版）
 const shortQQuestions = [
     {
         id: "Q1",
@@ -17,7 +16,7 @@ const shortQQuestions = [
         py: "这 则 寓 言 故 事 告 诫 了 我 们 一 个 什 么 样 的 处 世 道 理 ？",
         text: "这则寓言故事告诫了我们一个什么样的处世道理？",
         en: "What life lesson does this fable teach us regarding handling information?",
-        strategyPy: "这 属 于 主 旨 寓 意 题 ， 必 须 结 合 课 文 尾 句 “ 求 闻 之 若 此 ， 不 如 无 闻 也 ” 的 核 心 意 思 来 答 题 。",
+        strategyPy: "这 属 于 主 旨 寓 意 题 ， 必 佳 结 合 课 文 尾 句 “ 求 闻 之 若 此 ， 不 如 无 闻 也 ” 的 核 心 意 思 来 答 题 。",
         strategyZh: "这属于主旨寓意题，必须结合课文尾句“求闻之若此，不如无闻也”的核心意思来答题。",
         strategyEn: "This is a core theme question. Answer based on the final moral: 'Seeking news like this is worse than hearing nothing.'"
     },
@@ -54,7 +53,7 @@ const shortQQuestions = [
         strategyZh: "这是开放性鉴赏题。需从面对网络虚假信息时的“个人素养”与“独立思考”两个角度切入。",
         strategyEn: "This is an open-ended question. Address it from the perspectives of personal digital literacy and independent critical thinking.",
         answerPy: "在 网络 时代 ， 面 对 各种 传 闻 消息 ， 我 们 应该 保持 独 立 思考 ， 提 高 辨 别 能力 ； 在 转发 和 评论 之前 ， 坚持 实 事 求 是 的 态度 先 考 证 事实 ， 做到 不 信 谣 、 不 传 谣 。",
-        answerZh: "在网络时代，面对各种传闻消息，我们应该保持独立思考，提高辨别能力；在转发和评论之前，坚持实事求是的态度先考证事实，做到不信谣、不传谣。",
+        answerZh: "在网络时代，面对各种传闻消息，我们应该保持独立思考，提高辨别能力；在转发 and 评论 之前，坚持实事求是的态度先考证事实，做到不信谣、不传谣。",
         answerEn: "In the digital age, when facing various news and hearsay, we should maintain independent thinking and critical awareness. Before sharing, verify the facts with an objective attitude to stop the spread of rumors."
     }
 ];

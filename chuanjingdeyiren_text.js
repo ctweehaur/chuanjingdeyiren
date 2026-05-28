@@ -1,146 +1,89 @@
 // ============================================================================
-// 穿井得一人 - 核心正文及逐字解析数据（完整修复版）
+// 穿井得一人 - 核心正文及逐字解析数据（重新整理版）
 // ============================================================================
 
 const poemData = {
     title: "穿井得一人",
     author: "《吕氏春秋·察今》 / 吕不韦 (先秦)",
     lines: [
-        {
-            words: [
-                { text: "宋", pinyin: "sòng", zh: "春秋时的诸侯国名，宋国。", en: "The State of Song." },
-                { text: "之", pinyin: "zhī", zh: "结构助词，相当于‘的’。", en: "possessive particle 'of'." },
-                { text: "丁氏", pinyin: "dīng shì", zh: "姓丁的一户人家。氏：表示家族或姓氏。", en: "The Ding family." },
-                { text: "，", isPunctuation: true },
-                { text: "家", pinyin: "jiā", zh: "名词作状语，指在家里或家境。", en: "In the family," },
-                { text: "无井", pinyin: "wú jǐng", zh: "没有水井。无：没有；井：水井。", en: "had no water well," },
-                { text: "而", pinyin: "ér", zh: "连词，表顺承，相当于‘就’、‘于是’。", en: "so" },
-                { text: "出", pinyin: "chū", zh: "动词，外出、到外面去。", en: "went out" },
-                { text: "溉汲", pinyin: "gài jí", zh: "指翻土浇田和打水。溉：同‘溉’，灌溉、浇地；汲：从井里打水。", en: "to irrigate and fetch water." },
-                { text: "，", isPunctuation: true },
-                { text: "常", pinyin: "cháng", zh: "副词，经常、常常。", en: "often" },
-                { text: "一人", pinyin: "yī rén", zh: "一个劳动力、一个人。", en: "one person" },
-                { text: "居外", pinyin: "jū wài", zh: "常年呆在外面打水。居：停留、居住；外：外面。", en: "stayed outside." },
-                { text: "。", isPunctuation: true }
-            ]
-        },
-        {
-            words: [
-                { text: "及", pinyin: "jí", zh: "介词，等到、到了……时候。", en: "When" },
-                { text: "其", pinyin: "qí", zh: "代词，他、他们（指丁家）。", en: "their" },
-                { text: "家", pinyin: "jiā", zh: "家里。", en: "family" },
-                { text: "穿井", pinyin: "chuān jǐng", zh: "打井、挖掘水井。穿：凿通、挖掘；井：水井。", en: "dug a well," },
-                { text: "，", isPunctuation: true },
-                { text: "告人", pinyin: "gào rén", zh: "告诉别人。告：告诉；人：别人、他人。", en: "told others" },
-                { text: "曰", pinyin: "yuē", zh: "动词，说。", en: "said," },
-                { text: "“", isPunctuation: true },
-                { text: "吾", pinyin: "wú", zh: "我，或者我们（指我丁家）。", en: "We", exam: true },
-                { text: "穿井", pinyin: "chuān jǐng", zh: "挖掘水井。", en: "dug a well" },
-                { text: "得", pinyin: "dé", zh: "获得、多得到。这里特指‘省下’了一个人力。", en: "and gained" },
-                { text: "一人", pinyin: "yī rén", zh: "一个人的劳动力。", en: "one person's labor.", exam: true },
-                { text: "”", isPunctuation: true },
-                { text: "。", isPunctuation: true }
-            ]
-        },
-        {
-            words: [
-                { text: "有", pinyin: "yǒu", zh: "动词，有（人）。", en: "There was someone who" },
-                { text: "闻而传之者", pinyin: "wén ér chuán zhī zhě", zh: "听到并传播这件事的人。闻：听说、听到；而：连词；传：传播；之：代词；者：……的人。", en: "heard it and spread the rumor," },
-                { text: "曰", pinyin: "yuē", zh: "说。", en: "saying," },
-                { text: "“", isPunctuation: true },
-                { text: "丁氏", pinyin: "dīng shì", zh: "丁家。", en: "The Ding family" },
-                { text: "穿井", pinyin: "chuān jǐng", zh: "挖井。", en: "dug a well" },
-                { text: "得", pinyin: "dé", zh: "误传为‘获得’或‘挖出’了一个人。", en: "and found", exam: true },
-                { text: "一人", pinyin: "yī rén", zh: "一个人（实体的人）。", en: "a person inside.", exam: true },
-                { text: "”", isPunctuation: true },
-                { text: "。", isPunctuation: true }
-            ]
-        },
-        {
-            words: [
-                { text: "国人", pinyin: "guó rén", zh: "国都里的人，后引申为全国的人民。", en: "People of the state" },
-                { text: "道之", pinyin: "dào zhī", zh: "谈论这件事。道：动词，谈论、述说；之：代词。", en: "talked about it," },
-                { text: "，", isPunctuation: true },
-                { text: "闻之于宋君", pinyin: "wén zhī yú sòng jūn", zh: "这件事被宋国国君听说了。闻：被动用法；之：代词；于：介词，相当于‘被’；宋君：宋国国君。", en: "and it was heard by the ruler of Song." },
-                { text: "。", isPunctuation: true }
-            ]
-        },
-        {
-            words: [
-                { text: "宋君", pinyin: "sòng jūn", zh: "宋国的国君。", en: "The ruler of Song" },
-                { text: "令人", pinyin: "lìng rén", zh: "派人、派遣别人。令：动词，派遣、命令。", en: "sent someone" },
-                { text: "问之", pinyin: "wèn zhī", zh: "询问这件事。问：询问、调查；之：代词。", en: "to ask about it" },
-                { text: "于丁氏", pinyin: "yú dīng shì", zh: "向姓丁的人家调查。于：介词，向、从；丁氏：丁家。", en: "from the Ding family." },
-                { text: "。", isPunctuation: true }
-            ]
-        },
-        {
-            words: [
-                { text: "丁氏", pinyin: "dīng shì", zh: "丁家的人。", en: "The man of the Ding family" },
-                { text: "对曰", pinyin: "duì yuē", zh: "回答说。对：回答；曰：说。", en: "replied:" },
-                { text: "：", isPunctuation: true },
-                { text: "“", isPunctuation: true },
-                { text: "得", pinyin: "dé", zh: "获得、多得到。", en: "We gained", exam: true },
-                { text: "一人之使", pinyin: "dé yī rén zhī shǐ", zh: "得到一个人的劳动力（供使唤）。使：名词，劳力、使唤、佣工；之：结构助词‘的’。", en: "the labor of one person,", exam: true },
-                { text: "，", isPunctuation: true },
-                { text: "非", pinyin: "fēi", zh: "副词，不是。", en: "not" },
-                { text: "得", pinyin: "dé", zh: "获得。", en: "finding" },
-                { text: "一人", pinyin: "yī rén", zh: "一个人。", en: "a person" },
-                { text: "于井中", pinyin: "yú jǐng zhōng", zh: "在水井里面。于：介词，在；井中：井底。", en: "in the well." },
-                { text: "”", isPunctuation: true },
-                { text: "。", isPunctuation: true }
-            ]
-        },
-        {
-            words: [
-                { text: "求闻", pinyin: "qiú wén", zh: "寻觅、探求听到的传闻消息。求：寻求、探求；闻：听到的传闻。", en: "Seeking news", exam: true },
-                { text: "之", pinyin: "zhī", zh: "音节助词，无实际意义。", en: "" },
-                { text: "若此", pinyin: "ruò cǐ", zh: "像这样（盲目轻信、以讹传讹）。若：像；此：这样。", en: "like this,", exam: true },
-                { text: "，", isPunctuation: true },
-                { text: "不若", pinyin: "bù ruò", zh: "不如、还不如。", en: "is worse than" },
-                { text: "无闻", pinyin: "wú wén", zh: "没有听到过消息。无：没有；闻：听到。", en: "hearing nothing" },
-                { text: "也", pinyin: "yě", zh: "语气助词，表感叹或表态语气，相当于‘啊’。", en: "at all." },
-                { text: "。", isPunctuation: true }
-            ]
-        }
-    ]
+        "宋之丁氏，家无井而出溉汲，常一人居外。",
+        "及其家穿井，告人曰：“吾穿井得一人。”",
+        "有闻而传之者曰：“丁氏穿井得一人。”",
+        "国人道之，闻之于宋君。",
+        "宋君令人问之于丁氏。",
+        "丁氏对曰：“得一人之使，非得一人于井中也。”",
+        "求闻之若此，不若无闻也。"
+    ],
+    // 逐字解析数据（用于点击查词功能）
+    wordMeanings: {
+        "宋": { pinyin: "sòng", zh: "春秋时的诸侯国名，宋国。", en: "The State of Song." },
+        "之": { pinyin: "zhī", zh: "结构助词，相当于‘的’。", en: "possessive particle 'of'." },
+        "丁氏": { pinyin: "dīng shì", zh: "姓丁的一户人家。", en: "The Ding family." },
+        "家": { pinyin: "jiā", zh: "家里。", en: "family" },
+        "无井": { pinyin: "wú jǐng", zh: "没有水井。", en: "had no well" },
+        "而": { pinyin: "ér", zh: "连词，于是、就。", en: "so" },
+        "出": { pinyin: "chū", zh: "外出。", en: "went out" },
+        "溉汲": { pinyin: "gài jí", zh: "灌溉和打水。", en: "irrigate and fetch water" },
+        "常": { pinyin: "cháng", zh: "经常。", en: "often" },
+        "一人": { pinyin: "yī rén", zh: "一个人。", en: "one person", exam: true },
+        "居外": { pinyin: "jū wài", zh: "住在外面。", en: "stayed outside" },
+        "及": { pinyin: "jí", zh: "等到。", en: "when" },
+        "其": { pinyin: "qí", zh: "他的。", en: "his" },
+        "穿井": { pinyin: "chuān jǐng", zh: "开凿水井。", en: "dug a well" },
+        "告人": { pinyin: "gào rén", zh: "告诉别人。", en: "told others" },
+        "曰": { pinyin: "yuē", zh: "说。", en: "said" },
+        "吾": { pinyin: "wú", zh: "我。", en: "I", exam: true },
+        "得": { pinyin: "dé", zh: "获得、得到。", en: "gained", exam: true },
+        "有": { pinyin: "yǒu", zh: "有人。", en: "there is" },
+        "闻而传之者": { pinyin: "wén ér chuán zhī zhě", zh: "听到并传播的人。", en: "someone who heard and spread" },
+        "国人": { pinyin: "guó rén", zh: "国都的人。", en: "people of the state" },
+        "道之": { pinyin: "dào zhī", zh: "谈论这件事。", en: "talked about it" },
+        "闻之于宋君": { pinyin: "wén zhī yú sòng jūn", zh: "被宋君听到。", en: "was heard by the ruler" },
+        "宋君": { pinyin: "sòng jūn", zh: "宋国国君。", en: "ruler of Song" },
+        "令人": { pinyin: "lìng rén", zh: "派人。", en: "sent someone" },
+        "问之": { pinyin: "wèn zhī", zh: "询问此事。", en: "asked about it" },
+        "于丁氏": { pinyin: "yú dīng shì", zh: "向丁家。", en: "from the Ding family" },
+        "对曰": { pinyin: "duì yuē", zh: "回答说。", en: "replied" },
+        "一人之使": { pinyin: "yī rén zhī shǐ", zh: "一个人的劳力。", en: "one person's labor", exam: true },
+        "非": { pinyin: "fēi", zh: "不是。", en: "not" },
+        "于井中": { pinyin: "yú jǐng zhōng", zh: "在井里。", en: "in the well" },
+        "求闻": { pinyin: "qiú wén", zh: "寻求传闻。", en: "seeking news", exam: true },
+        "若此": { pinyin: "ruò cǐ", zh: "像这样。", en: "like this", exam: true },
+        "不若": { pinyin: "bù ruò", zh: "不如。", en: "worse than" },
+        "无闻": { pinyin: "wú wén", zh: "没听到。", en: "hearing nothing" },
+        "也": { pinyin: "yě", zh: "啊（语气词）。", en: "" }
+    },
+    // 考点词列表
+    examWords: ["一人", "吾", "得", "一人之使", "求闻", "若此"]
 };
 
-// 辅助函数：获取整行原文（纯文本）
+// 辅助函数：获取整行原文
 function getLineText(lineIndex) {
-    if (!poemData.lines[lineIndex]) return "";
-    return poemData.lines[lineIndex].words
-        .map(w => w.isPunctuation ? w.text : w.text)
-        .join("");
+    return poemData.lines[lineIndex] || "";
 }
 
-// 辅助函数：获取全文纯文本
+// 辅助函数：获取全文
 function getFullText() {
-    return poemData.lines.map((_, i) => getLineText(i)).join("");
+    return poemData.lines.join("");
 }
 
-// 辅助函数：获取所有需要高亮的考点词
-function getExamWords() {
-    const examWords = [];
-    poemData.lines.forEach((line, lineIdx) => {
-        line.words.forEach((word, wordIdx) => {
-            if (word.exam === true && !word.isPunctuation) {
-                examWords.push({
-                    line: lineIdx,
-                    word: wordIdx,
-                    text: word.text,
-                    pinyin: word.pinyin,
-                    zh: word.zh,
-                    en: word.en
-                });
-            }
-        });
-    });
-    return examWords;
+// 辅助函数：检查是否是考点词
+function isExamWord(word) {
+    return poemData.examWords.includes(word);
+}
+
+// 辅助函数：获取词义
+function getWordMeaning(word) {
+    return poemData.wordMeanings[word] || { 
+        pinyin: "", 
+        zh: "暂无释义", 
+        en: "No definition available" 
+    };
 }
 
 // 导出到全局
 window.poemData = poemData;
 window.getLineText = getLineText;
 window.getFullText = getFullText;
-window.getExamWords = getExamWords;
+window.isExamWord = isExamWord;
+window.getWordMeaning = getWordMeaning;

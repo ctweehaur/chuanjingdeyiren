@@ -81,7 +81,7 @@
     // ========== 等待所有数据加载完成后初始化 ==========
     document.addEventListener('DOMContentLoaded', function() {
         
-        // ---------- 1. 渲染诗文（修复版：每行只有一个 .line-text） ----------
+        // ---------- 1. 渲染诗文（适配新版 text.js） ----------
         function renderPoem() {
             if (!window.poemData) {
                 console.error('poemData 未加载');
@@ -93,27 +93,60 @@
             
             let html = '';
             
-            // 遍历每一行（line）
-            poemData.lines.forEach((line, lineIdx) => {
-                // 每一行只有一个 .line-text 容器
-                let lineHtml = '<div class="poem-line"><div class="line-text">';
-                
-                // 遍历该行中的所有词（words）
-                line.words.forEach(word => {
-                    if (word.isPunctuation) {
-                        lineHtml += `<span class="punctuation">${word.text}</span>`;
-                    } else {
-                        const examAttr = word.exam ? 'data-exam="true"' : '';
-                        lineHtml += `<span class="word" data-pinyin="${word.pinyin}" 
-                            data-zh="${(word.zh || '').replace(/"/g, '&quot;')}" 
-                            data-en="${(word.en || '').replace(/"/g, '&quot;')}" 
-                            ${examAttr}>${word.text}</span>`;
-                    }
+            // 检查是新版数据结构（有 lines 数组且是字符串）还是旧版（有 words 数组）
+            const isNewFormat = poemData.lines && typeof poemData.lines[0] === 'string';
+            
+            if (isNewFormat) {
+                // ========== 新版数据结构：每行是纯文本 ==========
+                poemData.lines.forEach((lineText, lineIdx) => {
+                    html += '<div class="poem-line"><div class="line-text">';
+                    
+                    // 将整行文本拆分成可点击的词（按常见词语拆分）
+                    const tokens = tokenizeLine(lineText);
+                    
+                    tokens.forEach(token => {
+                        if (isPunctuation(token)) {
+                            html += `<span class="punctuation">${token}</span>`;
+                        } else {
+                            const meaning = window.getWordMeaning ? window.getWordMeaning(token) : null;
+                            const examAttr = (window.isExamWord && window.isExamWord(token)) ? 'data-exam="true"' : '';
+                            const pinyin = meaning ? meaning.pinyin : '';
+                            const zh = meaning ? meaning.zh : '暂无释义';
+                            const en = meaning ? meaning.en : 'No definition';
+                            
+                            html += `<span class="word" data-pinyin="${pinyin}" 
+                                data-zh="${zh.replace(/"/g, '&quot;')}" 
+                                data-en="${en.replace(/"/g, '&quot;')}" 
+                                ${examAttr}>${token}</span>`;
+                        }
+                    });
+                    
+                    html += '</div></div>';
                 });
-                
-                lineHtml += '</div></div>';
-                html += lineHtml;
-            });
+            } else if (poemData.lines && poemData.lines[0].words) {
+                // ========== 旧版数据结构：有 words 数组 ==========
+                poemData.lines.forEach((line, lineIdx) => {
+                    let lineHtml = '<div class="poem-line"><div class="line-text">';
+                    
+                    line.words.forEach(word => {
+                        if (word.isPunctuation) {
+                            lineHtml += `<span class="punctuation">${word.text}</span>`;
+                        } else {
+                            const examAttr = word.exam ? 'data-exam="true"' : '';
+                            lineHtml += `<span class="word" data-pinyin="${word.pinyin}" 
+                                data-zh="${(word.zh || '').replace(/"/g, '&quot;')}" 
+                                data-en="${(word.en || '').replace(/"/g, '&quot;')}" 
+                                ${examAttr}>${word.text}</span>`;
+                        }
+                    });
+                    
+                    lineHtml += '</div></div>';
+                    html += lineHtml;
+                });
+            } else {
+                console.error('poemData 格式不正确');
+                return;
+            }
             
             // 添加翻译块
             if (window.translationData && window.renderTranslationBlock) {
@@ -131,6 +164,51 @@
             }
             
             container.innerHTML = html;
+        }
+        
+        // 辅助函数：判断是否是标点符号
+        function isPunctuation(char) {
+            const punctuations = ['，', '。', '？', '！', '；', '：', '“', '”', '‘', '’', '、', '《', '》', '（', '）', '·'];
+            return punctuations.includes(char) || /^[，。？！；：""''、（）]$/.test(char);
+        }
+        
+        // 辅助函数：将一行文本拆分成词语（简单的分词逻辑）
+        function tokenizeLine(line) {
+            // 优先匹配长词（考点词）
+            const examWordsList = window.poemData?.examWords || [];
+            
+            const tokens = [];
+            let i = 0;
+            const len = line.length;
+            
+            while (i < len) {
+                let matched = false;
+                
+                // 先尝试匹配长词（按长度降序）
+                const sortedWords = [...examWordsList].sort((a, b) => b.length - a.length);
+                for (const word of sortedWords) {
+                    if (line.substr(i, word.length) === word) {
+                        tokens.push(word);
+                        i += word.length;
+                        matched = true;
+                        break;
+                    }
+                }
+                
+                if (!matched) {
+                    // 检查是否是标点
+                    if (isPunctuation(line[i])) {
+                        tokens.push(line[i]);
+                        i++;
+                    } else {
+                        // 单字
+                        tokens.push(line[i]);
+                        i++;
+                    }
+                }
+            }
+            
+            return tokens;
         }
         
         // ---------- 2. 渲染赏析 ----------

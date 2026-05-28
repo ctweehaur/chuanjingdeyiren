@@ -113,27 +113,33 @@
         });
     }
 
-    // 💡 已经为你升级：白话翻译改为字音垂直对齐架构
+    // 💡 智能修复版：安全对齐每一个拼音与汉字，彻底解决断行变垂直长列的Bug
     function renderTranslation() {
         const container = document.getElementById('translationContent');
         container.innerHTML = '';
+        
         translationData.forEach((item, index) => {
-            const pyWords = item.py.split(' ');
-            const zhChars = Array.from(item.zh).filter(c => c !== ' '); 
+            const pyWords = item.py.split(/\s+/).filter(p => p.trim() !== '');
+            const zhChars = Array.from(item.zh).filter(c => c.trim() !== ''); 
             
             let rubyGroupHtml = '';
+            let pyIdx = 0;
             
-            pyWords.forEach((py, idx) => {
-                const zh = zhChars[idx] || '';
-                if (zh) {
-                    const isPunc = /[，。？！：“”‘’（） ；、]/.test(zh);
-                    rubyGroupHtml += `
-                        <div class="ruby-item">
-                            <div class="trans-py">${isPunc ? '&nbsp;' : py}</div>
-                            <div class="trans-zh-char">${zh}</div>
-                        </div>
-                    `;
+            zhChars.forEach((zh) => {
+                const isPunc = /[，。？！：“”‘’（）；、！,;.?!"']/.test(zh);
+                let currentPy = '&nbsp;';
+                
+                if (!isPunc && pyIdx < pyWords.length) {
+                    currentPy = pyWords[pyIdx];
+                    pyIdx++;
                 }
+                
+                rubyGroupHtml += `
+                    <div class="ruby-item">
+                        <div class="trans-py">${isPunc ? '&nbsp;' : currentPy}</div>
+                        <div class="trans-zh-char">${zh}</div>
+                    </div>
+                `;
             });
 
             container.innerHTML += `
@@ -352,18 +358,6 @@
             });
         });
     }
-
-    function toggleAnswer(btn) {
-        const answerBox = btn.nextElementSibling;
-        if (answerBox.style.display === 'block') {
-            answerBox.style.display = 'none';
-            btn.innerHTML = '📖 点击查看标准答案';
-        } else {
-            answerBox.style.display = 'block';
-            btn.innerHTML = '📖 收起答案';
-        }
-    }
-    window.toggleAnswer = toggleAnswer;
 </script>
 </body>
 </html>

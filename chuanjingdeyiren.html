@@ -55,21 +55,20 @@
 </div>
  
 <script>
-    // 终极排版引擎：去除多余空格，确保绝对居中
+    // 革命性重写对齐引擎：放弃原生 ruby，采用绝对悬浮法，字距完全由汉字本身决定
     function alignText(zh, py) {
         if (!zh) return '';
-        if (!py) return zh.trim(); // 斩断无拼音字符的隐形空格
-        const chars = zh.trim().split(''); // 斩断隐形空格
-        const pys = py.trim().split(/\s+/);
+        const chars = zh.trim().split('');
+        const pys = py ? py.trim().split(/\s+/) : [];
         let pIdx = 0;
         let html = '';
         for (let c of chars) {
-            // 移除了正则里的 \s ，防止空格被渲染成占位的标点
             if (/[，。？！：“”‘’（）《》、\-]/.test(c)) {
                 html += `<span class="punctuation">${c}</span>`;
             } else {
-                const p = pys[pIdx] || '&nbsp;';
-                html += `<ruby>${c}<rt class="py">${p}</rt></ruby>`;
+                const p = pys[pIdx] || '';
+                // 用 char-box 结构，拼音绝对定位在汉字正上方，绝不撑开汉字左右间距
+                html += `<span class="char-box"><span class="py-text">${p}</span><span class="zh-text">${c}</span></span>`;
                 pIdx++;
             }
         }
@@ -327,7 +326,7 @@
         const answerBox = btn.nextElementSibling;
         if (answerBox.style.display === 'block') {
             answerBox.style.display = 'none';
-            btn.innerHTML = '📖 点击查看标准答案';
+            btn.innerHTML = '📖 点击查看 standard 答案';
         } else {
             answerBox.style.display = 'block';
             btn.innerHTML = '📖 收起答案';

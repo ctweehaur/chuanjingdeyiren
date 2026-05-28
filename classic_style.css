@@ -29,36 +29,35 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSys
 #en-toggle:checked + .slider { background-color: var(--accent-purple); }
 #en-toggle:checked + .slider:before { transform: translateX(20px); }
 
-/* --- 终极排版修复：强力绝对定位，严禁拼音参与汉字排流 --- */
+/* --- 核心修复：单字双层立体盒子，解决拼音不整齐和对齐跳动 --- */
 .char-box {
-    display: inline-block !important; /* 恢复单字排列 */
-    position: relative !important;
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
     vertical-align: bottom !important;
-    margin: 18px 2px 0 2px !important; /* 顶部留足拼音悬浮高度，词内字距自然紧凑 */
-    text-align: center !important;
+    margin: 0 1px !important;
+    width: auto !important;
 }
 
 .char-box .py-text {
-    position: absolute !important;
-    top: -16px !important; /* 强行漂浮在汉字正上方 */
-    left: 50% !important;
-    transform: translateX(-50%) !important; /* 严格居中对齐 */
     font-size: 13px !important;
     color: var(--accent-orange) !important;
     font-weight: 500 !important;
+    height: 18px !important;       /* 锁死拼音层高度，强制绝对水平对齐 */
+    line-height: 18px !important;  
     white-space: nowrap !important;
-    line-height: 1 !important;
-    display: block !important;
+    letter-spacing: 0px !important;
+    text-align: center !important;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 }
 
 .char-box .zh-text {
-    display: block !important;
     font-size: 26px !important;
     line-height: 1.2 !important;
+    height: 32px !important;       /* 锁死汉字层高度 */
 }
 
-/* 隐藏拼音时，只把拼音图层隐身，保留单字原本的位置，绝不让汉字左右挪移跳动 */
+/* 隐藏拼音时采用隐身法，保留拼音的行高占位，防止开关拼音时汉字上下乱跳 */
 body.hide-pinyin .py-text { 
     visibility: hidden !important; 
     opacity: 0 !important; 
@@ -66,28 +65,39 @@ body.hide-pinyin .py-text {
 
 body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en, body.hide-english .sa-en, body.hide-english .strategy-en, body.hide-english .exp-en, body.hide-english .ana-en, body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !important; }
 
-/* 正文大框架：严格左对齐，去除任何 justification 导致的垃圾长空格 */
+/* 正文大容器 */
 .poem-container { background: #fefcf5; border-radius: var(--border-radius-md); padding: 35px 30px; margin-bottom: 25px; border: 1px solid #ede9d0; margin-top: 15px; text-align: left !important; }
-.poem-paragraph { text-align: left !important; font-size: 26px; line-height: 3.2; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 1px; margin: 0; padding-left: 2em; /* 首行空两格 */ }
+.poem-paragraph { text-align: left !important; font-size: 26px; line-height: 3.4; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 1px; margin: 0; }
 
-.word { cursor: pointer; padding: 2px 2px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; margin: 0 4px; }
-.word::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
-.word:hover { background-color: #eff6ff; color: var(--primary-blue); transform: translateY(-2px); }
+/* --- 核心修复：裁剪高亮蓝色框，解决高亮太高的问题 --- */
+.word { 
+    cursor: pointer; 
+    padding: 0px 4px 4px 4px; 
+    border-radius: 6px; 
+    position: relative; 
+    transition: all 0.25s; 
+    display: inline-flex; 
+    align-items: center;
+    height: 48px; /* 严格限制可点击高亮盒子的总高度，截断上方空白 */
+    overflow: visible;
+}
+.word::after { content: ''; position: absolute; bottom: 0px; left: 4px; width: calc(100% - 8px); height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
+.word:hover { background-color: #eff6ff; color: var(--primary-blue); transform: translateY(-1px); }
 .word:hover::after { background-color: var(--primary-blue-hover); }
-.word.active { background-color: var(--primary-blue); color: #ffffff; transform: scale(1.05); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+.word.active { background-color: var(--primary-blue); color: #ffffff; transform: scale(1.02); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); }
 .word.active::after { display: none; }
 .word.active .py-text { color: #fef08a !important; } 
 
-.punctuation { color: #94a3b8; display: inline-block; font-size: 26px; line-height: 1.2; vertical-align: bottom; margin: 0 2px; }
+.punctuation { color: #94a3b8; display: inline-block; font-size: 26px; line-height: 1.2; vertical-align: bottom; margin: 0 2px 4px 2px; height: 32px; }
 
-/* 赏析卡片排版 */
+/* 赏析模块 */
 .analysis-card { background: #f8fafc; border-radius: var(--border-radius-md); padding: 28px 24px; margin-bottom: 20px; border-left: 5px solid var(--accent-green); text-align: left; }
 .ana-title-group { margin-bottom: 16px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 12px; }
 .ana-header { margin: 0; font-size: 20px; font-weight: 700; color: var(--text-poem); letter-spacing: 1px; }
 .ana-zh { margin: 0; font-size: 24px; line-height: 3.2; color: var(--text-main); }
 .ana-en { font-size: 14px; color: #718096; font-style: italic; margin-top: 8px; line-height: 1.5; }
 
-/* 翻译面板样式 */
+/* 翻译面板 */
 .translation-block { margin-top: 24px; border-top: 2px dashed #e2e0d4; background: #fef9f0; border-radius: 16px; overflow: hidden; text-align: left; }
 .translation-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; cursor: pointer; background: #fef9f0; transition: background 0.2s; }
 .translation-header:hover { background: #fdf3e4; }
@@ -102,7 +112,7 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 
 @keyframes fadeSlideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
-/* 问答题与自测模块样式 */
+/* 习题模块 */
 .quiz-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 25px; text-align: left;}
 .question-header { margin-bottom: 18px; line-height: 3.2; }
 .q-zh { font-size: 24px; font-weight: 600; margin: 8px 0 4px; }
@@ -127,7 +137,7 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 
 .strategy-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 18px; border-radius: 8px; margin-bottom: 18px; line-height: 3.2;}
 .strategy-title { font-weight: bold; color: #b85c00; margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-.strategy-zh { font-size: 22px; color: #92400e; }
+.strategy-zh { font-size: 15px; color: #92400e; }
 .strategy-en { font-size: 14px; font-style: italic; color: #9a3412; line-height: 1.5; margin-top: 8px; }
 
 .sa-answer-btn { width: 100%; background: #f8fafc; border: 2px solid #cbd5e1; color: var(--text-secondary); padding: 12px; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; margin-top: 5px; }
@@ -151,4 +161,4 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-@media (max-width: 600px) { .app-container { padding: 25px 15px; } .poem-paragraph { padding-left: 1.5em; font-size: 20px; letter-spacing: 2px; } .action-btn { width: 100%; } .sa-q-header { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 600px) { .app-container { padding: 25px 15px; } .word { height: 40px; } .punctuation { font-size: 20px; } .sa-q-header { flex-direction: column; align-items: flex-start; } }

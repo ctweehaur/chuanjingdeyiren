@@ -1,5 +1,5 @@
 // ============================================================================
-// 穿井得一人 - 核心正文及逐字解析数据（重新整理版）
+// 穿井得一人 - 核心正文数据（简化版）
 // ============================================================================
 
 const poemData = {
@@ -14,7 +14,7 @@ const poemData = {
         "丁氏对曰：“得一人之使，非得一人于井中也。”",
         "求闻之若此，不若无闻也。"
     ],
-    // 逐字解析数据（用于点击查词功能）
+    // 词义库（点击查词用）
     wordMeanings: {
         "宋": { pinyin: "sòng", zh: "春秋时的诸侯国名，宋国。", en: "The State of Song." },
         "之": { pinyin: "zhī", zh: "结构助词，相当于‘的’。", en: "possessive particle 'of'." },
@@ -53,26 +53,22 @@ const poemData = {
         "无闻": { pinyin: "wú wén", zh: "没听到。", en: "hearing nothing" },
         "也": { pinyin: "yě", zh: "啊（语气词）。", en: "" }
     },
-    // 考点词列表
     examWords: ["一人", "吾", "得", "一人之使", "求闻", "若此"]
 };
 
-// 辅助函数：获取整行原文
+// 辅助函数
 function getLineText(lineIndex) {
     return poemData.lines[lineIndex] || "";
 }
 
-// 辅助函数：获取全文
 function getFullText() {
     return poemData.lines.join("");
 }
 
-// 辅助函数：检查是否是考点词
 function isExamWord(word) {
     return poemData.examWords.includes(word);
 }
 
-// 辅助函数：获取词义
 function getWordMeaning(word) {
     return poemData.wordMeanings[word] || { 
         pinyin: "", 
@@ -81,7 +77,6 @@ function getWordMeaning(word) {
     };
 }
 
-// 导出到全局
 window.poemData = poemData;
 window.getLineText = getLineText;
 window.getFullText = getFullText;

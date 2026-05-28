@@ -1,324 +1,37 @@
-// ============================================================================
-// 穿井得一人 - 客观题自测数据包（完整修复版）
-// ============================================================================
-
-const QUIZ_CONFIG = {
-    totalQuestions: 5,
-    passingScore: 3,
-    version: "1.0"
-};
-
 const quizQuestions = [
-    {
-        id: 1,
-        type: "comprehension",
-        difficulty: "easy",
-        text: "宋国丁氏在穿井之前，遇到的主要问题是什么？",
-        py: "sòng guó dīng shì zài chuān jǐng zhī qián ， yù dào de zhǔ yào wèn tí shì shén me ？",
-        en: "What was the main problem faced by the Ding family of Song before digging the well?",
-        options: [
-            { 
-                text: "家里没有钱雇佣劳动力", 
-                py: "jiā lǐ méi yǒu qián gù yōng láo dòng lì", 
-                en: "The family had no money to hire labor.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：课文完全没有提到丁家的经济状况，这属于主观臆测。正确理解应结合原文'家无井而出溉汲，常一人居外'，主要问题是'没有水井导致需要专人外出打水'。",
-                explanationPy: "cuò wù yuán yīn ： kè wén wán quán méi yǒu tí dào dīng jiā de jīng jì zhuàng kuàng ， zhè shǔ yú zhǔ guān yì cè 。 zhèng què lǐ jiě yīng jié hé yuán wén 'jiā wú jǐng ér chū gài jí ， cháng yī rén jū wài' ， zhǔ yào wèn tí shì 'méi yǒu shuǐ jǐng dǎo zhì xū yào zhuān rén wài chū dǎ shuǐ'。",
-                explanationEn: "❌ Incorrect: The text does not mention their financial status. The correct understanding: 'no well → need dedicated person to fetch water' as stated in the original text."
-            },
-            { 
-                text: "家里没有水井需要派人去外面打水", 
-                py: "jiā lǐ méi yǒu shuǐ jǐng xū yào pài rén qù wài miàn dǎ shuǐ", 
-                en: "They had no well and had to send someone outside to fetch water.", 
-                correct: true, 
-                explanationZh: "✅ 正确解释：对照原文'家无井而出溉汲，常一人居外'，证实因无井而耗费劳力，这是丁家面临的主要问题。",
-                explanationPy: "duì zhào yuán wén “ jiā wú jǐng ér chū gài jí ， cháng yī rén jū wài ” ， zhèng shí yīn wú jǐng ér hào fèi láo lì ， zhè shì dīng jiā miàn lín de zhǔ yào wèn tí 。",
-                explanationEn: "✅ Correct: Matches the text: 'The family had no well... so one person constantly stayed outside to fetch water.'"
-            },
-            { 
-                text: "打水的仆人在外面逃跑了", 
-                py: "dǎ shuǐ de pú rén zài wài miàn táo pǎo le", 
-                en: "The servant who fetched water ran away.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：'居外'的意思是呆在外面工作，而非逃跑。文中没有任何关于仆人逃跑的描述。",
-                explanationPy: "“ jū wài ” de yì sī shì dāi zài wài miàn gōng zuò ， ér fēi táo pǎo 。 wén zhōng méi yǒu rèn hé guān yú pú rén táo pǎo de miáo shù 。",
-                explanationEn: "❌ Incorrect: 'Ju wai' means staying outside to work, not escaping. No mention of servants running away."
-            },
-            { 
-                text: "宋国的诸侯征收昂贵的水税", 
-                py: "sòng guó de zhū hóu zhēng shōu áng guì de shuǐ shuì", 
-                en: "The ruler of Song imposed a heavy tax on water.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：背景中完全没有提到征税的内容，这是脱离文本的臆想。",
-                explanationPy: "bèi jǐng zhōng wán quán méi yǒu tí dào zhēng shuì de nèi róng ， zhè shì tuō lí wén běn de yì xiǎng 。",
-                explanationEn: "❌ Incorrect: There is no mention of water taxes in the text at all."
-            }
-        ]
-    },
-    {
-        id: 2,
-        type: "comprehension",
-        difficulty: "medium",
-        text: "丁氏说'吾穿井得一人'的真实本意是什么？",
-        py: "dīng shì shuō “ wú chuān jǐng dé yī rén ” de zhēn shí běn yì shì shén me ？",
-        en: "What was the real meaning of Ding's statement 'We gained a person by digging a well'?",
-        options: [
-            { 
-                text: "在挖井的过程中挖出了一个活人", 
-                py: "zài wā jǐng de guò chéng zhōng wā chū le yī gè huó rén", 
-                en: "They dug up a living person from inside the well.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：这是别人道听途说的谣言误解，不是丁氏的本意。丁氏后来澄清'非得一人于井中也'。",
-                explanationPy: "zhè shì bié rén dào tīng tú shuō de yáo yán wù jiě ， bú shì dīng shì de běn yì 。 dīng shì hòu lái chéng qīng 'fēi dé yī rén yú jǐng zhōng yě'。",
-                explanationEn: "❌ Incorrect: This is the rumored misunderstanding, not Ding's original meaning. Ding later clarified: 'not finding a person from inside the well.'"
-            },
-            { 
-                text: "家里多了一个仆人来帮忙挖井", 
-                py: "jiā lǐ duō le yī gè pú rén lái bāng máng wā jǐng", 
-                en: "They acquired a new servant to help dig the well.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：丁家是自己挖井，而不是雇佣新人。'得一人'指的是释放了一个人力，而非增加仆人。",
-                explanationPy: "dīng jiā shì zì jǐ wā jǐng ， ér bú shì gù yōng xīn rén 。 'dé yī rén' zhǐ de shì shì fàng le yī gè rén lì ， ér fēi zēng jiā pú rén 。",
-                explanationEn: "❌ Incorrect: They dug it themselves rather than hiring a new worker. 'Gained a person' means freeing up labor, not hiring."
-            },
-            { 
-                text: "省下了一个专门外出打水的劳动力", 
-                py: "shěng xià le yī gè zhuān mén wài chū dǎ shuǐ de láo dòng lì", 
-                en: "They saved the labor of one person who used to fetch water outside.", 
-                correct: true, 
-                explanationZh: "✅ 正确解释：由于家里有了井，原本必须在外打水的人可以撤回家帮忙，省下了人力。这就是'得一人之使'的真正含义。",
-                explanationPy: "yóu yú jiā lǐ yǒu le jǐng ， yuán běn bì xū zài wài dǎ shuǐ de rén kě yǐ chè huí jiā bāng máng ， shěng xià le rén lì 。 zhè jiù shì 'dé yī rén zhī shǐ' de zhēn zhèng hán yì 。",
-                explanationEn: "✅ Correct: Since they had a well, the person fetching water was freed up. This is the true meaning of 'gained the labor of one person.'"
-            },
-            { 
-                text: "挖井的技术非常高超只需要一个人", 
-                py: "wā jǐng de jì shù fēi cháng gāo chāo zhī xū yào yī gè rén", 
-                en: "The well-digging technique was so advanced it required only one person.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：文章强调的是劳动力的释放，而非挖井技术。'得一人'是结果，不是过程。",
-                explanationPy: "wén zhāng qiáng diào de shì láo dòng lì de shì fàng ， ér fēi wā jǐng jì shù 。 'dé yī rén' shì jié guǒ ， bú shì guò chéng 。",
-                explanationEn: "❌ Incorrect: The text emphasizes the freeing of labor, not the technique of well-digging."
-            }
-        ]
-    },
-    {
-        id: 3,
-        type: "vocabulary",
-        difficulty: "medium",
-        text: "下列句子中'闻'字的解释错误的一项是：",
-        py: "xià liè jù zi zhōng “ wén ” zì de jiě shì cuò wù de yī xiàng shì ：",
-        en: "Which of the following explanations for the character 'Wen' is INCORRECT?",
-        options: [
-            { 
-                text: "有闻而传之者（闻：听说）", 
-                py: "yǒu wén ér chuán zhī zhě （ wén ： tīng shuō ）", 
-                en: "Someone heard it (Wen: heard)", 
-                correct: false, 
-                explanationZh: "✅ 解释正确，这里指听到丁家传出的话语。", 
-                explanationPy: "jiě shì zhèng què ， zhè lǐ zhǐ tīng dào dīng jiā chuán chū de huà yǔ 。", 
-                explanationEn: "✅ Correct explanation: 'Heard' as in hearing Ding's statement."
-            },
-            { 
-                text: "闻之于宋君（闻：使……听到）", 
-                py: "wén zhī yú sòng jūn （ wén ： shǐ …… tīng dào ）", 
-                en: "Heard by the ruler (Wen: cause to hear)", 
-                correct: false, 
-                explanationZh: "✅ 解释正确，指这件事让宋国国君听到了（被动用法）。", 
-                explanationPy: "jiě shì zhèng què ， zhǐ zhè jiàn shì ràng sòng guó guó jūn tīng dào le （ bèi dòng yòng fǎ ） 。", 
-                explanationEn: "✅ Correct explanation: Passive construction meaning 'was heard by the ruler.'"
-            },
-            { 
-                text: "求闻之若此（闻：闻气味）", 
-                py: "qiú wén zhī ruò cǐ （ wén ： wén qì wèi ）", 
-                en: "Seeking news (Wen: smell odor)", 
-                correct: true, 
-                explanationZh: "❌ 解释错误！文言中'闻'在此处意为'消息、传闻'，而非'闻气味'。这是古今异义词的典型例子。",
-                explanationPy: "jiě shì cuò wù ！ wén yán zhōng “ wén ” zài cǐ chù yì wèi “ xiāo xī 、 chuán wén ” ， ér fēi “ wén qì wèi ” 。 zhè shì gǔ jīn yì yì cí de diǎn xíng lì zi 。",
-                explanationEn: "❌ Incorrect! Here 'Wen' means 'news/rumor,' not 'smell.' This is a classic example of a word whose meaning changed over time."
-            },
-            { 
-                text: "不若无闻也（闻：听到）", 
-                py: "bù rú wú wén yě （ wén ： tīng dào ）", 
-                en: "Better than hearing (Wen: hear)", 
-                correct: false, 
-                explanationZh: "✅ 解释正确，指还不如没有听到过这种消息。", 
-                explanationPy: "jiě shì zhèng què ， zhǐ hái bù rú méi yǒu tīng dào guò zhè zhǒng xiāo xī 。", 
-                explanationEn: "✅ Correct explanation: 'Hear' as in hearing news."
-            }
-        ]
-    },
-    {
-        id: 4,
-        type: "grammar",
-        difficulty: "hard",
-        text: "文中'闻之于宋君'的'于'字，其意思与下列哪项相同？",
-        py: "wén zhōng “ wén zhī yú sòng jūn ” de “ yú ” zì ， qí yì sī yǔ xià liè nǎ xiàng xiāng tóng ？",
-        en: "Which 'Yu' has the same meaning as 'Yu' in 'Wen Zhi Yu Song Jun'?",
-        options: [
-            { 
-                text: "问之于丁氏（于：向）", 
-                py: "wèn zhī yú dīng shì （ yú ： xiàng ）", 
-                en: "Inquire from Ding (Yu: from)", 
-                correct: false, 
-                explanationZh: "❌ 不相同。这里的'于'表示'向'，而原句中的'于'表示被动'被'。", 
-                explanationPy: "bù xiāng tóng 。 zhè lǐ de “ yú ” biǎo shì “ xiàng ” ， ér yuán jù zhōng de “ yú ” biǎo shì bèi dòng “ bèi ” 。", 
-                explanationEn: "❌ Different: Here 'Yu' means 'from,' while the original means 'by' (passive marker)."
-            },
-            { 
-                text: "得一人于井中（于：在）", 
-                py: "dé yī rén yú jǐng zhōng （ yú ： zài ）", 
-                en: "Found a person in the well (Yu: in)", 
-                correct: false, 
-                explanationZh: "❌ 不相同。这里的'于'表示'在'（地点），而原句表被动。", 
-                explanationPy: "bù xiāng tóng 。 zhè lǐ de “ yú ” biǎo shì “ zài ” （ dì diǎn ） ， ér yuán jù biǎo bèi dòng 。", 
-                explanationEn: "❌ Different: Here 'Yu' indicates location 'in,' while the original is passive."
-            },
-            { 
-                text: "劳心者治人，劳力者治于人（于：被）", 
-                py: "láo xīn zhě zhì rén ， láo lì zhě zhì yú rén （ yú ： bèi ）", 
-                en: "Governed by others (Yu: by)", 
-                correct: true, 
-                explanationZh: "✅ 完全相同！'闻之于宋君'表被动，意为'被宋君听说'；'治于人'也是被动，意为'被人统治'。两者'于'都表示被动。", 
-                explanationPy: "wán quán xiāng tóng ！ 'wén zhī yú sòng jūn' biǎo bèi dòng ， yì wèi 'bèi sòng jūn tīng shuō'； 'zhì yú rén' yě shì bèi dòng ， yì wèi 'bèi rén tǒng zhì'。 liǎng zhě 'yú' dōu biǎo shì bèi dòng 。", 
-                explanationEn: "✅ Exactly the same! Both indicate passive voice: 'was heard by the ruler' and 'are governed by others.'"
-            },
-            { 
-                text: "冰水为之而寒于水（于：比）", 
-                py: "bīng shuǐ wéi zhī ér hán yú shuǐ （ yú ： bǐ ）", 
-                en: "Colder than water (Yu: than)", 
-                correct: false, 
-                explanationZh: "❌ 不相同。这里的'于'表示比较'比……更'，而原句表被动。", 
-                explanationPy: "bù xiāng tóng 。 zhè lǐ de “ yú ” biǎo shì bǐ jiào “ bǐ …… gèng ” ， ér yuán jù biǎo bèi dòng 。", 
-                explanationEn: "❌ Different: Here 'Yu' is used for comparison 'than,' while the original is passive."
-            }
-        ]
-    },
-    {
-        id: 5,
-        type: "theme",
-        difficulty: "easy",
-        text: "这则寓言讽刺了现实中的哪种人？",
-        py: "zhè zé yù yán fěng cì le xiàn shí zhōng de nǎ zhǒng rén ？",
-        en: "What kind of people does this fable mainly satirize?",
-        options: [
-            { 
-                text: "不愿努力工作的人", 
-                py: "bù yuàn nǔ lì gōng zuò de rén", 
-                en: "People unwilling to work hard.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：主旨与努力工作无关，本文核心是讽刺'以讹传讹'。", 
-                explanationPy: "zhǔ zhǐ yǔ nǔ lì gōng zuò wú guān ， běn wén hé xīn shì fěng cì 'yǐ é chuán é'。", 
-                explanationEn: "❌ Incorrect: The theme is about spreading rumors, not work ethic."
-            },
-            { 
-                text: "盲目听信谣言、以讹传讹的人", 
-                py: "máng mù tīng xìn yáo yán 、 yǐ é chuán é de rén", 
-                en: "People who blindly believe and spread rumors without verification.", 
-                correct: true, 
-                explanationZh: "✅ 正确解释：这则寓言的核心讽刺对象就是'道听途说、以讹传讹'的人。结尾'求闻之若此，不若无闻也'直接点明了主旨。",
-                explanationPy: "zhè zé yù yán de hé xīn fěng cì duì xiàng jiù shì 'dào tīng tú shuō 、 yǐ é chuán é' de rén 。 jié wěi 'qiú wén zhī ruò cǐ ， bù ruò wú wén yě' zhí jiē diǎn míng le zhǔ zhǐ 。",
-                explanationEn: "✅ Correct: The fable satirizes those who spread rumors without verification. The ending directly states the theme."
-            },
-            { 
-                text: "技术差劲的工人", 
-                py: "jì shù chà jìn de gōng rén", 
-                en: "Unskilled workers.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：文中没有讨论工人的技术水平，完全是偏离文本的理解。", 
-                explanationPy: "wén zhōng méi yǒu tǎo lùn gōng rén de jì shù shuǐ píng ， wán quán shì piān lí wén běn de lǐ jiě 。",
-                explanationEn: "❌ Incorrect: The text does not discuss workers' skill levels."
-            },
-            { 
-                text: "欺骗国君的官员", 
-                py: "qī piàn guó jūn de guān yuán", 
-                en: "Officials who deceive the ruler.", 
-                correct: false, 
-                explanationZh: "❌ 错误原因：文中没有任何人欺骗国君。国君听到谣言后主动派人调查，反而是正面形象。",
-                explanationPy: "wén zhōng méi yǒu rèn hé rén qī piàn guó jūn 。 guó jūn tīng dào yáo yán hòu zhǔ dòng pài rén diào chá ， fǎn ér shì zhèng miàn xíng xiàng 。",
-                explanationEn: "❌ Incorrect: No one deceives the ruler. The ruler investigates the rumor, presenting a positive example."
-            }
-        ]
-    }
+    { id: 1, text: "“及其家穿井”中的“穿井”是什么意思？", en: "What does 'chuān jǐng' mean?", py: "“ jí qí jiā chuān jǐng ” zhōng de “ chuān jǐng ” shì shén me yì si ？",
+      options: [
+          { text: "堵上水井并废弃", correct: false, explanation: "❌ 错误原因：“穿”在古汉语中从来没有“堵住”或“废弃”的意思。如果表示堵上水井，一般会用“塞井”“填井”。这里“穿”是动词，指凿通、挖掘。", py: "dǔ shàng shuǐ jǐng bìng fèi qì", en: "Block and abandon the well" },
+          { text: "开凿水井", correct: true, explanation: "✅ 正确解释：“穿”的本义是“凿通、穿透”，“穿井”就是开凿水井。这句话的意思是“等到他家挖好了水井”。", py: "kāi záo shuǐ jǐng", en: "Dig a well" },
+          { text: "在井边穿行", correct: false, explanation: "❌ 错误原因：“穿”虽有“穿过”之义，但“穿井”是一个动宾短语，后面接“井”作宾语，整体意思是“挖井”，而不是在井边走来走去。文中没有“穿行”之意。", py: "zài jǐng biān chuān xíng", en: "Walk around the well" },
+          { text: "用水井灌溉", correct: false, explanation: "❌ 错误原因：“穿井”是挖井的动作，不是灌溉。灌溉在文中用的是“溉汲”。如果已经挖好井，可以灌溉，但“穿井”本身指挖掘的过程。", py: "yòng shuǐ jǐng guàn gài", en: "Irrigate with the well" }
+      ] },
+    { id: 2, text: "丁氏说“吾穿井得一人”，他的实际意思是？", en: "What did Ding actually mean?", py: "dīng shì shuō “ wú chuān jǐng dé yī rén ” ， tā de shí jì yì si shì ？",
+      options: [
+          { text: "挖井时从井里救出一个人", correct: false, explanation: "❌ 错误原因：文中没有任何情节提到丁氏从井里救人。这种理解完全是凭空想象，原文丁氏强调的是“得一人之使”，即劳动人手的变化。", py: "wā jǐng shí cóng jǐng lǐ jiù chū yī gè rén", en: "Rescue a person from the well" },
+          { text: "挖井得到一个人的尸骨", correct: false, explanation: "❌ 错误原因：这一选项极具误导性，但原文并没有说挖出尸骨。后文丁氏澄清“非得一人于井中也”，明确说明不是从井中得到一个人（不论死活）。", py: "wā jǐng dé dào yī gè rén de shī gǔ", en: "Dig up a person's skeleton" },
+          { text: "多得到一个劳动力（节省人力）", correct: true, explanation: "✅ 正确解释：结合后文丁氏的解释“得一人之使”可知，他的意思是：原来家里没井，需要派一个人常年在外面取水；挖井之后，这个人就不需要外出了，相当于家里多出了一个劳动力。这是一种节省人力的说法。", py: "duō dé dào yī gè láo dòng lì （ jié shěng rén lì ）", en: "Gained an extra laborer (saved manpower)" },
+          { text: "挖井需要请一个工人帮忙", correct: false, explanation: "❌ 错误原因：丁氏说的是挖井之后的结果，不是挖井的过程。如果是要请工人，他会说“雇一人”“得一人助”，而不是“得一人”。原文是“穿井得一人”，语序也表明“得一人”是穿井带来的收益。", py: "wā jǐng xū yào qǐng yī gè gōng rén bāng máng", en: "Need to hire a worker to dig the well" }
+      ] },
+    { id: 3, text: "这个故事主要讽刺了什么社会现象？", en: "What phenomenon does this fable satirize?", py: "zhè ge gù shì zhǔ yào fěng cì le shén me shè huì xiàn xiàng ？",
+      options: [
+          { text: "百姓不重视水利建设", correct: false, explanation: "❌ 错误原因：故事虽然从“无井”说起，但讽刺的重点不是水利。文中没有批评百姓懒惰或不修水利，而是讽刺信息在传播中严重失真。", py: "bǎi xìng bú zhòng shì shuǐ lì jiàn shè", en: "People neglect water conservancy" },
+          { text: "国君听信谗言", correct: false, explanation: "❌ 错误原因：国君听到传闻后，派人去调查核实，并没有盲目处置丁家。所以国君的行为反而是正面的榜样，不是讽刺对象。", py: "guó jūn tīng xìn chán yán", en: "The ruler believes slander" },
+          { text: "以讹传讹，轻信谣言", correct: true, explanation: "✅ 正确解释：从“吾穿井得一人（多一人力）” → 被传成“丁氏穿井得一人（挖出一个人）” → 国人纷纷道之 → 甚至惊动国君。这个过程生动讽刺了人们不辨真伪、盲目传播谣言的社会弊病。", py: "yǐ é chuán é ， qīng xìn yáo yán", en: "Spread misinformation and believe rumors" },
+          { text: "丁氏说话含糊不清", correct: false, explanation: "❌ 错误原因：丁氏的话虽有歧义，但在当时语境中，“得一人”经常指节省一个人力。主要责任在传播者不追问、不核实就添油加醋。", py: "dīng shì shuō huà hán hu bù qīng", en: "Ding's speech is ambiguous" }
+      ] },
+    { id: 4, text: "“国人道之，闻之于宋君”中的“闻之于宋君”一句，说明了什么？", en: "What does 'it was heard by the ruler of Song' indicate?", py: "“ guó rén dào zhī ， wén zhī yú sòng jūn ” zhōng de “ wén zhī yú sòng jūn ” yī jù ， shuō míng le shén me ？",
+      options: [
+          { text: "宋君主动派人调查民情", correct: false, explanation: "❌ 错误原因：原文“闻之于宋君”是被动句式，意思是“这件事被宋国国君听说了”。强调的是国君被动听闻，不是他主动去调查民情。", py: "sòng jūn zhǔ dòng pài rén diào chá mín qíng", en: "The ruler actively sent someone to investigate" },
+          { text: "谣言已经惊动了最高统治者", correct: true, explanation: "✅ 正确解释：“闻之于宋君”说明谣言传播范围之广、影响之大，甚至传到了一国之君的耳朵里。这侧面表现了以讹传讹的严重性。", py: "yáo yán yǐ jīng jīng dòng le zuì gāo tǒng zhì zhě", en: "The rumor has alarmed the highest ruler" },
+          { text: "宋君是谣言的源头", correct: false, explanation: "❌ 错误原因：国君是“闻之”，即听说者，而不是最初传播的人。源头是丁氏的那句“吾穿井得一人”以及后续的误传者。", py: "sòng jūn shì yáo yán de yuán tóu", en: "The ruler is the source of the rumor" },
+          { text: "国人把丁氏告到了国君那里", correct: false, explanation: "❌ 错误原因：“闻之于宋君”是被动结构，表示“被国君听闻”，不一定是有人告状。也可能是民间议论纷纷，自然传到国君耳中。", py: "guó rén bǎ dīng shì gào dào le guó jūn nà lǐ", en: "People reported Ding to the ruler" }
+      ] },
+    { id: 5, text: "下列哪一项最符合“求闻之若此，不若无闻也”的寓意？", en: "Which best matches the moral of the last sentence?", py: "xià liè nǎ yī xiàng zuì fú hé “ qiú wén zhī ruò cǐ ， bú ruò wú wén yě ” de yù yì ？",
+      options: [
+          { text: "听到任何消息都要立刻告诉别人", correct: false, explanation: "❌ 错误原因：这句话意思完全相反。作者批评的是不加分辨就传播，而不是鼓励立刻告诉别人。", py: "tīng dào rèn hé xiāo xī dōu yào lì kè gào su bié rén", en: "Tell others immediately upon hearing any news" },
+          { text: "国君应该亲自去调查每一件事", correct: false, explanation: "❌ 错误原因：这句话是针对所有人听闻消息的态度，不是专门对国君说的。", py: "guó jūn yīng gāi qīn zì qù diào chá měi yī jiàn shì", en: "The ruler should personally investigate everything" },
+          { text: "听信虚假传闻不如没有听到任何消息", correct: true, explanation: "✅ 正确解释：虚假的传闻会误导人的判断，甚至造成恐慌或错误决策。与其被谣言蒙蔽，不如一开始就没听过，然后通过正规渠道去了解真相。", py: "tīng xìn xū jiǎ chuán wén bù rú méi yǒu tīng dào rèn hé xiāo xī", en: "It's better to hear nothing than to believe false rumors" },
+          { text: "不要相信任何人的话", correct: false, explanation: "❌ 错误原因：这个选项过于极端。作者并非要人完全不信任何话，而是强调“若此”这种以讹传讹的情况不如不听。", py: "bú yào xiāng xìn rèn hé rén de huà", en: "Don't believe anyone's words" }
+      ] }
 ];
-
-// 辅助函数：获取所有题目
-function getAllQuizQuestions() {
-    return quizQuestions;
-}
-
-// 辅助函数：根据ID获取题目
-function getQuizQuestionById(id) {
-    return quizQuestions.find(q => q.id === id);
-}
-
-// 辅助函数：按类型筛选题目
-function getQuizQuestionsByType(type) {
-    return quizQuestions.filter(q => q.type === type);
-}
-
-// 辅助函数：按难度筛选题目
-function getQuizQuestionsByDifficulty(difficulty) {
-    return quizQuestions.filter(q => q.difficulty === difficulty);
-}
-
-// 辅助函数：随机打乱选项顺序
-function shuffleOptions(question) {
-    const shuffled = [...question.options];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-}
-
-// 辅助函数：渲染单道题目
-function renderQuizQuestion(question, index) {
-    const letters = ['A', 'B', 'C', 'D'];
-    const shuffledOpts = shuffleOptions(question);
-    
-    let optionsHtml = '';
-    shuffledOpts.forEach((opt, idx) => {
-        optionsHtml += `
-            <button class="option-btn" data-correct="${opt.correct}" 
-                data-explanation-correct="${opt.correct ? opt.explanationZh.replace(/"/g, '&quot;') : ''}"
-                data-explanation-wrong="${!opt.correct ? opt.explanationZh.replace(/"/g, '&quot;') : ''}"
-                data-opt-text="${opt.text}">
-                <div class="opt-zh">${letters[idx]}. ${opt.text}</div>
-                <div class="quiz-option-py">${opt.py}</div>
-                <div class="quiz-option-en">${opt.en}</div>
-            </button>
-        `;
-    });
-    
-    return `
-        <div class="quiz-card" data-qid="${question.id}">
-            <div class="question-header">
-                <div class="q-py">${question.py}</div>
-                <h4 class="q-zh">${question.id}. ${question.text}</h4>
-                <div class="q-en">${question.en}</div>
-                <div class="quiz-meta">
-                    <span class="quiz-type">${question.type === 'comprehension' ? '📖 理解题' : question.type === 'vocabulary' ? '📝 词汇题' : question.type === 'grammar' ? '📐 语法题' : '🎯 主旨题'}</span>
-                    <span class="quiz-difficulty">${question.difficulty === 'easy' ? '⭐ 简单' : question.difficulty === 'medium' ? '⭐⭐ 中等' : '⭐⭐⭐ 困难'}</span>
-                </div>
-            </div>
-            <div class="options-area">${optionsHtml}</div>
-            <div class="feedback"></div>
-        </div>
-    `;
-}
-
-// 辅助函数：渲染所有题目
-function renderAllQuizQuestions() {
-    return quizQuestions.map((q, idx) => renderQuizQuestion(q, idx)).join('');
-}
-
-// 导出到全局
-window.quizQuestions = quizQuestions;
-window.QUIZ_CONFIG = QUIZ_CONFIG;
-window.getAllQuizQuestions = getAllQuizQuestions;
-window.getQuizQuestionById = getQuizQuestionById;
-window.getQuizQuestionsByType = getQuizQuestionsByType;
-window.getQuizQuestionsByDifficulty = getQuizQuestionsByDifficulty;
-window.shuffleOptions = shuffleOptions;
-window.renderQuizQuestion = renderQuizQuestion;
-window.renderAllQuizQuestions = renderAllQuizQuestions;

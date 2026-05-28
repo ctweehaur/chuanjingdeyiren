@@ -131,10 +131,11 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 
 .collapsible-content { margin-top: 25px; text-align: left; display: none; animation: slideDown 0.4s ease; }
 
-/* --- 客观题核心对齐重组 --- */
+/* --- 客观题核心精准对齐排版 --- */
 .quiz-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 25px; text-align: left;}
 .question-header { display: flex !important; align-items: flex-start !important; margin-bottom: 18px; line-height: 2.4; text-align: left !important; }
 
+/* 修正大标题序号对齐线 */
 .q-num {
     font-size: 18px !important;
     font-weight: 700 !important;
@@ -151,7 +152,6 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 .q-zh { font-weight: 600; margin: 0 0 4px 0; text-align: left !important; }
 .q-en { font-size: 13px; color: #94a3b8; font-style: italic; margin-top: 4px; padding-left: 2px; text-align: left !important; }
 
-/* 【核心修复】：将选项内部彻底锁定为靠左对齐，去除默认的居中拉扯 */
 .option-btn { 
     display: flex !important; 
     flex-direction: row !important; 
@@ -167,24 +167,26 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
     transition: all 0.2s; 
     line-height: 2.4; 
     box-shadow: none !important; 
-    text-align: left !important; /* 锁死文字靠左 */
+    text-align: left !important;
 }
 
+/* 【核心修复】：精确锁定 ABCD 选项字母的位置，避免拼音将其挤开 */
 .opt-letter {
     font-size: 16px !important;
     font-weight: 700 !important;
     color: var(--text-main) !important;
-    margin-right: 10px !important;
-    margin-top: 18px !important; 
+    margin-right: 12px !important;
+    margin-top: 18px !important; /* 精准看齐拼音汉字中轴线 */
     line-height: 1.2 !important;
-    min-width: 15px !important;
+    min-width: 20px !important;
+    display: inline-block !important;
 }
-/* 【核心修复】：让右侧选项的主体包裹盒也强制向左看齐 */
+
 .opt-text-body { 
     flex: 1 !important; 
     display: flex !important;
     flex-direction: column !important;
-    align-items: flex-start !important; /* 确保子项（中文和英文）全部靠左 */
+    align-items: flex-start !important; 
     text-align: left !important; 
 }
 
@@ -198,7 +200,6 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 .option-btn .char-box .py-text { font-size: 10px !important; top: -12px !important; height: 12px !important; line-height: 12px !important; }
 .option-btn .punctuation { font-size: 15px !important; height: 20px !important; margin: 0 1px !important; }
 
-/* 完美重现选项下方的英文翻译样式 */
 .quiz-option-en { 
     font-size: 13px !important; 
     color: #94a3b8 !important; 
@@ -215,14 +216,14 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 .option-btn.wrong { background: #fef2f2; border-color: #f87171; }
 .option-btn:disabled { cursor: default; }
 
-/* 反包解析反馈区域 */
+/* 反馈与解析区域 */
 .feedback { margin-top: 18px; padding: 16px; border-radius: 10px; font-size: 15px; line-height: 2.2; display: none; animation: fadeIn 0.3s ease; text-align: left !important;}
 .feedback .char-box .zh-text { font-size: 15px !important; height: 20px !important; }
 .feedback .char-box .py-text { font-size: 10px !important; top: -12px !important; height: 12px !important; line-height: 12px !important; }
 .feedback .punctuation { font-size: 15px !important; height: 20px !important; margin: 0 1px !important; }
 .feedback.success { background-color: #ecfdf5; color: #065f46; border-left: 4px solid #10b981; display: block; }
 .feedback.error { background-color: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b; display: block; }
-.fb-en { font-size: 13px; font-style: italic; color: #64748b; margin-top: 4px; line-height: 1.5; text-align: left !important; }
+.fb-en { font-size: 13px; font-style: italic; color: #64748b; margin-top: 4px; line-height: 1.6; text-align: left !important; padding-left: 2px; }
 
 /* 简答题特训模块 */
 .sa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 25px; text-align: left; }

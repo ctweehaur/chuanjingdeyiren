@@ -55,7 +55,7 @@
 </div>
  
 <script>
-    // 绝对悬浮引擎
+    // 立体注音渲染引擎：采用弹性流式上下双层结构，确保绝对水平看齐
     function alignText(zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -86,6 +86,10 @@
     function renderPoem() {
         const container = document.getElementById('dynamic-poem-container');
         let html = '<div class="poem-paragraph">';
+        
+        // 【核心修复】：在文章最开头直接置入两个全角空白符号，完美实现汉字感知级首行缩进
+        html += '&emsp;&emsp;';
+        
         poemData.forEach(w => {
             if(w.punc) {
                 html += `<span class="punctuation">${w.text.trim()}</span>`;
@@ -95,6 +99,7 @@
                 html += `<span class="${examClass}" data-text="${w.text.trim()}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
             }
         });
+        
         html += '</div>';
         container.innerHTML = html;
     }
@@ -113,7 +118,6 @@
         container.innerHTML = html;
     }
 
-    // 【核心修复】：移除了原先包含“板块”圆圈的无用结构，使视觉效果更具纯净美感
     function renderAnalysis() {
         const container = document.getElementById('analysis-content');
         let html = '';

@@ -29,45 +29,51 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSys
 #en-toggle:checked + .slider { background-color: var(--accent-purple); }
 #en-toggle:checked + .slider:before { transform: translateX(20px); }
 
-/* --- 核心修复1：解决“拼音太挤了” --- */
-ruby { 
-    ruby-align: center; 
-    margin: 0 0.18em; /* 给每个汉字左右增加安全距离，确保拼音绝不撞车 */
+/* --- 核心修复：绝对定位注音引擎，彻底斩断幽灵空格 --- */
+.char-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    vertical-align: bottom;
+    margin-top: 18px; /* 给上方的绝对定位拼音留出空间 */
+    padding: 0 2px;
 }
-rt.py, .exp-pinyin {
-    font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+.char-box .py-text {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    color: var(--accent-orange);
+    font-weight: 500;
+    white-space: nowrap;
+    line-height: 1;
 }
-rt.py { 
-    font-size: 13px; 
-    color: var(--accent-orange); 
-    font-weight: 500; 
-    letter-spacing: 0.5px; /* 让拼音字母本身稍微拉开一点，更易读 */
-    padding-bottom: 2px;
+.char-box .zh-text {
+    font-size: 26px;
+    line-height: 1.2;
 }
 
-/* --- 核心修复2：解决“汉字自动调整位子(乱跳)” --- */
-body.hide-pinyin rt.py { 
-    /* 采用隐身占位法：拼音消失，但保留它撑开的宽度，汉字绝对不会左右回缩乱跳！ */
-    visibility: hidden; 
-    opacity: 0; 
-}
-body.hide-pinyin .exp-pinyin { display: none !important; }
-
+/* 全局开关拼音控制 */
+body.hide-pinyin .py-text { display: none !important; }
 body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en, body.hide-english .sa-en, body.hide-english .strategy-en, body.hide-english .exp-en, body.hide-english .ana-en, body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !important; }
 
-/* 正文排版优化 */
+/* 正文排优化 */
 .poem-container { background: #fefcf5; border-radius: var(--border-radius-md); padding: 35px 30px; margin-bottom: 25px; border: 1px solid #ede9d0; margin-top: 15px; text-align: left; }
-.poem-paragraph { text-align: left !important; text-indent: 2em; font-size: 26px; line-height: 2.8; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 1px; margin: 0; }
+.poem-paragraph { text-align: left !important; font-size: 26px; line-height: 3.2; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 1px; margin: 0; padding-left: 2em; /* 完美的缩进 */ }
 
-.word { cursor: pointer; padding: 2px 4px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; }
-.word::after { content: ''; position: absolute; bottom: 0px; left: 10%; width: 80%; height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
+.word { cursor: pointer; padding: 2px 2px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; }
+.word::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
 .word:hover { background-color: #eff6ff; color: var(--primary-blue); transform: translateY(-2px); }
-.word:hover::after { background-color: var(--primary-blue-hover); width: 100%; left: 0; }
+.word:hover::after { background-color: var(--primary-blue-hover); }
 .word.active { background-color: var(--primary-blue); color: #ffffff; transform: scale(1.05); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
 .word.active::after { display: none; }
-.word.active rt.py { color: #fef08a; } 
-.punctuation { color: #94a3b8; display: inline-block; margin: 0 4px 0 0; }
+.word.active .py-text { color: #fef08a; } 
 
+.punctuation { color: #94a3b8; display: inline-block; font-size: 26px; line-height: 1.2; vertical-align: bottom; margin: 0 2px; }
+
+/* 面板模块样式 */
 .translation-block { margin-top: 24px; border-top: 2px dashed #e2e0d4; background: #fef9f0; border-radius: 16px; overflow: hidden; text-align: left; }
 .translation-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; cursor: pointer; background: #fef9f0; transition: background 0.2s; }
 .translation-header:hover { background: #fdf3e4; }
@@ -101,7 +107,7 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 
 .collapsible-content { margin-top: 25px; text-align: left; display: none; animation: slideDown 0.4s ease; }
 
-.analysis-card { background: #f8fafc; border-radius: var(--border-radius-md); padding: 25px 20px; margin-bottom: 18px; border-left: 5px solid var(--accent-green); line-height: 2.5; text-align: left; }
+.analysis-card { background: #f8fafc; border-radius: var(--border-radius-md); padding: 25px 20px; margin-bottom: 18px; border-left: 5px solid var(--accent-green); line-gradient: 2.5; text-align: left; }
 .ana-title-group { margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 12px; }
 .ana-header { margin: 0 0 4px 0; font-size: 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: bold;}
 .ana-header span { background-color: #d1fae5; color: #047857; font-size: 13px; padding: 3px 10px; border-radius: 20px; font-weight: normal; }
@@ -147,4 +153,4 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en,
 @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-@media (max-width: 600px) { .app-container { padding: 25px 15px; } .poem-paragraph { text-indent: 1.5em; font-size: 20px; letter-spacing: 2px; } .action-btn { width: 100%; } .sa-q-header { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 600px) { .app-container { padding: 25px 15px; } .poem-paragraph { padding-left: 1.5em; font-size: 20px; letter-spacing: 2px; } .action-btn { width: 100%; } .sa-q-header { flex-direction: column; align-items: flex-start; } }

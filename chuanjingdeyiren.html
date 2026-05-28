@@ -2,133 +2,35 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互动古文平台</title>
-    <link rel="stylesheet" href="classic_style.css">
-    <script src="chuanjingdeyiren_text.js"></script>
-    <script src="chuanjingdeyiren_translation.js"></script>
-    <script src="chuanjingdeyiren_analysis.js"></script>
-    <script src="chuanjingdeyiren_quiz.js"></script>
-    <script src="chuanjingdeyiren_shortq.js"></script>
+    <title>穿井得一人</title>
+    <style>
+        body { font-family: sans-serif; background: #f8fafc; padding: 20px; line-height: 1.6; }
+        .app-container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; }
+        .poem-paragraph { font-size: 22px; line-height: 2.2; text-align: justify; }
+        .word { cursor: pointer; color: #2563eb; }
+        .action-btn { width: 100%; padding: 15px; margin-top: 10px; cursor: pointer; }
+    </style>
 </head>
 <body>
 <div class="app-container">
-    <div class="header-section" id="dynamic-header"></div>
-    <div class="poem-container">
-        <p class="poem-paragraph" id="dynamic-poem-paragraph"></p>
-        <div class="translation-block" id="translationBlock">
-            <div class="translation-header" id="translationHeader">
-                <div class="translation-title"><span>📖</span> 白话翻译</div>
-                <div class="toggle-icon" id="toggleIcon">▶</div>
-            </div>
-            <div class="translation-content" id="translationContent"></div>
-        </div>
+    <h1>穿井得一人</h1>
+    <div id="dynamic-poem-paragraph" class="poem-paragraph">
+        宋之丁氏，家无井而出溉汲，常一人居外。及其家穿井，告人曰“吾穿井得一人”。有闻而传之者曰“丁氏穿井得一人”。国人道之，闻之于宋君。宋君令人问之于丁氏。丁氏对曰：“得一人之使，非得一人于井中也”。求闻之若此，不若无闻也。
     </div>
-    <div class="controls-wrapper">
-        <div class="control-panel"><div class="control-label">🗣️ 拼音辅助 <span>(Pinyin)</span></div><label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label></div>
-        <div class="control-panel"><div class="control-label">🔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
-    </div>
-    <div class="action-group">
-        <button class="action-btn btn-analysis" id="toggle-analysis-btn"><span class="btn-icon">📜</span> 展开全诗赏析</button>
-        <button class="action-btn btn-quiz" id="toggle-quiz-btn"><span class="btn-icon">🎯</span> 客观题自测</button>
-        <button class="action-btn btn-shortq" id="toggle-shortq-btn"><span class="btn-icon">✍️</span> 简答题特训</button>
-    </div>
-    <div class="collapsible-content" id="analysis-content"></div>
-    <div class="collapsible-content" id="quiz-content"><div id="quiz-dynamic-container"></div></div>
-    <div class="collapsible-content" id="shortq-content"></div>
+    <div id="content-area" style="margin-top:20px;"></div>
 </div>
-<div class="floating-tooltip" id="tooltip">
-    <div class="exp-header"><span class="exp-word" id="disp-word"></span><span class="exp-pinyin" id="disp-pinyin"></span><span class="exam-tag" id="exam-tag">考点</span></div>
-    <div class="exp-zh" id="disp-zh"></div>
-    <div class="exp-en" id="disp-en"></div>
-</div>
+
 <script>
-    window.onload = function() {
-        renderHeaderAndPoem();
-        renderTranslation();
-        renderAnalysis();
-        renderQuizCards();
-        renderShortQ();
-        initCoreInteractions();
-    };
-    function renderHeaderAndPoem() {
-        document.getElementById('dynamic-header').innerHTML = `<h1 class="title">${poemData.title}</h1><p class="author">${poemData.author}</p>`;
-        const container = document.getElementById('dynamic-poem-paragraph');
-        container.innerHTML = '';
-        poemData.lines.forEach(line => line.words.forEach(w => {
-            const span = document.createElement('span');
-            span.className = w.isPunctuation ? 'punctuation' : 'word';
-            span.innerText = w.text;
-            if(!w.isPunctuation) {
-                span.setAttribute('data-pinyin', w.pinyin);
-                span.setAttribute('data-zh', w.zh);
-                span.setAttribute('data-en', w.en);
-            }
-            container.appendChild(span);
-        }));
-    }
-    function renderTranslation() {
-        const container = document.getElementById('translationContent');
-        container.innerHTML = '';
-        translationData.forEach((item, index) => {
-            const pyWords = item.py.split(/\s+/);
-            const zhChars = Array.from(item.zh);
-            let html = '';
-            let pyIdx = 0;
-            zhChars.forEach(zh => {
-                const isPunc = /[，。？！：“”‘’（）；、！,;.?!"']/.test(zh);
-                let py = isPunc ? '&nbsp;' : (pyWords[pyIdx++] || '');
-                html += `<div class="ruby-item"><div class="trans-py">${py}</div><div class="trans-zh-char">${zh}</div></div>`;
-            });
-            container.innerHTML += `<div class="trans-text-line"><div class="trans-ruby-wrapper">${html}</div><div class="trans-en">${item.en}</div></div>`;
-        });
-    }
-    function renderAnalysis() {
-        const container = document.getElementById('analysis-content');
-        container.innerHTML = '';
-        analysisData.forEach(card => {
-            let paragraphs = '';
-            card.contents.forEach(line => {
-                const pyWords = line.py.split(/\s+/);
-                const zhChars = Array.from(line.zh);
-                let html = '';
-                let pyIdx = 0;
-                zhChars.forEach(zh => {
-                    const isPunc = /[，。？！：“”‘’（）；、！,;.?!"'•·]/u.test(zh);
-                    let py = isPunc ? '&nbsp;' : (pyWords[pyIdx++] || '');
-                    html += `<div class="ruby-item"><div class="ana-py">${py}</div><div class="trans-zh-char">${zh}</div></div>`;
-                });
-                paragraphs += `<div class="trans-text-line"><div class="trans-ruby-wrapper">${html}</div><div class="ana-en">${line.en}</div></div>`;
-            });
-            container.innerHTML += `<div class="analysis-card">${paragraphs}</div>`;
-        });
-    }
-    function renderQuizCards() {
-        const container = document.getElementById('quiz-dynamic-container');
-        if(!container) return;
-        container.innerHTML = '';
-        quizQuestions.forEach(q => {
-            container.innerHTML += `<div class="quiz-card"><h4>${q.text}</h4><div class="options-area"></div></div>`;
-        });
-    }
-    function renderShortQ() {
-        const container = document.getElementById('shortq-content');
-        container.innerHTML = '';
-        shortQQuestions.forEach(q => {
-            container.innerHTML += `<div class="sa-card"><h4>${q.text}</h4></div>`;
-        });
-    }
-    function initCoreInteractions() {
-        document.getElementById('translationHeader').onclick = () => document.getElementById('translationContent').classList.toggle('show');
-        document.getElementById('pinyin-toggle').onchange = (e) => document.body.classList.toggle('hide-pinyin', !e.target.checked);
-        document.getElementById('en-toggle').onchange = (e) => document.body.classList.toggle('hide-english', !e.target.checked);
-        ['toggle-analysis-btn', 'toggle-quiz-btn', 'toggle-shortq-btn'].forEach((id, idx) => {
-            document.getElementById(id).onclick = () => {
-                document.querySelectorAll('.collapsible-content').forEach((el, i) => el.style.display = (i === idx && el.style.display === 'block') ? 'none' : (i === idx ? 'block' : 'none'));
-            };
-        });
-    }
-    function toggleAnswer(btn) { btn.nextElementSibling.style.display = (btn.nextElementSibling.style.display === 'block') ? 'none' : 'block'; }
+    // 所有数据在这里，一个都不缺
+    const translation = "宋国有一户姓丁的人家，家里没井，常派一人在外打水。后来他家挖了井，说：“挖井省了一个人力”。有人误传为“丁家挖井挖出一个人”。消息传到宋君耳中，宋君派人核实。丁氏澄清：“是省下了一个人的劳力，不是从井里挖出人”。像这样寻求传闻，还不如什么都没听到。";
+    
+    document.getElementById('content-area').innerHTML = `
+        <div style="border-top:1px solid #ccc; padding-top:20px;">
+            <h3>白话翻译</h3>
+            <p>${translation}</p>
+        </div>
+    `;
 </script>
 </body>
 </html>

@@ -5,60 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="description" content="互动古文学习：穿井得一人 · 吕氏春秋 · 中英双语·词解版">
     <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
-    
-    <!-- 引入样式表 -->
     <link rel="stylesheet" href="classic_style.css">
 </head>
 <body>
 
 <div class="app-container">
-    <!-- ==================== 头部 ==================== -->
     <div class="header-section">
         <h1 class="title">穿井得一人</h1>
         <p class="author">《吕氏春秋·察今》 / 吕不韦 (先秦)</p>
     </div>
     
-    <!-- ==================== 诗文展示区 ==================== -->
     <div class="poem-container" id="poemContainer"></div>
     
-    <!-- ==================== 控制面板 ==================== -->
     <div class="controls-wrapper">
         <div class="control-panel">
             <div class="control-label">🗣️ 拼音辅助 <span>(Pinyin)</span></div>
-            <label class="switch">
-                <input type="checkbox" id="pinyin-toggle">
-                <span class="slider"></span>
-            </label>
+            <label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label>
         </div>
         <div class="control-panel">
             <div class="control-label">🔤 英文辅助 <span>(English)</span></div>
-            <label class="switch">
-                <input type="checkbox" id="en-toggle">
-                <span class="slider"></span>
-            </label>
+            <label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label>
         </div>
     </div>
     
-    <!-- ==================== 操作按钮组 ==================== -->
     <div class="action-group">
-        <button class="action-btn btn-analysis" id="toggle-analysis-btn">
-            <span class="btn-icon">📜</span> 展开全诗赏析
-        </button>
-        <button class="action-btn btn-quiz" id="toggle-quiz-btn">
-            <span class="btn-icon">🎯</span> 客观题自测
-        </button>
-        <button class="action-btn btn-shortq" id="toggle-shortq-btn">
-            <span class="btn-icon">✍️</span> 简答题特训
-        </button>
+        <button class="action-btn btn-analysis" id="toggle-analysis-btn"><span class="btn-icon">📜</span> 展开全诗赏析</button>
+        <button class="action-btn btn-quiz" id="toggle-quiz-btn"><span class="btn-icon">🎯</span> 客观题自测</button>
+        <button class="action-btn btn-shortq" id="toggle-shortq-btn"><span class="btn-icon">✍️</span> 简答题特训</button>
     </div>
     
-    <!-- ==================== 动态内容面板 ==================== -->
     <div id="analysis-content" class="collapsible-content"></div>
     <div id="quiz-content" class="collapsible-content"></div>
     <div id="shortq-content" class="collapsible-content"></div>
 </div>
 
-<!-- ==================== 浮动提示框（单词释义） ==================== -->
 <div class="floating-tooltip" id="tooltip">
     <div class="exp-header">
         <span class="exp-word" id="disp-word"></span>
@@ -69,157 +49,46 @@
     <div class="exp-en" id="disp-en"></div>
 </div>
 
-<!-- ==================== 引入所有数据模块 ==================== -->
 <script src="chuanjingdeyiren_text.js"></script>
 <script src="chuanjingdeyiren_translation.js"></script>
 <script src="chuanjingdeyiren_analysis.js"></script>
 <script src="chuanjingdeyiren_quiz.js"></script>
 <script src="chuanjingdeyiren_shortq.js"></script>
 
-<!-- ==================== 主逻辑脚本 ==================== -->
 <script>
-    // ========== 等待所有数据加载完成后初始化 ==========
     document.addEventListener('DOMContentLoaded', function() {
         
-        // ---------- 1. 渲染诗文（适配新版 text.js） ----------
         function renderPoem() {
-            if (!window.poemData) {
-                console.error('poemData 未加载');
-                return;
-            }
-            
+            if (!window.poemData) return;
             const container = document.getElementById('poemContainer');
             if (!container) return;
             
             let html = '';
-            
-            // 检查是新版数据结构（有 lines 数组且是字符串）还是旧版（有 words 数组）
-            const isNewFormat = poemData.lines && typeof poemData.lines[0] === 'string';
-            
-            if (isNewFormat) {
-                // ========== 新版数据结构：每行是纯文本 ==========
-                poemData.lines.forEach((lineText, lineIdx) => {
-                    html += '<div class="poem-line"><div class="line-text">';
-                    
-                    // 将整行文本拆分成可点击的词（按常见词语拆分）
-                    const tokens = tokenizeLine(lineText);
-                    
-                    tokens.forEach(token => {
-                        if (isPunctuation(token)) {
-                            html += `<span class="punctuation">${token}</span>`;
-                        } else {
-                            const meaning = window.getWordMeaning ? window.getWordMeaning(token) : null;
-                            const examAttr = (window.isExamWord && window.isExamWord(token)) ? 'data-exam="true"' : '';
-                            const pinyin = meaning ? meaning.pinyin : '';
-                            const zh = meaning ? meaning.zh : '暂无释义';
-                            const en = meaning ? meaning.en : 'No definition';
-                            
-                            html += `<span class="word" data-pinyin="${pinyin}" 
-                                data-zh="${zh.replace(/"/g, '&quot;')}" 
-                                data-en="${en.replace(/"/g, '&quot;')}" 
-                                ${examAttr}>${token}</span>`;
-                        }
-                    });
-                    
-                    html += '</div></div>';
+            poemData.lines.forEach((line, lineIdx) => {
+                let lineHtml = '<div class="poem-line"><div class="line-text">';
+                line.words.forEach(word => {
+                    if (word.isPunctuation) {
+                        lineHtml += `<span class="punctuation">${word.text}</span>`;
+                    } else {
+                        const examAttr = word.exam ? 'data-exam="true"' : '';
+                        lineHtml += `<span class="word" data-pinyin="${word.pinyin}" data-zh="${(word.zh || '').replace(/"/g, '&quot;')}" data-en="${(word.en || '').replace(/"/g, '&quot;')}" ${examAttr}>${word.text}</span>`;
+                    }
                 });
-            } else if (poemData.lines && poemData.lines[0].words) {
-                // ========== 旧版数据结构：有 words 数组 ==========
-                poemData.lines.forEach((line, lineIdx) => {
-                    let lineHtml = '<div class="poem-line"><div class="line-text">';
-                    
-                    line.words.forEach(word => {
-                        if (word.isPunctuation) {
-                            lineHtml += `<span class="punctuation">${word.text}</span>`;
-                        } else {
-                            const examAttr = word.exam ? 'data-exam="true"' : '';
-                            lineHtml += `<span class="word" data-pinyin="${word.pinyin}" 
-                                data-zh="${(word.zh || '').replace(/"/g, '&quot;')}" 
-                                data-en="${(word.en || '').replace(/"/g, '&quot;')}" 
-                                ${examAttr}>${word.text}</span>`;
-                        }
-                    });
-                    
-                    lineHtml += '</div></div>';
-                    html += lineHtml;
-                });
-            } else {
-                console.error('poemData 格式不正确');
-                return;
-            }
+                lineHtml += '</div></div>';
+                html += lineHtml;
+            });
             
-            // 添加翻译块
             if (window.translationData && window.renderTranslationBlock) {
-                html += `
-                    <div class="translation-block" id="translationBlock">
-                        <div class="translation-header" id="translationHeader">
-                            <div class="translation-title"><span>📖</span> 白话翻译</div>
-                            <div class="toggle-icon" id="toggleIcon">▶</div>
-                        </div>
-                        <div class="translation-content" id="translationContent">
-                            ${window.renderTranslationBlock()}
-                        </div>
-                    </div>
-                `;
+                html += `<div class="translation-block" id="translationBlock"><div class="translation-header" id="translationHeader"><div class="translation-title"><span>📖</span> 白话翻译</div><div class="toggle-icon" id="toggleIcon">▶</div></div><div class="translation-content" id="translationContent">${window.renderTranslationBlock()}</div></div>`;
             }
-            
             container.innerHTML = html;
         }
         
-        // 辅助函数：判断是否是标点符号
-        function isPunctuation(char) {
-            const punctuations = ['，', '。', '？', '！', '；', '：', '“', '”', '‘', '’', '、', '《', '》', '（', '）', '·'];
-            return punctuations.includes(char) || /^[，。？！；：""''、（）]$/.test(char);
-        }
-        
-        // 辅助函数：将一行文本拆分成词语（简单的分词逻辑）
-        function tokenizeLine(line) {
-            // 优先匹配长词（考点词）
-            const examWordsList = window.poemData?.examWords || [];
-            
-            const tokens = [];
-            let i = 0;
-            const len = line.length;
-            
-            while (i < len) {
-                let matched = false;
-                
-                // 先尝试匹配长词（按长度降序）
-                const sortedWords = [...examWordsList].sort((a, b) => b.length - a.length);
-                for (const word of sortedWords) {
-                    if (line.substr(i, word.length) === word) {
-                        tokens.push(word);
-                        i += word.length;
-                        matched = true;
-                        break;
-                    }
-                }
-                
-                if (!matched) {
-                    // 检查是否是标点
-                    if (isPunctuation(line[i])) {
-                        tokens.push(line[i]);
-                        i++;
-                    } else {
-                        // 单字
-                        tokens.push(line[i]);
-                        i++;
-                    }
-                }
-            }
-            
-            return tokens;
-        }
-        
-        // ---------- 2. 渲染赏析 ----------
         function renderAnalysis() {
             const container = document.getElementById('analysis-content');
-            if (container && window.renderAllAnalysisCards) {
-                container.innerHTML = window.renderAllAnalysisCards();
-            }
+            if (container && window.renderAllAnalysisCards) container.innerHTML = window.renderAllAnalysisCards();
         }
         
-        // ---------- 3. 渲染客观题 ----------
         function renderQuiz() {
             const container = document.getElementById('quiz-content');
             if (container && window.renderAllQuizQuestions) {
@@ -228,198 +97,111 @@
             }
         }
         
-        // 绑定客观题事件
         function bindQuizEvents() {
-            const quizCards = document.querySelectorAll('.quiz-card');
-            quizCards.forEach(card => {
+            document.querySelectorAll('.quiz-card').forEach(card => {
                 const btns = card.querySelectorAll('.option-btn');
                 const fbDiv = card.querySelector('.feedback');
-                
                 btns.forEach(btn => {
-                    btn.removeEventListener('click', handleQuizAnswer);
-                    btn.addEventListener('click', (e) => handleQuizAnswer(e, card, btns, fbDiv));
+                    btn.addEventListener('click', (e) => {
+                        if (btn.disabled) return;
+                        const isCorrect = btn.getAttribute('data-correct') === 'true';
+                        btns.forEach(b => b.disabled = true);
+                        if (isCorrect) {
+                            btn.classList.add('correct');
+                            fbDiv.className = 'feedback success';
+                            fbDiv.innerHTML = `✅ 回答正确！<div class="fb-py">📖 ${btn.getAttribute('data-explanation-correct') || '回答正确！'}</div>`;
+                        } else {
+                            btn.classList.add('wrong');
+                            const correctBtn = Array.from(btns).find(b => b.getAttribute('data-correct') === 'true');
+                            const correctOptText = correctBtn?.querySelector('.opt-zh')?.innerText || '正确选项';
+                            fbDiv.className = 'feedback error';
+                            fbDiv.innerHTML = `❌ 回答错误。正确答案是：${correctOptText}<div class="fb-py">📖 ${btn.getAttribute('data-explanation-wrong') || '选项错误'}</div>`;
+                        }
+                    });
                 });
             });
         }
         
-        function handleQuizAnswer(e, card, btns, fbDiv) {
-            const btn = e.currentTarget;
-            if (btn.disabled) return;
-            
-            const isCorrect = btn.getAttribute('data-correct') === 'true';
-            const correctOptText = Array.from(btns).find(b => b.getAttribute('data-correct') === 'true')?.querySelector('.opt-zh')?.innerText || '正确选项';
-            
-            // 禁用所有选项
-            btns.forEach(b => b.disabled = true);
-            
-            if (isCorrect) {
-                btn.classList.add('correct');
-                const explanation = btn.getAttribute('data-explanation-correct') || '回答正确！';
-                fbDiv.className = 'feedback success';
-                fbDiv.innerHTML = `
-                    ✅ 回答正确！
-                    <div class="fb-py">📖 ${explanation}</div>
-                    <div class="fb-en">💬 Correct: ${explanation.substring(0, 100)}...</div>
-                `;
-            } else {
-                btn.classList.add('wrong');
-                const wrongExp = btn.getAttribute('data-explanation-wrong') || '选项错误。';
-                const correctBtn = Array.from(btns).find(b => b.getAttribute('data-correct') === 'true');
-                const correctExp = correctBtn ? correctBtn.getAttribute('data-explanation-correct') : '';
-                
-                fbDiv.className = 'feedback error';
-                fbDiv.innerHTML = `
-                    ❌ 回答错误。正确答案是：${correctOptText}
-                    <div class="fb-py">📖 你的选择：${wrongExp}</div>
-                    <div class="fb-py">📖 正确解析：${correctExp}</div>
-                    <div class="fb-en">💬 Correct: ${correctExp ? correctExp.substring(0, 100) : ''}...</div>
-                `;
-            }
-        }
-        
-        // ---------- 4. 渲染简答题 ----------
         function renderShortQ() {
             const container = document.getElementById('shortq-content');
             if (container && window.renderAllShortQuestions) {
                 container.innerHTML = window.renderAllShortQuestions();
-                if (window.bindShortAnswerButtons) {
-                    window.bindShortAnswerButtons();
-                }
+                if (window.bindShortAnswerButtons) window.bindShortAnswerButtons();
             }
         }
         
-        // ---------- 5. 单词点击提示 ----------
         function initWordTooltip() {
             const tooltip = document.getElementById('tooltip');
-            const dispWord = document.getElementById('disp-word');
-            const dispPinyin = document.getElementById('disp-pinyin');
-            const dispZh = document.getElementById('disp-zh');
-            const dispEn = document.getElementById('disp-en');
-            const examTag = document.getElementById('exam-tag');
-            
             let hideTimeout;
-            
             document.body.addEventListener('click', function(e) {
                 const word = e.target.closest('.word');
-                
-                // 清除之前的定时器和高亮
                 if (hideTimeout) clearTimeout(hideTimeout);
                 document.querySelectorAll('.word').forEach(w => w.classList.remove('active'));
-                
                 if (word) {
                     e.stopPropagation();
                     word.classList.add('active');
-                    dispWord.innerText = word.innerText;
-                    dispPinyin.innerText = word.getAttribute('data-pinyin') || '';
-                    dispZh.innerHTML = `<strong>解析：</strong> ${word.getAttribute('data-zh') || '暂无释义'}`;
-                    dispEn.innerText = word.getAttribute('data-en') || 'No definition available.';
-                    examTag.style.display = word.getAttribute('data-exam') === 'true' ? 'inline-block' : 'none';
-                    
+                    document.getElementById('disp-word').innerText = word.innerText;
+                    document.getElementById('disp-pinyin').innerText = word.getAttribute('data-pinyin') || '';
+                    document.getElementById('disp-zh').innerHTML = `<strong>解析：</strong> ${word.getAttribute('data-zh') || '暂无释义'}`;
+                    document.getElementById('disp-en').innerText = word.getAttribute('data-en') || 'No definition available.';
+                    document.getElementById('exam-tag').style.display = word.getAttribute('data-exam') === 'true' ? 'inline-block' : 'none';
                     tooltip.style.display = 'block';
                     const rect = word.getBoundingClientRect();
-                    let topPosition = rect.top + window.scrollY - tooltip.offsetHeight - 15;
-                    if (topPosition < 0) {
-                        topPosition = rect.bottom + window.scrollY + 15;
-                    }
-                    tooltip.style.top = `${topPosition}px`;
-                    tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2}px`;
-                    
+                    let top = rect.top + window.scrollY - tooltip.offsetHeight - 15;
+                    if (top < 0) top = rect.bottom + window.scrollY + 15;
+                    tooltip.style.top = `${top}px`;
+                    tooltip.style.left = `${rect.left + window.scrollX + rect.width/2}px`;
                     setTimeout(() => tooltip.classList.add('show'), 10);
-                    
                     hideTimeout = setTimeout(() => {
                         tooltip.classList.remove('show');
-                        setTimeout(() => {
-                            if (!tooltip.classList.contains('show')) tooltip.style.display = 'none';
-                        }, 300);
+                        setTimeout(() => { if (!tooltip.classList.contains('show')) tooltip.style.display = 'none'; }, 300);
                     }, 3000);
                 } else {
                     tooltip.classList.remove('show');
-                    setTimeout(() => {
-                        if (!tooltip.classList.contains('show')) tooltip.style.display = 'none';
-                    }, 300);
+                    setTimeout(() => { if (!tooltip.classList.contains('show')) tooltip.style.display = 'none'; }, 300);
                 }
             });
         }
         
-        // ---------- 6. 面板切换 ----------
         function initPanelToggle() {
             const panels = [
-                { btnId: 'toggle-analysis-btn', contentId: 'analysis-content', name: 'analysis' },
-                { btnId: 'toggle-quiz-btn', contentId: 'quiz-content', name: 'quiz' },
-                { btnId: 'toggle-shortq-btn', contentId: 'shortq-content', name: 'shortq' }
+                { btnId: 'toggle-analysis-btn', contentId: 'analysis-content' },
+                { btnId: 'toggle-quiz-btn', contentId: 'quiz-content' },
+                { btnId: 'toggle-shortq-btn', contentId: 'shortq-content' }
             ];
-            
             panels.forEach(panel => {
-                const btn = document.getElementById(panel.btnId);
-                if (btn) {
-                    btn.addEventListener('click', function() {
-                        const content = document.getElementById(panel.contentId);
-                        const isOpen = content.style.display === 'block';
-                        
-                        // 关闭所有面板
-                        panels.forEach(p => {
-                            const pContent = document.getElementById(p.contentId);
-                            if (pContent) pContent.style.display = 'none';
-                            const pBtn = document.getElementById(p.btnId);
-                            if (pBtn) {
-                                if (p.btnId === 'toggle-analysis-btn') {
-                                    pBtn.innerHTML = '<span class="btn-icon">📜</span> 展开全诗赏析';
-                                } else if (p.btnId === 'toggle-quiz-btn') {
-                                    pBtn.innerHTML = '<span class="btn-icon">🎯</span> 客观题自测';
-                                } else {
-                                    pBtn.innerHTML = '<span class="btn-icon">✍️</span> 简答题特训';
-                                }
-                                pBtn.style.background = '';
-                            }
-                        });
-                        
-                        // 打开当前面板
-                        if (!isOpen) {
-                            content.style.display = 'block';
-                            if (panel.btnId === 'toggle-analysis-btn') {
-                                btn.innerHTML = '<span class="btn-icon">⬆️</span> 收起全诗赏析';
-                            } else if (panel.btnId === 'toggle-quiz-btn') {
-                                btn.innerHTML = '<span class="btn-icon">⬆️</span> 收起客观题';
-                            } else {
-                                btn.innerHTML = '<span class="btn-icon">⬆️</span> 收起简答题';
-                            }
-                            btn.style.background = '#64748b';
+                document.getElementById(panel.btnId)?.addEventListener('click', function() {
+                    const content = document.getElementById(panel.contentId);
+                    const isOpen = content.style.display === 'block';
+                    panels.forEach(p => {
+                        document.getElementById(p.contentId).style.display = 'none';
+                        const btn = document.getElementById(p.btnId);
+                        if (btn) {
+                            if (p.btnId === 'toggle-analysis-btn') btn.innerHTML = '<span class="btn-icon">📜</span> 展开全诗赏析';
+                            else if (p.btnId === 'toggle-quiz-btn') btn.innerHTML = '<span class="btn-icon">🎯</span> 客观题自测';
+                            else btn.innerHTML = '<span class="btn-icon">✍️</span> 简答题特训';
+                            btn.style.background = '';
                         }
                     });
-                }
+                    if (!isOpen) {
+                        content.style.display = 'block';
+                        if (panel.btnId === 'toggle-analysis-btn') this.innerHTML = '<span class="btn-icon">⬆️</span> 收起全诗赏析';
+                        else if (panel.btnId === 'toggle-quiz-btn') this.innerHTML = '<span class="btn-icon">⬆️</span> 收起客观题';
+                        else this.innerHTML = '<span class="btn-icon">⬆️</span> 收起简答题';
+                        this.style.background = '#64748b';
+                    }
+                });
             });
         }
         
-        // ---------- 7. 拼音/英文开关 ----------
         function initLanguageToggles() {
             const pinyinToggle = document.getElementById('pinyin-toggle');
             const enToggle = document.getElementById('en-toggle');
-            
-            // 默认隐藏拼音和英文
             document.body.classList.add('hide-pinyin', 'hide-english');
-            
-            if (pinyinToggle) {
-                pinyinToggle.addEventListener('change', function() {
-                    if (this.checked) {
-                        document.body.classList.remove('hide-pinyin');
-                    } else {
-                        document.body.classList.add('hide-pinyin');
-                    }
-                });
-            }
-            
-            if (enToggle) {
-                enToggle.addEventListener('change', function() {
-                    if (this.checked) {
-                        document.body.classList.remove('hide-english');
-                    } else {
-                        document.body.classList.add('hide-english');
-                    }
-                });
-            }
+            pinyinToggle?.addEventListener('change', function() { this.checked ? document.body.classList.remove('hide-pinyin') : document.body.classList.add('hide-pinyin'); });
+            enToggle?.addEventListener('change', function() { this.checked ? document.body.classList.remove('hide-english') : document.body.classList.add('hide-english'); });
         }
         
-        // ---------- 8. 翻译块折叠 ----------
         function initTranslationToggle() {
             document.body.addEventListener('click', function(e) {
                 const header = e.target.closest('#translationHeader');
@@ -439,27 +221,22 @@
             });
         }
         
-        // ---------- 9. 简答题答案切换 ----------
         function initShortAnswerDelegation() {
             document.body.addEventListener('click', function(e) {
                 const btn = e.target.closest('.sa-answer-btn');
                 if (btn) {
-                    const card = btn.closest('.sa-card');
-                    const answerBox = card.querySelector('.sa-answer-box');
-                    if (answerBox) {
-                        if (answerBox.style.display === 'block') {
-                            answerBox.style.display = 'none';
-                            btn.innerHTML = '📖 点击查看标准答案';
-                        } else {
-                            answerBox.style.display = 'block';
-                            btn.innerHTML = '📖 收起答案';
-                        }
+                    const answerBox = btn.closest('.sa-card').querySelector('.sa-answer-box');
+                    if (answerBox.style.display === 'block') {
+                        answerBox.style.display = 'none';
+                        btn.innerHTML = '📖 点击查看标准答案';
+                    } else {
+                        answerBox.style.display = 'block';
+                        btn.innerHTML = '📖 收起答案';
                     }
                 }
             });
         }
         
-        // ---------- 执行所有初始化 ----------
         renderPoem();
         renderAnalysis();
         renderQuiz();
@@ -469,7 +246,6 @@
         initLanguageToggles();
         initTranslationToggle();
         initShortAnswerDelegation();
-        
         console.log('页面初始化完成！');
     });
 </script>

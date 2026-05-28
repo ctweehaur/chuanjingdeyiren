@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
+    <!-- 引入独立CSS -->
     <link rel="stylesheet" href="classic_style.css">
     
+    <!-- 引入独立的 5 个 JS 数据包 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -21,6 +23,7 @@
     </div>
     
     <div class="poem-container">
+        <!-- 古文原文动态容器 -->
         <div id="dynamic-poem-container"></div>
         
         <div class="translation-block" id="translationBlock">
@@ -174,7 +177,7 @@
         return arr;
     }
     
-    // 【核心修复逻辑】：纠正 Feedback 处的英文调取。不再给英文套上 alignText 注音，直接完美输出纯英文。
+    // 【核心大修复】：增加 data-explanation-correct-en 和 data-explanation-wrong-en 属性完美接通数据链路
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container) return;
@@ -189,7 +192,7 @@
             q.options.forEach((opt, idx) => {
                 const optLetter = letters[idx];
                 optionsHtml += `
-                    <button class="option-btn" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
+                    <button class="option-btn" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
                         <div class="opt-letter">${optLetter}.</div>
                         <div class="opt-text-body">
                             <div class="opt-zh">${alignText(opt.text, opt.py)}</div>
@@ -227,27 +230,30 @@
                         this.classList.add('correct');
                         const explanation = this.getAttribute('data-explanation-correct');
                         const explanationPy = this.getAttribute('data-explanation-correct-py');
+                        const explanationEn = this.getAttribute('data-explanation-correct-en');
                         fbDiv.className = 'feedback success';
-                        fbDiv.innerHTML = `✅ 回答正确！<br><br>📖 <strong>正确解析：</strong>${alignText(explanation, explanationPy)}<div class="fb-en">💬 Correct Explanation: ${explanation}</div>`;
+                        fbDiv.innerHTML = `✅ 回答正确！<br><br>📖 <strong>正确解析：</strong>${alignText(explanation, explanationPy)}<div class="fb-en">💬 Correct Explanation: ${explanationEn}</div>`;
                     } else {
                         this.classList.add('wrong');
                         const wrongExp = this.getAttribute('data-explanation-wrong');
                         const wrongExpPy = this.getAttribute('data-explanation-wrong-py');
-                        const wrongOptEn = this.getAttribute('data-opt-en');
+                        const wrongExpEn = this.getAttribute('data-explanation-wrong-en'); // 精准调取错选项英文解析
+                        
                         const correctExp = correctBtn ? correctBtn.getAttribute('data-explanation-correct') : "";
                         const correctExpPy = correctBtn ? correctBtn.getAttribute('data-explanation-correct-py') : "";
+                        const correctExpEn = correctBtn ? correctBtn.getAttribute('data-explanation-correct-en') : ""; // 精准调取正确项英文解析
                         
                         fbDiv.className = 'feedback error';
-                        // 【终极完美校正】：把标签后方误用的 alignText 替换掉，直接输出纯正英文，实现双语彻底离
+                        // 【最终修复】：将原本 Feedback 里的中文兜底彻底废除，全面调取上面新注入的纯正英文解析数据
                         fbDiv.innerHTML = `
                             ❌ 回答错误。正确答案是：<strong>${correctOptText}</strong>
                             <div class="fb-en">💬 Correct Answer: ${correctOptEn}</div>
                             <br>
                             📖 <strong>你选择的选项分析：</strong>${alignText(wrongExp, wrongExpPy)}
-                            <div class="fb-en">💬 Your Choice Analysis: ${wrongExp}</div>
+                            <div class="fb-en">💬 Your Choice Analysis: ${wrongExpEn}</div>
                             <br>
                             📖 <strong>正确选项解析：</strong>${alignText(correctExp, correctExpPy)}
-                            <div class="fb-en">💬 Correct Option Analysis: ${correctExp}</div>`;
+                            <div class="fb-en">💬 Correct Option Analysis: ${correctExpEn}</div>`;
                     }
                 });
             });

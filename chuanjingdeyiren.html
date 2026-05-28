@@ -37,7 +37,7 @@
     
     <div class="controls-wrapper">
         <div class="control-panel"><div class="control-label">🗣️ 拼音辅助 <span>(Pinyin)</span></div><label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label></div>
-        <div class="control-panel"><div class="control-label">🔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
+        <div class="control-panel"><div class="control-label">𔔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
     </div>
 
     <div class="action-group">
@@ -177,7 +177,7 @@
         return arr;
     }
     
-    // 【核心大修复】：增加 data-explanation-correct-en 和 data-explanation-wrong-en 属性完美接通数据链路
+    // 【终极修复逻辑】：将题号和选项字母，强制塞入完全等高的双层立体对齐容器中，抹平像素级高度偏差！
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container) return;
@@ -193,7 +193,13 @@
                 const optLetter = letters[idx];
                 optionsHtml += `
                     <button class="option-btn" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
-                        <div class="opt-letter">${optLetter}.</div>
+                        <!-- 核心修复：给选项字母套上完全一致的双层结构，让它头顶自带隐藏高占位，强制基线与右侧同步 -->
+                        <div class="opt-letter">
+                            <span class="char-box">
+                                <span class="py-text">&nbsp;</span>
+                                <span class="zh-text" style="font-size: 16px !important; font-weight: 700 !important;">${optLetter}.</span>
+                            </span>
+                        </div>
                         <div class="opt-text-body">
                             <div class="opt-zh">${alignText(opt.text, opt.py)}</div>
                             <div class="quiz-option-en">${opt.en}</div>
@@ -203,7 +209,13 @@
             
             card.innerHTML = `
                 <div class="question-header">
-                    <div class="q-num">${q.id}.</div>
+                    <!-- 核心修复：大题目的题号同样套用等高双层结构，消灭段落上移错位 -->
+                    <div class="q-num">
+                        <span class="char-box">
+                            <span class="py-text">&nbsp;</span>
+                            <span class="zh-text" style="font-size: 18px !important; font-weight: 700 !important;">${q.id}.</span>
+                        </span>
+                    </div>
                     <div class="q-text-body">
                         <h4 class="q-zh">${alignText(q.text, q.py)}</h4>
                         <div class="q-en">${q.en}</div>
@@ -237,14 +249,13 @@
                         this.classList.add('wrong');
                         const wrongExp = this.getAttribute('data-explanation-wrong');
                         const wrongExpPy = this.getAttribute('data-explanation-wrong-py');
-                        const wrongExpEn = this.getAttribute('data-explanation-wrong-en'); // 精准调取错选项英文解析
+                        const wrongExpEn = this.getAttribute('data-explanation-wrong-en');
                         
                         const correctExp = correctBtn ? correctBtn.getAttribute('data-explanation-correct') : "";
                         const correctExpPy = correctBtn ? correctBtn.getAttribute('data-explanation-correct-py') : "";
-                        const correctExpEn = correctBtn ? correctBtn.getAttribute('data-explanation-correct-en') : ""; // 精准调取正确项英文解析
+                        const correctExpEn = correctBtn ? correctBtn.getAttribute('data-explanation-correct-en') : "";
                         
                         fbDiv.className = 'feedback error';
-                        // 【最终修复】：将原本 Feedback 里的中文兜底彻底废除，全面调取上面新注入的纯正英文解析数据
                         fbDiv.innerHTML = `
                             ❌ 回答错误。正确答案是：<strong>${correctOptText}</strong>
                             <div class="fb-en">💬 Correct Answer: ${correctOptEn}</div>
@@ -260,6 +271,7 @@
         });
     }
 
+    // 后续交互保持锁定不变
     function initInteractions() {
         const translationHeader = document.getElementById('translationHeader');
         const translationContent = document.getElementById('translationContent');

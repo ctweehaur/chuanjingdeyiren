@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
-    <!-- 引入独立CSS -->
     <link rel="stylesheet" href="classic_style.css">
     
-    <!-- 引入独立的 5 个 JS 数据包 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -23,7 +21,6 @@
     </div>
     
     <div class="poem-container">
-        <!-- 古文原文动态容器 -->
         <div id="dynamic-poem-container"></div>
         
         <div class="translation-block" id="translationBlock">
@@ -37,7 +34,7 @@
     
     <div class="controls-wrapper">
         <div class="control-panel"><div class="control-label">🗣️ 拼音辅助 <span>(Pinyin)</span></div><label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label></div>
-        <div class="control-panel"><div class="control-label">𔔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
+        <div class="control-panel"><div class="control-label">🔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
     </div>
 
     <div class="action-group">
@@ -177,7 +174,7 @@
         return arr;
     }
     
-    // 【终极修复逻辑】：将题号和选项字母，强制塞入完全等高的双层立体对齐容器中，抹平像素级高度偏差！
+    // 【完美重构】：利用统一的 Flex 容器与第一行汉字对齐，彻底消灭飘高或者下掉的问题
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container) return;
@@ -192,36 +189,24 @@
             q.options.forEach((opt, idx) => {
                 const optLetter = letters[idx];
                 optionsHtml += `
-                    <button class="option-btn" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
-                        <!-- 核心修复：给选项字母套上完全一致的双层结构，让它头顶自带隐藏高占位，强制基线与右侧同步 -->
-                        <div class="opt-letter">
-                            <span class="char-box">
-                                <span class="py-text">&nbsp;</span>
-                                <span class="zh-text" style="font-size: 16px !important; font-weight: 700 !important;">${optLetter}.</span>
-                            </span>
+                    <button class="option-btn" style="display: block; text-align: left; width: 100%;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
+                        <div style="display: flex; align-items: center; width: 100%;">
+                            <div style="min-width: 24px; font-size: 16px; font-weight: bold; color: #475569; margin-top: 14px;">${optLetter}</div>
+                            <div class="opt-zh" style="flex: 1; text-align: left;">${alignText(opt.text, opt.py)}</div>
                         </div>
-                        <div class="opt-text-body">
-                            <div class="opt-zh">${alignText(opt.text, opt.py)}</div>
-                            <div class="quiz-option-en">${opt.en}</div>
-                        </div>
+                        <div class="quiz-option-en" style="margin-left: 24px; margin-top: 4px; text-align: left;">${opt.en}</div>
                     </button>`;
             });
             
             card.innerHTML = `
-                <div class="question-header">
-                    <!-- 核心修复：大题目的题号同样套用等高双层结构，消灭段落上移错位 -->
-                    <div class="q-num">
-                        <span class="char-box">
-                            <span class="py-text">&nbsp;</span>
-                            <span class="zh-text" style="font-size: 18px !important; font-weight: 700 !important;">${q.id}.</span>
-                        </span>
-                    </div>
-                    <div class="q-text-body">
-                        <h4 class="q-zh">${alignText(q.text, q.py)}</h4>
-                        <div class="q-en">${q.en}</div>
+                <div class="question-header" style="display: flex; align-items: center;">
+                    <div style="min-width: 24px; font-size: 18px; font-weight: bold; color: #1e293b; margin-top: 14px;">${q.id}.</div>
+                    <div class="q-text-body" style="flex: 1; text-align: left;">
+                        <h4 class="q-zh" style="margin: 0; text-align: left;">${alignText(q.text, q.py)}</h4>
                     </div>
                 </div>
-                <div class="options-area">${optionsHtml}</div>
+                <div class="q-en" style="margin-left: 24px; margin-top: 4px; color: #64748b; font-size: 14px; text-align: left;">${q.en}</div>
+                <div class="options-area" style="margin-top: 12px;">${optionsHtml}</div>
                 <div class="feedback"></div>`;
             container.appendChild(card);
             
@@ -271,7 +256,6 @@
         });
     }
 
-    // 后续交互保持锁定不变
     function initInteractions() {
         const translationHeader = document.getElementById('translationHeader');
         const translationContent = document.getElementById('translationContent');

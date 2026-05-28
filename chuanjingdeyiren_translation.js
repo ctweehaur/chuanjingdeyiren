@@ -1,9 +1,9 @@
-// 穿井得一人 - 白话翻译数据包（智能对齐与本地变调校准版）
+// 穿井得一人 - 白话翻译与中学生友好英文数据包
 const translationData = [
     {
         py: "sòng guó yǒu yī hù xìng dīng de rén jiā ， jiā lǐ méi yǒu jǐng ， cháng cháng yào pài yī gè rén zài wài miàn jiāo dì qǔ shuǐ 。",
         zh: "宋国有一户姓丁的人家，家里没有水井，常常要派一个人在外面浇地取水。",
-        en: "In the state of Song, a man named Ding had no well, so he often sent one person outside to fetch water and irrigate."
+        en: "In the state of Song, a man named Ding had no well, so he often sent one person outside to fetch water and water the land."
     },
     {
         py: "děng dào tā jiā wā hǎo le jǐng ， gào su bié rén shuō ：“ wǒ jiā wā jǐng dé dào le yī gè rén lì 。”",
@@ -21,13 +21,13 @@ const translationData = [
         en: "Everyone talked about it, and it reached the ruler of Song."
     },
     {
-        py: "sòng jūn pài rén qù xún wèn dīng jiā 。 dīng shì huí dá shuō ：“ wǒ shì duō dé dào le yī gè rén de láo lì ， ér bú shì cóng jǐng lǐ wā chū yī gè rén 。”",
+        py: "sòng jūn pài rén qù xún wèn dīng jiā 。 dīng shì huí dá shuō ：“ wǒ shì duō dé dào le yī gè rén de láo lì ， ér bú ))) shì cóng jǐng lǐ wā chū yī gè rén 。”",
         zh: "宋君派人去询问丁家。丁氏回答说：“我是多得到了一个人的劳力，而不是从井里挖出一个人。”",
         en: "The ruler sent someone to ask. Ding replied: “I gained the labor of one person—not a person from the well.”"
     },
     {
-        py: "xiàng zhè yàng xún qiú chuán wén ， hái bú ruò méi yǒu tīng dào a 。",
+        py: "xiàng zhè yàng xún qiú chuán wén ， hái bù rú méi yǒu tīng dào a 。",
         zh: "像这样寻求传闻，还不如没有听到啊。",
-        en: "Seeking news like this — better not to have heard it at all."
+        en: "If you hear rumors like this, it is better not to hear anything at all."
     }
 ];

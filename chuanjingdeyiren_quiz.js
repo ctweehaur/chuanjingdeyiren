@@ -11,8 +11,8 @@ const quizQuestions = [
                 text: "家里没有钱雇佣劳动力",
                 en: "The family had no money to hire labor.",
                 correct: false,
-                explanationPy: "课 文 没 有 提 到 丁 家 的 经 济 状 况 ， 这 属 于 主 观 臆 测 。",
-                explanationZh: "课文没有提到丁家的经济状况，这属于主观臆测。",
+                explanationPy: "课 文 完 全 没 有 提 到 丁 家 的 经 济 状 况 ， 这 属于 主 观 臆 测 。",
+                explanationZh: "课文完全没有提到丁家的经济状况，这属于主观臆测。",
                 explanationEn: "The text does not mention their financial status; this is pure speculation."
             },
             {
@@ -60,11 +60,11 @@ const quizQuestions = [
                 explanationEn: "This is the rumored misunderstanding, not Ding's original meaning."
             },
             {
-                py: "家 里 多 了 一个 仆 人 来 帮 忙 挖 井",
+                py: "家 里 多 了 一 个 仆 人 来 帮 忙 挖 井",
                 text: "家里多了一个仆人来帮忙挖井",
                 en: "They acquired a new servant to help dig the well.",
                 correct: false,
-                explanationPy: "丁 家 是 自己 挖 井 ， 而 不是 雇 佣 新 人 ， 属 于 概 念 混 淆 。",
+                explanationPy: "丁 家 是 自 己 挖 井 ， 而 不 是 雇 佣 新 人 ， 属 于 概 念 混 淆 。",
                 explanationZh: "丁家是自己挖井，而不是雇佣新人，属于概念混淆。",
                 explanationEn: "They dug it themselves rather than hiring a new worker."
             },
@@ -73,16 +73,16 @@ const quizQuestions = [
                 text: "省下了一个专门外出打水的劳动力",
                 en: "They saved the labor of one person who used to fetch water outside.",
                 correct: true,
-                explanationPy: "由 于 家 里 有 了 井 ， 原 本 必 须 在 外 打 水 的 人 可以 撤 回 回 家 帮 忙 ， 动 词 “ 得 ” 意 为 获 得 、 省 下 。",
-                explanationZh: "由于家里有了井，原本必须在外打水的人可以撤回回家帮忙，动词“得”意为获得、省下。",
-                explanationEn: "Since they had a well now, the person fetching water was freed up. 'De' here means to gain or save."
+                explanationPy: "由 于 家 里 有 了 井 ， 原 本 必 须 在 外 打 水 的 人 可 以 撤 回 回 家 帮 忙 ， 省 下 了 人 力 。",
+                explanationZh: "由于家里有了井，原本必须在外打水的人可以撤回回家帮忙，省下了人力。",
+                explanationEn: "Since they had a well now, the person fetching water was freed up, saving manual labor."
             },
             {
-                py: "挖 井 的 技 术 非常 高 超 只 需 要 一 个 人",
+                py: "挖 井 的 技 术 非 常 高 超 只 需 要 一 个 人",
                 text: "挖井的技术非常高超只需要一个人",
                 en: "The well-digging technique was so advanced it required only one person.",
                 correct: false,
-                explanationPy: "文 章 强 调 的 是 劳 动 力 的 释 放 ， 而 非 挖 井 技术 ， 偏 离 主 旨 。",
+                explanationPy: "文 章 强 调 的 是 劳 动 力 的 释 放 ， 而 非 挖 井 技 术 ， 偏 离 主 旨 。",
                 explanationZh: "文章强调的是劳动力的释放，而非挖井技术，偏离主旨。",
                 explanationEn: "The text emphasizes the freeing of labor, not the digging technique."
             }

@@ -1,3 +1,4 @@
+// 穿井得一人 - 白话翻译数据包（100% 完整版）
 const translationData = [
     {
         zh: "宋国有一户姓丁的人家，家里没有水井，需要出去到外面浇灌田地、打水回家。",
@@ -16,7 +17,7 @@ const translationData = [
     },
     {
         zh: "有人听见这句话就四处传播说：“丁氏挖井挖出了一个人。”",
-        py: "yǒu rén tīng jiàn zhè jù huà jiù sì chù chuán bō shuō ： “ dīng模 shì wā jǐng wā cū le yī gè rén 。 ”",
+        py: "yǒu rén tīng jiàn zhè jù huà jiù sì chù chuán bō shuō ： “ dīng shì wā jǐng wā chū le yī gè rén 。 ”",
         en: "Someone heard this and spread the hearsay: 'The Ding family dug up a real man from their well.'"
     },
     {

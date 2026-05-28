@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
-    <!-- 引入独立CSS -->
     <link rel="stylesheet" href="classic_style.css">
     
-    <!-- 引入独立的 5 个 JS 数据包 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -23,7 +21,6 @@
     </div>
     
     <div class="poem-container">
-        <!-- 自动排版为一段，左对齐，首行严格空两格 -->
         <div id="dynamic-poem-container"></div>
         
         <div class="translation-block" id="translationBlock">
@@ -58,16 +55,17 @@
 </div>
  
 <script>
-    // 启用原生 HTML5 <ruby> 标签引擎，确保每个汉字与其拼音绝对居中对齐
+    // 终极排版引擎：去除多余空格，确保绝对居中
     function alignText(zh, py) {
         if (!zh) return '';
-        if (!py) return zh;
-        const chars = zh.split('');
+        if (!py) return zh.trim(); // 斩断无拼音字符的隐形空格
+        const chars = zh.trim().split(''); // 斩断隐形空格
         const pys = py.trim().split(/\s+/);
         let pIdx = 0;
         let html = '';
         for (let c of chars) {
-            if (/[，。？！：“”‘’（）《》、\-\s]/.test(c)) {
+            // 移除了正则里的 \s ，防止空格被渲染成占位的标点
+            if (/[，。？！：“”‘’（）《》、\-]/.test(c)) {
                 html += `<span class="punctuation">${c}</span>`;
             } else {
                 const p = pys[pIdx] || '&nbsp;';
@@ -93,11 +91,11 @@
         
         poemData.forEach(w => {
             if(w.punc) {
-                html += `<span class="punctuation">${w.text}</span>`;
+                html += `<span class="punctuation">${w.text.trim()}</span>`;
             } else {
                 let examClass = w.exam ? ' word exam-focus' : ' word';
                 let examAttr = w.exam ? ' data-exam="true"' : '';
-                html += `<span class="${examClass}" data-text="${w.text}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
+                html += `<span class="${examClass}" data-text="${w.text.trim()}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
             }
         });
         
@@ -276,6 +274,7 @@
                 e.stopPropagation();
                 words.forEach(w => w.classList.remove('active'));
                 this.classList.add('active');
+                
                 dispWord.innerText = this.getAttribute('data-text');
                 dispPinyin.innerText = this.getAttribute('data-pinyin');
                 dispZh.innerHTML = `<strong>解析：</strong> ${this.getAttribute('data-zh')}`;

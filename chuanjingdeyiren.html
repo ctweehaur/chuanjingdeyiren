@@ -55,7 +55,7 @@
 </div>
  
 <script>
-    // 立体注音渲染引擎：采用弹性流式上下双层结构，确保绝对水平看齐
+    // 弹性流式双层注音引擎
     function alignText(zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -86,9 +86,7 @@
     function renderPoem() {
         const container = document.getElementById('dynamic-poem-container');
         let html = '<div class="poem-paragraph">';
-        
-        // 【核心修复】：在文章最开头直接置入两个全角空白符号，完美实现汉字感知级首行缩进
-        html += '&emsp;&emsp;';
+        html += '&emsp;&emsp;'; // 置入两个全角字符占位实现自然首行缩进
         
         poemData.forEach(w => {
             if(w.punc) {

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
+    <!-- 引入独立CSS -->
     <link rel="stylesheet" href="classic_style.css">
     
+    <!-- 引入独立的 5 个 JS 数据包 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -21,6 +23,7 @@
     </div>
     
     <div class="poem-container">
+        <!-- 古文原文动态容器 -->
         <div id="dynamic-poem-container"></div>
         
         <div class="translation-block" id="translationBlock">
@@ -55,7 +58,7 @@
 </div>
  
 <script>
-    // 弹性流式双层注音引擎
+    // 弹性层级立体注音引擎
     function alignText(zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -86,7 +89,7 @@
     function renderPoem() {
         const container = document.getElementById('dynamic-poem-container');
         let html = '<div class="poem-paragraph">';
-        html += '&emsp;&emsp;'; // 置入两个全角字符占位实现自然首行缩进
+        html += '&emsp;&emsp;'; 
         
         poemData.forEach(w => {
             if(w.punc) {
@@ -174,29 +177,41 @@
         return arr;
     }
     
+    // 【核心修复】：将客观题的序号、ABCD完全从注音逻辑中剥离成纯净文本，彻底实现整齐划一对齐
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container) return;
         container.innerHTML = '';
         quizQuestions.forEach(q => {
-            const shuffledOpts = shuffleArray([...q.options]);
             const card = document.createElement('div');
             card.className = 'quiz-card';
             card.setAttribute('data-qid', q.id);
             let optionsHtml = '';
             const letters = ['A', 'B', 'C', 'D'];
-            shuffledOpts.forEach((opt, idx) => {
+            
+            // 固定按 ABCD 顺序输出，不干扰对齐线
+            q.options.forEach((opt, idx) => {
                 const optLetter = letters[idx];
                 optionsHtml += `
                     <button class="option-btn" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}">
-                        <div class="opt-zh">${optLetter}. ${alignText(opt.text, opt.py)}</div>
-                        <div class="quiz-option-en">${opt.en}</div>
+                        <!-- 剥离字母：纯文本靠左站立 -->
+                        <div class="opt-letter">${optLetter}.</div>
+                        <!-- 右侧内容：精准加载带注音的汉字和英文 -->
+                        <div class="opt-text-body">
+                            <div class="opt-zh">${alignText(opt.text, opt.py)}</div>
+                            <div class="quiz-option-en">${opt.en}</div>
+                        </div>
                     </button>`;
             });
+            
             card.innerHTML = `
                 <div class="question-header">
-                    <h4 class="q-zh">${q.id}. ${alignText(q.text, q.py)}</h4>
-                    <div class="q-en">${q.en}</div>
+                    <!-- 剥离大标题题号：纯文本排列 -->
+                    <div class="q-num">${q.id}.</div>
+                    <div class="q-text-body">
+                        <h4 class="q-zh">${alignText(q.text, q.py)}</h4>
+                        <div class="q-en">${q.en}</div>
+                    </div>
                 </div>
                 <div class="options-area">${optionsHtml}</div>
                 <div class="feedback"></div>`;
@@ -227,7 +242,7 @@
                         const correctExp = correctBtn ? correctBtn.getAttribute('data-explanation-correct') : "";
                         const correctExpPy = correctBtn ? correctBtn.getAttribute('data-explanation-correct-py') : "";
                         fbDiv.className = 'feedback error';
-                        fbDiv.innerHTML = `❌ 回答错误。正确答案是：${alignText(correctOptText, correctOptPy)}<br><br>📖 你选择的选项分析：${alignText(wrongExp, wrongExpPy)}<br>📖 正确选项解析：${alignText(correctExp, correctExpPy)}`;
+                        fbDiv.innerHTML = `❌ 回答错误。正确答案是：${correctOptText}<br><br>📖 你选择的选项分析：${alignText(wrongExp, wrongExpPy)}<br>📖 正确选项解析：${alignText(correctExp, correctExpPy)}`;
                     }
                 });
             });

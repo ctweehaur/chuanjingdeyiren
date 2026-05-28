@@ -1,5 +1,5 @@
 /* ==========================================================================
-   🎨 互动古文平台统一全局皮肤 (classic_style.css) - 终极完备版
+   🎨 互动古文平台统一全局皮肤 (classic_style.css) - 终极无缝回弹完备版
    ========================================================================== */
 
 /* 1. 全局变量与核心基调 */
@@ -125,8 +125,8 @@ body {
     transition: all 0.15s ease;
 }
 
-/* 所有板块的拼音位置样式 */
-.trans-py, .ana-py, .quiz-q-py, .quiz-opt-py, .feedback-py {
+/* 全板块拼音统一类名样式 */
+.trans-py, .ana-py, .quiz-q-py, .quiz-opt-py, .feedback-py, .strategy-py, .sa-py {
     font-size: 11px;
     height: 14px;
     line-height: 14px;
@@ -209,14 +209,16 @@ body {
 input:checked + .slider { background-color: var(--accent-blue); }
 input:checked + .slider:before { transform: translateX(22px); }
 
-/* 7. 动态辅助信息智能显示/隐藏控制逻辑 (治愈汉字散开的核心) */
+/* 7. 动态辅助信息智能显示/隐藏控制逻辑 (5大面板无缝回弹核心) */
 
-/* 🗣️ 隐藏拼音辅助 */
+/* 🗣️ 隐藏全站拼音辅助 */
 body.hide-pinyin .trans-py,
 body.hide-pinyin .ana-py,
 body.hide-pinyin .quiz-q-py,
 body.hide-pinyin .quiz-opt-py,
-body.hide-pinyin .feedback-py {
+body.hide-pinyin .feedback-py,
+body.hide-pinyin .strategy-py,
+body.hide-pinyin .sa-py {
     height: 0 !important;
     margin-bottom: 0 !important;
     opacity: 0 !important;
@@ -228,13 +230,14 @@ body.hide-pinyin .feedback-py {
 body.hide-pinyin .ruby-item {
     margin: 0 !important;
     column-gap: 0 !important;
+    letter-spacing: 0 !important;
 }
 
 body.hide-pinyin .trans-ruby-wrapper {
     row-gap: 4px !important; /* 隐藏拼音后收紧行高 */
 }
 
-/* 🔤 隐藏英文辅助 */
+/* 🔤 隐藏全站英文辅助 */
 body.hide-english .trans-en,
 body.hide-english .q-en,
 body.hide-english .quiz-option-en,

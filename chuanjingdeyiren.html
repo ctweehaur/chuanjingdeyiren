@@ -106,26 +106,22 @@
         });
     }
 
-    // 💡 终极修复版：引入标点隔离双指针，强制汉字与拼音绝对对齐
     function renderTranslation() {
         const container = document.getElementById('translationContent');
         container.innerHTML = '';
         
         translationData.forEach((item, index) => {
-            // 彻底过滤掉拼音数据里可能混入的标点符号，只保留纯字母拼音数组
             const pyWords = item.py.split(/\s+/).filter(p => p.trim() !== '' && !/[，。？！：“”‘’（）；、！,;.?!"']/.test(p));
             const zhChars = Array.from(item.zh).filter(c => c.trim() !== ''); 
             
             let rubyGroupHtml = '';
-            let pyIdx = 0; // 拼音库专属指针
+            let pyIdx = 0;
             
             zhChars.forEach((zh) => {
-                // 正则判定当前字符是不是标点符号
                 const isPunc = /[，。？！：“”‘’（）；、！,;.?!"']/.test(zh);
                 let currentPy = '&nbsp;';
                 
                 if (!isPunc) {
-                    // 如果是汉字，才从纯拼音数组里拿一个出来，指针往后走
                     if (pyIdx < pyWords.length) {
                         currentPy = pyWords[pyIdx];
                         pyIdx++;
@@ -150,21 +146,33 @@
         });
     }
 
+    // 💡 已经优化：全诗赏析标题完美逐字对齐，赏析文本不再显示多余拼音
     function renderAnalysis() {
         const container = document.getElementById('analysis-content');
         container.innerHTML = '';
         analysisData.forEach(item => {
+            const pyWords = item.py.split(/\s+/).filter(p => p.trim() !== '');
+            const zhChars = Array.from(item.header).filter(c => c.trim() !== '');
+            let titleRubyHtml = '';
+            
+            zhChars.forEach((zh, idx) => {
+                titleRubyHtml += `
+                    <div class="ruby-item">
+                        <div class="trans-py">${pyWords[idx] || '&nbsp;'}</div>
+                        <div class="trans-zh-char" style="font-size:18px; font-weight:bold; color:var(--text-poem);">${zh}</div>
+                    </div>
+                `;
+            });
+
             container.innerHTML += `
                 <div class="analysis-card">
-                    <div class="ana-title-group">
-                        <div class="ana-py">${item.py}</div>
-                        <div class="ana-header">${item.header}</div>
-                        <div class="ana-en">${item.en}</div>
+                    <div class="ana-title-group" style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
+                        <div class="trans-ruby-wrapper">${titleRubyHtml}</div>
+                        <div class="ana-en" style="margin-top:0; padding-left:2px;">${item.en}</div>
                     </div>
-                    <div class="ana-text-group">
-                        <div class="ana-py">${item.contentPy}</div>
-                        <p class="ana-zh">${item.contentZh}</p>
-                        <div class="ana-en">${item.contentEn}</div>
+                    <div class="trans-text-line" style="margin-top:15px; border-top:1px dashed #cbd5e1; padding-top:15px;">
+                        <p class="ana-zh" style="font-size:15px; line-height:1.8; color:var(--text-main); margin:0;">${item.contentZh}</p>
+                        <div class="trans-en" style="margin-top:8px;">${item.contentEn}</div>
                     </div>
                 </div>
             `;
@@ -361,7 +369,7 @@
         const answerBox = btn.nextElementSibling;
         if (answerBox.style.display === 'block') {
             answerBox.style.display = 'none';
-            btn.innerHTML = '📖 点击查看标准答案';
+            btn.innerHTML = '📖 点击查看 standard 答案';
         } else {
             answerBox.style.display = 'block';
             btn.innerHTML = '📖 收起答案';

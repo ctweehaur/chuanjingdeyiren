@@ -1,22 +1,28 @@
+/* ==========================================================================
+   完全完整版 - 互动古文平台全局样式 (classic_style.css)
+   ========================================================================== */
+
 :root {
     --bg-main: #f8fafc;
     --card-bg: #ffffff;
     --text-main: #1e293b;
-    --text-secondary: #475569;
     --text-poem: #0f172a;
     --accent-blue: #3b82f6;
     --border-color: #e2e8f0;
     --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     --border-radius-md: 12px;
 }
+
 * { box-sizing: border-box; }
 body { font-family: sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.6; }
 .app-container { max-width: 800px; margin: 0 auto; }
+
 .poem-container { background: var(--card-bg); border-radius: var(--border-radius-md); padding: 30px; box-shadow: var(--shadow-soft); margin-bottom: 25px; border: 1px solid var(--border-color); }
 .poem-paragraph { font-size: 22px; line-height: 2.2; color: var(--text-poem); text-align: justify; }
 .ruby-item { display: inline-flex; flex-direction: column; align-items: center; margin: 0 2px; }
 .trans-py { font-size: 11px; height: 14px; color: #b45309; }
 .trans-zh-char { font-size: 15px; }
+
 body.hide-pinyin .trans-py,
 body.hide-pinyin .ana-py,
 body.hide-pinyin .quiz-q-py,
@@ -25,3 +31,10 @@ body.hide-pinyin .feedback-py,
 body.hide-pinyin .strategy-py,
 body.hide-pinyin .sa-py { display: none !important; }
 body.hide-pinyin .ruby-item { margin: 0 !important; gap: 0 !important; }
+
+/* 基础面板容器 */
+.collapsible-content { display: none; }
+.quiz-card, .sa-card { background: var(--card-bg); border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 20px; box-shadow: var(--shadow-soft); border: 1px solid var(--border-color); }
+.option-btn { background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; margin-bottom: 8px; width: 100%; text-align: left; }
+.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; }
+.wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; }

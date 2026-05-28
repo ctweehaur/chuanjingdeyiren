@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
+    <!-- 引入独立CSS -->
     <link rel="stylesheet" href="classic_style.css">
     
+    <!-- 引入独立的 5 个 JS 数据包 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -21,6 +23,7 @@
     </div>
     
     <div class="poem-container">
+        <!-- 自动排版为一段，左对齐首行缩进 -->
         <div id="dynamic-poem-container"></div>
         
         <div class="translation-block" id="translationBlock">
@@ -55,7 +58,7 @@
 </div>
  
 <script>
-    // 核心排版引擎：将句子切分为单字，严格上下对齐拼音
+    // 终极排版引擎：利用原生 <ruby> 标签确保基线对齐
     function alignText(zh, py) {
         if (!zh) return '';
         if (!py) return zh;
@@ -68,7 +71,7 @@
                 html += `<span class="punctuation">${c}</span>`;
             } else {
                 const p = pys[pIdx] || '&nbsp;';
-                html += `<span class="ruby-word"><span class="py">${p}</span><span class="zh">${c}</span></span>`;
+                html += `<ruby>${c}<rt class="py">${p}</rt></ruby>`;
                 pIdx++;
             }
         }
@@ -88,14 +91,13 @@
         const container = document.getElementById('dynamic-poem-container');
         let html = '<div class="poem-paragraph">';
         
-        // 【修复点】：因为 text.js 已经改成了一整个平铺的数组，所以这里只需要一层循环
         poemData.forEach(w => {
             if(w.punc) {
                 html += `<span class="punctuation">${w.text}</span>`;
             } else {
                 let examClass = w.exam ? ' word exam-focus' : ' word';
                 let examAttr = w.exam ? ' data-exam="true"' : '';
-                // 增加 data-text 专门用于气泡显示，避免抓取拼音
+                // data-text 防止抓到内部注音
                 html += `<span class="${examClass}" data-text="${w.text}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
             }
         });
@@ -275,11 +277,14 @@
                 e.stopPropagation();
                 words.forEach(w => w.classList.remove('active'));
                 this.classList.add('active');
+                
+                // 修复悬浮窗乱码：抓取 data-text
                 dispWord.innerText = this.getAttribute('data-text');
                 dispPinyin.innerText = this.getAttribute('data-pinyin');
                 dispZh.innerHTML = `<strong>解析：</strong> ${this.getAttribute('data-zh')}`;
                 dispEn.innerText = this.getAttribute('data-en');
                 examTag.style.display = (this.getAttribute('data-exam') === 'true') ? 'inline-block' : 'none';
+                
                 tooltip.style.display = 'block';
                 const rect = this.getBoundingClientRect();
                 tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 20}px`;

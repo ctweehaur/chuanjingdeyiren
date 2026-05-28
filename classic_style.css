@@ -97,7 +97,7 @@ body {
 
 .poem-line {
     margin-bottom: 20px;
-    text-align: center;
+    text-align: left;  /* ✅ 修改：左对齐 */
 }
 
 .line-text {
@@ -106,6 +106,7 @@ body {
     color: var(--text-poem);
     font-family: 'STKaiti', 'KaiTi', '楷体', serif;
     letter-spacing: 1px;
+    text-indent: 2em;  /* ✅ 新增：首行空两格 */
 }
 
 /* ====================  单词样式（可点击） ==================== */
@@ -933,6 +934,7 @@ body.hide-english .sa-answer-en {
     .line-text {
         font-size: 20px;
         line-height: 1.8;
+        text-indent: 2em;  /* ✅ 响应式也保留首行缩进 */
     }
     
     .word {
@@ -989,6 +991,7 @@ body.hide-english .sa-answer-en {
     
     .line-text {
         font-size: 18px;
+        text-indent: 2em;  /* ✅ 手机端也保留首行缩进 */
     }
     
     .trans-zh {

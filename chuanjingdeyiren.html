@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互动古文平台</title>
     
+    <!-- 🎨 1. 引入统一的全局 CSS 皮肤文件 -->
     <link rel="stylesheet" href="classic_style.css">
 
+    <!-- 🗄️ 2. 全英文数据包引用 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -16,11 +18,14 @@
 <body>
  
 <div class="app-container">
+    <!-- 头部栏 -->
     <div class="header-section" id="dynamic-header"></div>
     
+    <!-- 正文与分词栏 -->
     <div class="poem-container">
         <div id="dynamic-poem-lines"></div>
         
+        <!-- 白话翻译栏 -->
         <div class="translation-block" id="translationBlock">
             <div class="translation-header" id="translationHeader">
                 <div class="translation-title"><span>📖</span> 白话翻译</div>
@@ -30,26 +35,32 @@
         </div>
     </div>
     
+    <!-- 全局控制面板 -->
     <div class="controls-wrapper">
         <div class="control-panel"><div class="control-label">🗣️ 拼音辅助 <span>(Pinyin)</span></div><label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label></div>
         <div class="control-panel"><div class="control-label">🔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
     </div>
 
+    <!-- 功能按钮 -->
     <div class="action-group">
         <button class="action-btn btn-analysis" id="toggle-analysis-btn"><span class="btn-icon">📜</span> 展开全诗赏析</button>
         <button class="action-btn btn-quiz" id="toggle-quiz-btn"><span class="btn-icon">🎯</span> 客观题自测</button>
         <button class="action-btn btn-shortq" id="toggle-shortq-btn"><span class="btn-icon">✍️</span> 简答题特训</button>
     </div>
  
+    <!-- 赏析面板 -->
     <div class="collapsible-content" id="analysis-content"></div>
     
+    <!-- 客观题自测面板 -->
     <div class="collapsible-content" id="quiz-content">
         <div id="quiz-dynamic-container"></div>
     </div>
     
+    <!-- 简答题自测面板 -->
     <div class="collapsible-content" id="shortq-content"></div>
 </div>
  
+<!-- 全局悬浮气泡卡片 -->
 <div class="floating-tooltip" id="tooltip">
     <div class="exp-header"><span class="exp-word" id="disp-word"></span><span class="exp-pinyin" id="disp-pinyin"></span><span class="exam-tag" id="exam-tag">考点</span></div>
     <div class="exp-zh" id="disp-zh"></div>
@@ -102,14 +113,32 @@
         });
     }
 
+    // 💡 已经为你升级：白话翻译改为字音垂直对齐架构
     function renderTranslation() {
         const container = document.getElementById('translationContent');
         container.innerHTML = '';
         translationData.forEach((item, index) => {
+            const pyWords = item.py.split(' ');
+            const zhChars = Array.from(item.zh).filter(c => c !== ' '); 
+            
+            let rubyGroupHtml = '';
+            
+            pyWords.forEach((py, idx) => {
+                const zh = zhChars[idx] || '';
+                if (zh) {
+                    const isPunc = /[，。？！：“”‘’（） ；、]/.test(zh);
+                    rubyGroupHtml += `
+                        <div class="ruby-item">
+                            <div class="trans-py">${isPunc ? '&nbsp;' : py}</div>
+                            <div class="trans-zh-char">${zh}</div>
+                        </div>
+                    `;
+                }
+            });
+
             container.innerHTML += `
                 <div class="trans-text-line">
-                    <div class="trans-py">${item.py}</div>
-                    <div class="trans-zh">${item.zh}</div>
+                    <div class="trans-ruby-wrapper">${rubyGroupHtml}</div>
                     <div class="trans-en">${item.en}</div>
                 </div>
                 ${index < translationData.length - 1 ? '<div class="trans-divider"></div>' : ''}

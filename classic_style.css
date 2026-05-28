@@ -59,7 +59,6 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
 .word:hover::after { background-color: var(--primary-blue-hover); width: 100%; left: 0; }
 .word.active { background-color: var(--primary-blue); color: #ffffff; transform: scale(1.05); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
 .word.active::after { display: none; }
-.word.exam-focus { border: 1px dashed var(--accent-red); }
 .punctuation { color: #94a3b8; margin: 0 4px; }
 
 .translation-block { margin-top: 24px; border-top: 2px dashed #e2e0d4; background: #fef9f0; border-radius: 16px; overflow: hidden; }

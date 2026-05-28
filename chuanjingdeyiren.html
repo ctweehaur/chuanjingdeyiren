@@ -23,7 +23,7 @@
     </div>
     
     <div class="poem-container">
-        <!-- 自动排版为一段，左对齐首行缩进 -->
+        <!-- 自动排版为一段，左对齐，首行严格空两格 -->
         <div id="dynamic-poem-container"></div>
         
         <div class="translation-block" id="translationBlock">
@@ -58,7 +58,7 @@
 </div>
  
 <script>
-    // 终极排版引擎：利用原生 <ruby> 标签确保基线对齐
+    // 启用原生 HTML5 <ruby> 标签引擎，确保每个汉字与其拼音绝对居中对齐
     function alignText(zh, py) {
         if (!zh) return '';
         if (!py) return zh;
@@ -97,7 +97,6 @@
             } else {
                 let examClass = w.exam ? ' word exam-focus' : ' word';
                 let examAttr = w.exam ? ' data-exam="true"' : '';
-                // data-text 防止抓到内部注音
                 html += `<span class="${examClass}" data-text="${w.text}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
             }
         });
@@ -277,8 +276,6 @@
                 e.stopPropagation();
                 words.forEach(w => w.classList.remove('active'));
                 this.classList.add('active');
-                
-                // 修复悬浮窗乱码：抓取 data-text
                 dispWord.innerText = this.getAttribute('data-text');
                 dispPinyin.innerText = this.getAttribute('data-pinyin');
                 dispZh.innerHTML = `<strong>解析：</strong> ${this.getAttribute('data-zh')}`;

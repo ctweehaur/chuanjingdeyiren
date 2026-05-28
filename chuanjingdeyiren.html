@@ -86,20 +86,20 @@
 
     function renderPoem() {
         const container = document.getElementById('dynamic-poem-container');
-        // 核心修复：直接渲染为一整个 paragraph
         let html = '<div class="poem-paragraph">';
-        poemData.forEach(line => {
-            line.forEach(w => {
-                if(w.punc) {
-                    html += `<span class="punctuation">${w.text}</span>`;
-                } else {
-                    let examClass = w.exam ? ' word exam-focus' : ' word';
-                    let examAttr = w.exam ? ' data-exam="true"' : '';
-                    // 核心修复：增加 data-text 专门用于气泡显示，避免抓取拼音
-                    html += `<span class="${examClass}" data-text="${w.text}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
-                }
-            });
+        
+        // 【修复点】：因为 text.js 已经改成了一整个平铺的数组，所以这里只需要一层循环
+        poemData.forEach(w => {
+            if(w.punc) {
+                html += `<span class="punctuation">${w.text}</span>`;
+            } else {
+                let examClass = w.exam ? ' word exam-focus' : ' word';
+                let examAttr = w.exam ? ' data-exam="true"' : '';
+                // 增加 data-text 专门用于气泡显示，避免抓取拼音
+                html += `<span class="${examClass}" data-text="${w.text}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
+            }
         });
+        
         html += '</div>';
         container.innerHTML = html;
     }
@@ -275,7 +275,6 @@
                 e.stopPropagation();
                 words.forEach(w => w.classList.remove('active'));
                 this.classList.add('active');
-                // 核心修复：直接读取 data-text，不会抓到拼音代码
                 dispWord.innerText = this.getAttribute('data-text');
                 dispPinyin.innerText = this.getAttribute('data-pinyin');
                 dispZh.innerHTML = `<strong>解析：</strong> ${this.getAttribute('data-zh')}`;

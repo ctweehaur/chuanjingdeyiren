@@ -174,7 +174,7 @@
         return arr;
     }
     
-    // 【终极接通】：在此处完美将 opt.en 数据绑定并渲染到选项的底部，确保英文不再缺失！
+    // 【核心修复逻辑】：纠正 Feedback 处的英文调取。不再给英文套上 alignText 注音，直接完美输出纯英文。
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container) return;
@@ -238,6 +238,7 @@
                         const correctExpPy = correctBtn ? correctBtn.getAttribute('data-explanation-correct-py') : "";
                         
                         fbDiv.className = 'feedback error';
+                        // 【终极完美校正】：把标签后方误用的 alignText 替换掉，直接输出纯正英文，实现双语彻底离
                         fbDiv.innerHTML = `
                             ❌ 回答错误。正确答案是：<strong>${correctOptText}</strong>
                             <div class="fb-en">💬 Correct Answer: ${correctOptEn}</div>

@@ -49,10 +49,27 @@ body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !imp
     letter-spacing: 0.3px;
 }
 
-.poem-container { background: #fefcf5; border-radius: var(--border-radius-md); padding: 30px 20px; margin-bottom: 25px; border: 1px solid #ede9d0; margin-top: 15px;}
-.poem-line { margin-bottom: 24px; text-align: center; }
+/* 💡 已修改：正文外框改为靠左对齐，并拉宽左右内边距 */
+.poem-container { 
+    background: #fefcf5; 
+    border-radius: var(--border-radius-md); 
+    padding: 30px 40px; 
+    margin-bottom: 25px; 
+    border: 1px solid #ede9d0; 
+    margin-top: 15px;
+    text-align: left; 
+}
+
+/* 💡 已修改：正文行改为靠左对齐，并设置首行全自动空两格 (2em) */
+.poem-line { 
+    margin-bottom: 24px; 
+    text-align: left; 
+    text-indent: 2em; 
+}
+
 .line-text { font-size: 26px; line-height: 1.5; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 2px; }
 
+/* 💡 完美瘦身：已彻底移除 .word.exam-focus 虚线框的所有相关代码 */
 .word { cursor: pointer; padding: 4px 6px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; }
 .word::after { content: ''; position: absolute; bottom: 2px; left: 10%; width: 80%; height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
 .word:hover { background-color: #eff6ff; color: var(--primary-blue); transform: translateY(-2px); }

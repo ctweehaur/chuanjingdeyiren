@@ -1,39 +1,37 @@
-// 穿井得一人 - 主观简答题库
+// 穿井得一人 - 简答题特训数据（豆腐块绝对对齐版）
 const shortQQuestions = [
     {
         id: "Q1",
-        text: "为什么“得一人”会被误解？请结合文本分析。",
-        en: "Why was \"gained one person\" misunderstood? Analyze with the text.",
-        py: "wèi shén me “ dé yī rén ” huì bèi wù jiě ？ qǐng jié hé wén běn fēn xī 。",
-        strategyZh: "第一步：丁氏原话“穿井得一人”在文中对应哪句解释？<br>第二步：“得一人”在古代汉语中有哪两种可能的理解？<br>第三步：传播者犯了什么错误？",
-        strategyPy: "dì yī bù ： dīng shì yuán huà “ chuān jǐng dé yī rén ” zài wén zhōng duì yìng nǎ jù jiě shì ？ dì èr bù ： “ dé yī rén ” zài gǔ dài hàn yǔ zhōng yǒu nǎ liǎng zhǒng kě néng de lǐ jiě ？ dì sān bù ： chuán bō zhě fàn le shén me cuò wù ？",
-        strategyEn: "Step 1: Which sentence explains Ding's original meaning? Step 2: Two possible interpretations of \"gained one person\"? Step 3: What mistake did the spreader make?",
-        answerZh: "丁氏原意是“多得到一个劳动力”，而“得一人”字面上可理解为“获得一个人（实体）”。听者没有结合上下文，传播时失实，导致误解。",
-        answerPy: "dīng shì yuán yì shì “ duō dé yī gè láo dòng lì ” ， ér “ dé yī rén ” zì miàn shàng kě lǐ jiě wéi “ huò dé yī gè rén （ shí tǐ ） ” 。 tīng zhě méi yǒu jié hé shàng xià wén ， chuán bō shí shī zhēn ， dǎo zhì wù jiě 。",
-        answerEn: "Ding meant \"gained an extra laborer\", but \"gained one person\" could literally mean \"found a person\". The listener didn't consider context and spread a distorted version."
+        py: "“ 穿 井 得 一 人 ” 的 谣 言 是 如 何 产 生 的 ？ 请 简 要 概 括 。",
+        text: "“穿井得一人”的谣言是如何产生的？请简要概括。",
+        en: "How did the rumor 'digging a well gained a person' come about? Please summarize briefly.",
+        
+        strategyPy: "答 题 时 需 抓 住 “ 丁 氏 原 意 ” 与 “ 传 话 者 误 解 ” 的 核心 矛 盾 进 行 对 比 阐 述 。",
+        strategyZh: "答题时需抓住“丁氏原意”与“传话者误解”的核心矛盾进行对比阐述。",
+        strategyEn: "Focus on the core contradiction between Ding's original intent and the messenger's misinterpretation.",
+        
+        answerPy: "起 因 是 丁 氏 挖 井 后 省 下 了 一 个 劳 动力 ， 随 口 说 挖 井 得到 一 个 人 力的 帮 忙 ； 听 话 的 人 没 有 调 查 核 实 ， 误 将 其 听 成 “ 从 井 底 挖 掘 出 了一 个 活 人 ” 并 瞎 传 。",
+        answerZh: "起因是丁氏挖井后省下了一个劳动力，随口说挖井得到一个人力的帮忙；听话的人没有调查核实，误将其听成“从井底挖掘出了一个活人”并瞎传。",
+        answerEn: "It started when Ding expressed that digging a well saved him one person's labor. Listeners spread it without verifying, mistakenly thinking a real person was dug up from the well bottom."
     },
     {
         id: "Q2",
-        text: "“国人道之，闻之于宋君”在文中起了什么作用？",
-        en: "What role does this sentence play?",
-        py: "“ guó rén dào zhī ， wén zhī yú sòng jūn ” zài wén zhōng qǐ le shén me zuò yòng ？",
-        strategyZh: "第一步：“国人道之”说明谣言传播的广度如何？<br>第二步：“闻之于宋君”说明谣言影响到了哪个层面？<br>第三步：这句话为下文做了哪些铺垫？",
-        strategyPy: "dì yī bù ： “ guó rén dào zhī ” shuō míng yáo yán chuán bō de guǎng dù rú hé ？ dì èr bù ： “ wén zhī yú sòng jūn ” shuō míng yáo yán yǐng xiǎng dào le nǎ ge céng miàn ？ dì sān bù ： zhè jù huà wéi xià wén zuò le nǎ xiē pū diàn ？",
-        strategyEn: "Step 1: What does \"国人道之\" suggest about the rumor's spread? Step 2: What level does \"闻之于宋君\" show? Step 3: How does it set up the following text?",
-        answerZh: "表现了谣言传播范围极广，甚至惊动国君，为下文“宋君令人问”埋下伏笔，突出以讹传讹的危害性。",
-        answerPy: "biǎo xiàn le yáo yán chuán bō fàn wēi jí guǎng ， shèn zhì jīng dòng guó jūn ， wéi xià wén “ sòng jūn lìng rén wèn ” mái xià fú bǐ ， tū chū yǐ é chuán é de wēi hài xìng 。",
-        answerEn: "It shows the rumor spread widely, even reaching the ruler, setting up the inquiry and highlighting the danger of misinformation."
+        py: "这 则 寓 言 故 事 告 诫 了 我 们 一 个 什 么 样 的 处 世 道 理 ？",
+        text: "这则寓言故事告诫了我们一个什么样的处世道理？",
+        en: "What life lesson does this fable teach us regarding handling information?",
+        
+        strategyPy: "这 属于 主 旨 寓 意 题 ， 必 须 结 合 课 文 尾 句 “ 求 闻 之 若 此 ， 不 如 无 闻 也 ” 的 核心 意 思 来 答 题 。",
+        strategyZh: "这属于主旨寓意题，必须结合课文尾句“求闻之若此，不如无闻也”的核心意思来答题。",
+        strategyEn: "This is a core theme question. Answer based on the final moral: 'Seeking news like this is worse than hearing nothing.'"
     },
     {
         id: "Q3",
-        text: "结尾“求闻之若此，不若无闻也”揭示了什么道理？",
-        en: "What truth does the ending reveal?",
-        py: "jié wěi “ qiú wén zhī ruò cǐ ， bù ruò wú wén yě ” jiē shì le shén me dào lǐ ？",
-        strategyZh: "第一步：如果得到的是失真消息，会有什么后果？<br>第二步：与“没有任何消息”相比，虚假消息的危害哪个更大？<br>第三步：作者借此告诫人们对待传闻应采取什么态度？",
-        strategyPy: "dì yī bù ： rú guǒ dé dào de shì shī zhēn xiāo xī ， huì yǒu shén me hòu guǒ ？ dì èr bù ： yǔ “ méi yǒu rèn hé xiāo xī ” xiāng bǐ ， xū jiǎ xiāo xī de wēi hài nǎ ge gèng dà ？ dì sān bù ： zuò zhě jiè cǐ gào jiè rén men duì dài chuán wén yīng cǎi qǔ shén me tài dù ？",
-        strategyEn: "Step 1: What harm can distorted news cause? Step 2: Compare false news vs no news. Step 3: What attitude should we have towards hearsay?",
-        answerZh: "轻信失真的谣言会误导判断，甚至造成恐慌。与其听信虚假传闻，不如不听。道理：对于信息要审慎求证，不可盲目相信。",
-        answerPy: "qīng xìn shī zhēn de yáo yán huì wù dǎo pàn duàn ， shèn zhì zào chéng kǒng huāng 。 yǔ qí tīng xìn xū jiǎ chuán wén ， bù rú bù tīng 。 dào lǐ ： duì yú xìn xī yào shěn shèn qiú zhèng ， bù kě máng mù xiāng xìn 。",
-        answerEn: "Believing false rumors misleads judgment. It's better to have no information than false information. Lesson: always verify before believing."
+        py: "告 诫 我 们 对 待 传 闻 绝 对 不 能 盲 目 轻 信 和 瞎 传 ， 凡 事 必 须 实 事 求 是地 去 亲 自 调 查 研 究 ， 否 则 会 以 讹 传 讹 酿 成 大 错 。",
+        text: "告诫我们对待传闻绝对不能盲目轻信和瞎传，凡事必须实事求是地去亲自调查研究，否则会以讹传讹酿成大错。",
+        en: "It warns us never to blindly believe or spread rumors. We must always seek truth from facts and verify information, otherwise hearsay will lead to severe distortions.",
+        
+        strategyPy: "此 题 考 察 学 生 结 合 现 实 活 动 进 行 深 度 拓 展 思考 的 鉴 赏 能 力 。",
+        strategyZh: "此题考察学生结合现实活动进行深度拓展思考的鉴赏能力。",
+        strategyEn: "This question tests students' appreciation ability to expand deep thinking combined with real life."
     }
 ];

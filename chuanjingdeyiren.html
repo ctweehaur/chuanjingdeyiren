@@ -74,6 +74,29 @@
         return html;
     }
 
+    // 【特别定制拼音对齐引擎】：专门为题号和选项字母设计，让英文字母与汉字完美同线，且头上拥有独立空拼音位
+    function alignTextWithPrefix(prefix, zh, py) {
+        if (!zh) return '';
+        const chars = zh.trim().split('');
+        const pys = py ? py.trim().split(/\s+/) : [];
+        let html = '';
+        
+        // 核心妙招：将字母/题号作为整行文本的第一个字符框切入，拼音层为空格，汉字层为字母
+        html += `<span class="char-box" style="margin-right: 8px;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: #1e293b;">${prefix}</span></span>`;
+        
+        let pIdx = 0;
+        for (let c of chars) {
+            if (/[，。？！：“”‘’（）《》、\-\:]/.test(c)) {
+                html += `<span class="punctuation">${c}</span>`;
+            } else {
+                const p = pys[pIdx] || '';
+                html += `<span class="char-box"><span class="py-text">${p}</span><span class="zh-text">${c}</span></span>`;
+                pIdx++;
+            }
+        }
+        return html;
+    }
+
     window.onload = function() {
         renderPoem();
         renderTranslation();
@@ -174,7 +197,7 @@
         return arr;
     }
     
-    // 【完美重构】：利用统一的 Flex 容器与第一行汉字对齐，彻底消灭飘高或者下掉的问题
+    // 【史诗级大重构】：彻底取消外部Flex强制对齐，改用嵌入式内联对齐引擎，完美同步第一行汉字中轴线
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container) return;
@@ -184,29 +207,25 @@
             card.className = 'quiz-card';
             card.setAttribute('data-qid', q.id);
             let optionsHtml = '';
-            const letters = ['A', 'B', 'C', 'D'];
+            const letters = ['A.', 'B.', 'C.', 'D.'];
             
             q.options.forEach((opt, idx) => {
                 const optLetter = letters[idx];
                 optionsHtml += `
-                    <button class="option-btn" style="display: block; text-align: left; width: 100%;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
-                        <div style="display: flex; align-items: center; width: 100%;">
-                            <div style="min-width: 24px; font-size: 16px; font-weight: bold; color: #475569; margin-top: 14px;">${optLetter}</div>
-                            <div class="opt-zh" style="flex: 1; text-align: left;">${alignText(opt.text, opt.py)}</div>
-                        </div>
-                        <div class="quiz-option-en" style="margin-left: 24px; margin-top: 4px; text-align: left;">${opt.en}</div>
+                    <button class="option-btn" style="display: block; text-align: left; width: 100%; padding: 12px 16px;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
+                        <div class="opt-zh" style="text-align: left;">${alignTextWithPrefix(optLetter, opt.text, opt.py)}</div>
+                        <div class="quiz-option-en" style="margin-left: 28px; margin-top: 4px; text-align: left; color: #475569; font-size: 14px;">${opt.en}</div>
                     </button>`;
             });
             
             card.innerHTML = `
-                <div class="question-header" style="display: flex; align-items: center;">
-                    <div style="min-width: 24px; font-size: 18px; font-weight: bold; color: #1e293b; margin-top: 14px;">${q.id}.</div>
-                    <div class="q-text-body" style="flex: 1; text-align: left;">
-                        <h4 class="q-zh" style="margin: 0; text-align: left;">${alignText(q.text, q.py)}</h4>
-                    </div>
+                <div class="question-header" style="text-align: left;">
+                    <h4 class="q-zh" style="margin: 0; text-align: left; line-height: 1.8;">
+                        ${alignTextWithPrefix(q.id + '.', q.text, q.py)}
+                    </h4>
                 </div>
-                <div class="q-en" style="margin-left: 24px; margin-top: 4px; color: #64748b; font-size: 14px; text-align: left;">${q.en}</div>
-                <div class="options-area" style="margin-top: 12px;">${optionsHtml}</div>
+                <div class="q-en" style="margin-left: 28px; margin-top: 4px; color: #64748b; font-size: 14px; text-align: left;">${q.en}</div>
+                <div class="options-area" style="margin-top: 14px;">${optionsHtml}</div>
                 <div class="feedback"></div>`;
             container.appendChild(card);
             
@@ -262,6 +281,7 @@
         const toggleIcon = document.getElementById('toggleIcon');
         translationHeader.addEventListener('click', function() {
             if (translationContent.classList.contains('show')) {
+                translationContent.classList.remove('remove'); // 避免潜在错误
                 translationContent.classList.remove('show');
                 toggleIcon.textContent = '▶';
             } else {

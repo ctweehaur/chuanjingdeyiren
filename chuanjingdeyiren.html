@@ -1,146 +1,68 @@
-// 💡 终极进化版：客观题的题干、选项、解析全部实现豆腐块逐字对齐！
-    function renderQuizCards() {
-        const container = document.getElementById('quiz-dynamic-container');
-        if (!container) return;
+// 💡 终极修复版：加入对 • 符号的隔离机制，确保赏析长段落绝对对齐
+    function renderAnalysis() {
+        const container = document.getElementById('analysis-content');
         container.innerHTML = '';
         
-        quizQuestions.forEach(q => {
-            // 1. 编译题干的逐字拼音
-            const qPyWords = q.py.split(/\s+/).filter(p => p.trim() !== '' && !/[，。？！：“”‘’（）；、？0-9.、]/u.test(p));
-            const qZhChars = Array.from(q.text).filter(c => c.trim() !== '');
-            let qRubyHtml = '';
-            let qPyIdx = 0;
-            
-            qZhChars.forEach((zh) => {
-                const isPunc = /[，。？！：“”‘’（）；、？0-9.、]/u.test(zh);
-                let currentPy = '&nbsp;';
-                if (!isPunc && qPyIdx < qPyWords.length) {
-                    currentPy = qPyWords[qPyIdx];
-                    qPyIdx++;
-                }
-                qRubyHtml += `
-                    <div class="ruby-item" style="min-width: 16px; row-gap: 2px;">
-                        <div class="quiz-q-py" style="font-size: 11px; color: #475569; height: 12px;">${isPunc ? '&nbsp;' : currentPy}</div>
-                        <div class="trans-zh-char" style="font-size: 15px; font-weight: bold; color: var(--text-main);">${zh}</div>
+        analysisData.forEach(card => {
+            // 1. 编译标题部分
+            const titlePyWords = card.py.split(/\s+/).filter(p => p.trim() !== '');
+            const titleZhChars = Array.from(card.header).filter(c => c.trim() !== '');
+            let titleRubyHtml = '';
+            titleZhChars.forEach((zh, idx) => {
+                titleRubyHtml += `
+                    <div class="ruby-item">
+                        <div class="trans-py">${titlePyWords[idx] || '&nbsp;'}</div>
+                        <div class="trans-zh-char" style="font-size:18px; font-weight:bold; color:var(--text-poem);">${zh}</div>
                     </div>
                 `;
             });
 
-            // 2. 编译选项的逐字拼音
-            const shuffledOpts = shuffleArray([...q.options]);
-            let optionsHtml = '';
-            const letters = ['A', 'B', 'C', 'D'];
-            
-            shuffledOpts.forEach((opt, idx) => {
-                const optPyWords = opt.py.split(/\s+/).filter(p => p.trim() !== '' && !/[，。？！：“”‘’（）；、]/u.test(p));
-                const optZhChars = Array.from(opt.text).filter(c => c.trim() !== '');
-                let optRubyHtml = '';
-                let optPyIdx = 0;
+            // 2. 编译正文与列表行
+            let paragraphsHtml = '';
+            card.contents.forEach(line => {
+                // 彻底过滤掉拼音序列中混入的标点和符号
+                const linePyWords = line.py.split(/\s+/).filter(p => p.trim() !== '' && !/[，。？！：“”‘’（）；、！,;.?!"'🏷️❶❷❸❹➔•·]/u.test(p));
+                const lineZhChars = Array.from(line.zh).filter(c => c.trim() !== '');
                 
-                optZhChars.forEach((zh) => {
-                    const isPunc = /[，。？！：“”‘’（）；、]/u.test(zh);
+                let lineRubyHtml = '';
+                let pyIdx = 0;
+                
+                lineZhChars.forEach((zh) => {
+                    // 💡 核心修复：判定是不是标点、数字、流向符号或列表圆点 •
+                    const isPuncOrSymbol = /[，。？！：“”‘’（）；、！,;.?!"'🏷️❶❷❸❹➔•·]/u.test(zh);
                     let currentPy = '&nbsp;';
-                    if (!isPunc && optPyIdx < optPyWords.length) {
-                        currentPy = optPyWords[optPyIdx];
-                        optPyIdx++;
+                    
+                    if (!isPuncOrSymbol) {
+                        if (pyIdx < linePyWords.length) {
+                            currentPy = linePyWords[pyIdx];
+                            pyIdx++;
+                        }
                     }
-                    optRubyHtml += `
-                        <div class="ruby-item" style="min-width: 14px; row-gap: 1px;">
-                            <div class="quiz-opt-py" style="font-size: 11px; color: #b45309; height: 12px; font-weight: normal;">${isPunc ? '&nbsp;' : currentPy}</div>
-                            <div class="trans-zh-char" style="font-size: 14px; color: inherit; font-weight: inherit;">${zh}</div>
+                    
+                    lineRubyHtml += `
+                        <div class="ruby-item">
+                            <div class="trans-py">${isPuncOrSymbol ? '&nbsp;' : currentPy}</div>
+                            <div class="trans-zh-char">${zh}</div>
                         </div>
                     `;
                 });
 
-                optionsHtml += `
-                    <button class="option-btn" style="display: block; width: 100%; text-align: left; padding: 12px 15px; margin-bottom: 8px;"
-                            data-correct="${opt.correct}" 
-                            data-exp-zh="${opt.explanationZh}" 
-                            data-exp-en="${opt.explanationEn}" 
-                            data-exp-py="${opt.explanationPy}" 
-                            data-opt-text="${letters[idx]}. ${opt.text}">
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <span style="font-weight: bold; font-size: 14px; color: var(--text-poem);">${letters[idx]}.</span>
-                            <div class="trans-ruby-wrapper">${optRubyHtml}</div>
-                        </div>
-                        <div class="quiz-option-en" style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; padding-left: 18px; font-style: italic;">${opt.en}</div>
-                    </button>
+                paragraphsHtml += `
+                    <div class="trans-text-line" style="margin-bottom: 20px;">
+                        <div class="trans-ruby-wrapper">${lineRubyHtml}</div>
+                        <div class="trans-en">${line.en}</div>
+                    </div>
                 `;
             });
 
-            // 3. 生成卡片框架
-            const card = document.createElement('div');
-            card.className = 'quiz-card';
-            card.style.cssText = "background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
-            card.innerHTML = `
-                <div class="question-header" style="margin-bottom: 15px;">
-                    <div class="trans-ruby-wrapper">${qRubyHtml}</div>
-                    <div class="q-en" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; font-style: italic;">${q.en}</div>
+            container.innerHTML += `
+                <div class="analysis-card" style="padding: 30px;">
+                    <div class="ana-title-group" style="display:flex; flex-direction:column; align-items:flex-start; gap:4px; margin-bottom:15px; border-bottom:1px dashed #cbd5e1; padding-bottom:10px;">
+                        <div class="trans-ruby-wrapper">${titleRubyHtml}</div>
+                        <div class="ana-en" style="margin-top:2px; font-weight:600; color:var(--text-secondary);">${card.en}</div>
+                    </div>
+                    <div>${paragraphsHtml}</div>
                 </div>
-                <div class="options-area">${optionsHtml}</div>
-                <div class="feedback" style="margin-top:12px; border-radius:6px; display:none;"></div>
             `;
-            container.appendChild(card);
-            
-            // 4. 绑定点击互动与解析对齐逻辑
-            const btns = card.querySelectorAll('.option-btn');
-            const fbDiv = card.querySelector('.feedback');
-            
-            btns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    if (this.disabled) return;
-                    const isCorrect = this.getAttribute('data-correct') === 'true';
-                    const correctOptText = Array.from(btns).find(b => b.getAttribute('data-correct') === 'true')?.getAttribute('data-opt-text') || '';
-                    
-                    btns.forEach(b => b.disabled = true);
-                    fbDiv.style.display = 'block';
-                    
-                    // 解析文本逐字对齐编译
-                    const expPy = this.getAttribute('data-exp-py');
-                    const expZh = this.getAttribute('data-exp-zh');
-                    const expEn = this.getAttribute('data-exp-en');
-                    
-                    const expPyWords = expPy.split(/\s+/).filter(p => p.trim() !== '' && !/[，。？！：“”‘’（）；、！,;.?!"']/u.test(p));
-                    const expZhChars = Array.from(expZh).filter(c => c.trim() !== '');
-                    let expRubyHtml = '';
-                    let expPyIdx = 0;
-                    
-                    expZhChars.forEach((zh) => {
-                        const isPunc = /[，。？！：“”‘’（）；、！,;.?!"']/u.test(zh);
-                        let currentPy = '&nbsp;';
-                        if (!isPunc && expPyIdx < expPyWords.length) {
-                            currentPy = expPyWords[expPyIdx];
-                            expPyIdx++;
-                        }
-                        expRubyHtml += `
-                            <div class="ruby-item" style="min-width: 14px; row-gap: 1px;">
-                                <div class="feedback-py" style="font-size: 11px; color: #475569; height: 12px;">${isPunc ? '&nbsp;' : currentPy}</div>
-                                <div class="trans-zh-char" style="font-size: 14px; color: inherit;">${zh}</div>
-                            </div>
-                        `;
-                    });
-
-                    if (isCorrect) {
-                        this.classList.add('correct');
-                        fbDiv.className = 'feedback success';
-                        fbDiv.style.cssText = "padding: 12px; background: #f0fdf4; border-left: 4px solid #16a34a; color: #14532d; margin-top:12px;";
-                        fbDiv.innerHTML = `
-                            <div style="font-weight: bold; margin-bottom: 4px;">✅ 回答正确！</div>
-                            <div class="trans-ruby-wrapper">${expRubyHtml}</div>
-                            <div style="font-size: 12px; color: #166534; margin-top: 4px; font-style: italic;">💬 ${expEn}</div>
-                        `;
-                    } else {
-                        this.classList.add('wrong');
-                        fbDiv.className = 'feedback error';
-                        fbDiv.style.cssText = "padding: 12px; background: #fef2f2; border-left: 4px solid #dc2626; color: #7f1d1d; margin-top:12px;";
-                        fbDiv.innerHTML = `
-                            <div style="font-weight: bold; margin-bottom: 4px;">❌ 回答错误。正确答案是：${correctOptText}</div>
-                            <div style="font-weight: bold; font-size:13px; margin-top:6px; color:#991b1b;">💡 选项分析：</div>
-                            <div class="trans-ruby-wrapper">${expRubyHtml}</div>
-                            <div style="font-size: 12px; color: #991b1b; margin-top: 4px; font-style: italic;">💬 ${expEn}</div>
-                        `;
-                    }
-                });
-            });
         });
     }

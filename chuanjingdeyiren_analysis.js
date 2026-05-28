@@ -1,4 +1,3 @@
-// 穿井得一人 - 文章赏析数据（100% 完整无删减版）
 const analysisData = [
     {
         py: "yù yì yǔ zhǔ zhǐ",
@@ -6,7 +5,7 @@ const analysisData = [
         en: "Message & Theme",
         contents: [
             {
-                py: "gù shì shēn kè fèng cì le yǐ é chuán é 、 dào tīng tú shuō de shè huì bì bìng ，",
+                py: "gù... shì shēn kè fèng cì le yǐ é chuán é 、 dào tīng tú shuō de shè huì bì bìng ，",
                 zh: "故事深刻讽刺了以讹传讹、道听途说的社会弊病，",
                 en: "The story deeply satirizes the social malady of spreading rumors and believing hearsay,"
             },
@@ -16,7 +15,7 @@ const analysisData = [
                 en: "thereby warning people that:"
             },
             {
-                py: "bì xū shí shì qiú shì ， fán shì qīn zì diào chá hé shí 。",
+                py: "bì xū shí ...shì qiú... shì ， fán shì qīn zì diào chá hé shí 。",
                 zh: "• 必须实事求是，凡事亲自调查核实。",
                 en: "• One must seek truth from facts and personally verify everything."
             },

@@ -29,7 +29,7 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSys
 #en-toggle:checked + .slider { background-color: var(--accent-purple); }
 #en-toggle:checked + .slider:before { transform: translateX(20px); }
 
-/* --- 核心修复1：剥离等宽字体，使用原生字体确保拼音不歪，并开启原生 ruby 居中 --- */
+/* 原生拼音居中对齐引擎 */
 ruby { ruby-align: center; }
 rt.py, .py, .exp-pinyin, .quiz-option-py, .fb-py, .sa-py, .strategy-py, .ana-py, .trans-py, .q-py {
     font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
@@ -40,19 +40,20 @@ rt.py { font-size: 13px; color: var(--accent-orange); font-weight: normal; lette
 body.hide-pinyin rt.py, body.hide-pinyin .trans-py, body.hide-pinyin .q-py, body.hide-pinyin .opt-py, body.hide-pinyin .sa-py, body.hide-pinyin .strategy-py, body.hide-pinyin .exp-pinyin, body.hide-pinyin .ana-py, body.hide-pinyin .fb-py, body.hide-pinyin .quiz-option-py { display: none !important; }
 body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .opt-en, body.hide-english .sa-en, body.hide-english .strategy-en, body.hide-english .exp-en, body.hide-english .ana-en, body.hide-english .fb-en, body.hide-english .quiz-option-en { display: none !important; }
 
-/* --- 核心修复2：取消两端对齐强制左对齐，首行空两格 --- */
+/* 核心修改：强制左对齐，去除非法空格拉扯 */
 .poem-container { background: #fefcf5; border-radius: var(--border-radius-md); padding: 35px 30px; margin-bottom: 25px; border: 1px solid #ede9d0; margin-top: 15px; text-align: left; }
-.poem-paragraph { text-align: left; text-indent: 2em; font-size: 26px; line-height: 2.8; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 2px; margin: 0; }
+.poem-paragraph { text-align: left !important; text-indent: 2em; font-size: 26px; line-height: 2.8; color: var(--text-poem); font-family: 'STKaiti', 'KaiTi', '楷体', serif; letter-spacing: 2px; margin: 0; }
 
-.word { cursor: pointer; padding: 2px 4px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; margin: 0 2px; }
+.word { cursor: pointer; padding: 2px 4px; border-radius: 8px; position: relative; transition: all 0.25s; display: inline-block; margin: 0 4px; }
 .word::after { content: ''; position: absolute; bottom: 0px; left: 10%; width: 80%; height: 3px; background-color: #cbd5e1; border-radius: 4px; transition: all 0.25s; }
 .word:hover { background-color: #eff6ff; color: var(--primary-blue); transform: translateY(-2px); }
 .word:hover::after { background-color: var(--primary-blue-hover); width: 100%; left: 0; }
 .word.active { background-color: var(--primary-blue); color: #ffffff; transform: scale(1.05); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
 .word.active::after { display: none; }
 .word.active rt.py { color: #fef08a; } 
-.punctuation { color: #94a3b8; display: inline-block; margin: 0 4px 0 0; }
+.punctuation { color: #94a3b8; display: inline-block; margin: 0 2px; }
 
+/* 其他模块样式 */
 .translation-block { margin-top: 24px; border-top: 2px dashed #e2e0d4; background: #fef9f0; border-radius: 16px; overflow: hidden; text-align: left; }
 .translation-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; cursor: pointer; background: #fef9f0; transition: background 0.2s; }
 .translation-header:hover { background: #fdf3e4; }

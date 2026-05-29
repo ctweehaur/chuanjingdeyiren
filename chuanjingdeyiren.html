@@ -55,10 +55,10 @@
 </div>
  
 <script>
-    // 备份一份最原始的题目数据，供后续无限次重置洗牌使用
+    // 备份原始题目数据，供无限次重置洗牌使用
     let originalQuizQuestions = [];
 
-    // 弹性层级立体注音引擎
+    // 统一的弹性层级立体注音引擎
     function alignText(zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -77,15 +77,15 @@
         return html;
     }
 
-    // 特别定制拼音对齐引擎：让英文字母与汉字完美同线
+    // 【超级对齐补丁】：将题号或选项字母前缀作为首个字符，无缝嵌入汉字注音流，共享完全相同的基线
     function alignTextWithPrefix(prefix, zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
         const pys = py ? py.trim().split(/\s+/) : [];
         let html = '';
         
-        // 将字母/题号作为第一个字符框切入，拼音层为空格，汉字层为字母
-        html += `<span class="char-box" style="margin-right: 8px;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: #1e293b;">${prefix}</span></span>`;
+        // 核心突破：让字母前缀作为排头兵，直接享用原生拼音占位符控制，解决各种开关下的对齐顽疾
+        html += `<span class="char-box" style="margin-right: 8px !important;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: #1e293b;">${prefix}</span></span>`;
         
         let pIdx = 0;
         for (let c of chars) {
@@ -101,7 +101,6 @@
     }
 
     window.onload = function() {
-        // 深拷贝存储原始客观题数据
         if (typeof quizQuestions !== 'undefined') {
             originalQuizQuestions = JSON.parse(JSON.stringify(quizQuestions));
         }
@@ -110,15 +109,13 @@
         renderTranslation();
         renderAnalysis();
         renderShortQ();
-        renderQuizCards(); // 首次渲染
+        renderQuizCards(); 
         initInteractions();
     };
 
     function renderPoem() {
         const container = document.getElementById('dynamic-poem-container');
-        let html = '<div class="poem-paragraph">';
-        html += '&emsp;&emsp;'; 
-        
+        let html = '<div class="poem-paragraph">&emsp;&emsp;'; 
         poemData.forEach(w => {
             if(w.punc) {
                 html += `<span class="punctuation">${w.text.trim()}</span>`;
@@ -128,7 +125,6 @@
                 html += `<span class="${examClass}" data-text="${w.text.trim()}" data-pinyin="${w.py}" data-zh="${w.zh}" data-en="${w.en}"${examAttr}>${alignText(w.text, w.py)}</span>`;
             }
         });
-        
         html += '</div>';
         container.innerHTML = html;
     }
@@ -197,7 +193,6 @@
         container.innerHTML = html;
     }
 
-    // 经典数组乱序洗牌算法
     function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -206,18 +201,16 @@
         return arr;
     }
     
-    // 渲染客观题卡片（带选项随机乱序逻辑）
+    // 【终极重构对齐逻辑】：使用支持多行换行的 Flex 机制，确保英文翻译百分百掉到中文下方
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container || originalQuizQuestions.length === 0) return;
         container.innerHTML = '';
         
-        // 每次渲染时，基于最干净的原始数据克隆，并把每个题目的 options 顺序完全打乱
         const currentQuestions = JSON.parse(JSON.stringify(originalQuizQuestions));
         
         currentQuestions.forEach(q => {
-            // 打乱当前题目的选项顺序
-            shuffleArray(q.options);
+            shuffleArray(q.options); 
             
             const card = document.createElement('div');
             card.className = 'quiz-card';
@@ -228,20 +221,28 @@
             q.options.forEach((opt, idx) => {
                 const optLetter = letters[idx];
                 optionsHtml += `
-                    <button class="option-btn" style="display: block; text-align: left; width: 100%; padding: 12px 16px;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
-                        <div class="opt-zh" style="text-align: left;">${alignTextWithPrefix(optLetter, opt.text, opt.py)}</div>
-                        <div class="quiz-option-en" style="margin-left: 28px; margin-top: 4px; text-align: left; color: #475569; font-size: 14px;">${opt.en}</div>
+                    <button class="option-btn" style="display: flex !important; flex-wrap: wrap !important; text-align: left !important; width: 100% !important; padding: 14px 18px !important; align-items: flex-start !important; justify-content: flex-start !important;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
+                        
+                        <div class="opt-zh" style="width: 100% !important; text-align: left !important; display: block !important;">
+                            ${alignTextWithPrefix(optLetter, opt.text, opt.py)}
+                        </div>
+                        
+                        <div class="trans-en" style="width: 100% !important; margin-left: 26px !important; margin-top: 6px !important; text-align: left !important; color: #475569; font-size: 14px; line-height: 1.4; display: block !important;">
+                            ${opt.en}
+                        </div>
                     </button>`;
             });
             
             card.innerHTML = `
-                <div class="question-header" style="text-align: left;">
-                    <h4 class="q-zh" style="margin: 0; text-align: left; line-height: 1.8;">
+                <div class="question-header" style="display: flex !important; flex-wrap: wrap !important; text-align: left !important; width: 100% !important; margin-bottom: 16px !important;">
+                    <div style="width: 100% !important; text-align: left !important;">
                         ${alignTextWithPrefix(q.id + '.', q.text, q.py)}
-                    </h4>
+                    </div>
+                    <div class="trans-en" style="width: 100% !important; margin-left: 26px !important; margin-top: 6px !important; color: #64748b; font-size: 14px; text-align: left; line-height: 1.4;">
+                        ${q.en}
+                    </div>
                 </div>
-                <div class="q-en" style="margin-left: 28px; margin-top: 4px; color: #64748b; font-size: 14px; text-align: left;">${q.en}</div>
-                <div class="options-area" style="margin-top: 14px;">${optionsHtml}</div>
+                <div class="options-area">${optionsHtml}</div>
                 <div class="feedback"></div>`;
             container.appendChild(card);
             
@@ -264,7 +265,7 @@
                         const explanationPy = this.getAttribute('data-explanation-correct-py');
                         const explanationEn = this.getAttribute('data-explanation-correct-en');
                         fbDiv.className = 'feedback success';
-                        fbDiv.innerHTML = `✅ 回答正确！<br><br>📖 <strong>正确解析：</strong>${alignText(explanation, explanationPy)}<div class="fb-en">💬 Correct Explanation: ${explanationEn}</div>`;
+                        fbDiv.innerHTML = `✅ 回答正确！<br><br>📖 <strong>正确解析：</strong>${alignText(explanation, explanationPy)}<div class="fb-en" style="margin-top:6px;">💬 Correct Explanation: ${explanationEn}</div>`;
                     } else {
                         this.classList.add('wrong');
                         const wrongExp = this.getAttribute('data-explanation-wrong');
@@ -278,13 +279,13 @@
                         fbDiv.className = 'feedback error';
                         fbDiv.innerHTML = `
                             ❌ 回答错误。正确答案是：<strong>${correctOptText}</strong>
-                            <div class="fb-en">💬 Correct Answer: ${correctOptEn}</div>
+                            <div class="fb-en" style="margin-top:4px;">💬 Correct Answer: ${correctOptEn}</div>
                             <br>
                             📖 <strong>你选择的选项分析：</strong>${alignText(wrongExp, wrongExpPy)}
-                            <div class="fb-en">💬 Your Choice Analysis: ${wrongExpEn}</div>
+                            <div class="fb-en" style="margin-top:4px;">💬 Your Choice Analysis: ${wrongExpEn}</div>
                             <br>
                             📖 <strong>正确选项解析：</strong>${alignText(correctExp, correctExpPy)}
-                            <div class="fb-en">💬 Correct Option Analysis: ${correctExpEn}</div>`;
+                            <div class="fb-en" style="margin-top:4px;">💬 Correct Option Analysis: ${correctExpEn}</div>`;
                     }
                 });
             });
@@ -307,6 +308,7 @@
         
         const pinyinToggle = document.getElementById('pinyin-toggle');
         const enToggle = document.getElementById('en-toggle');
+        
         document.body.classList.add('hide-pinyin', 'hide-english');
         pinyinToggle.addEventListener('change', function() { 
             if (this.checked) document.body.classList.remove('hide-pinyin'); 
@@ -377,12 +379,10 @@
                     btn.innerHTML = '<span class="btn-icon">⬆️</span> 收起当前面板并重置题目'; 
                     btn.style.background = '#64748b';
                     
-                    // 【核心逻辑】：如果打开的是客观题自测面板，或者用户从打开状态点击收起时，自动触发重置乱序机制！
                     if (panel.btnId === 'toggle-quiz-btn') {
                         renderQuizCards();
                     }
                 } else {
-                    // 当处于客观题打开状态，用户再次点击按钮选择“收起”时，也顺手在后台默默把它重置打乱
                     if (panel.btnId === 'toggle-quiz-btn') {
                         renderQuizCards();
                     }

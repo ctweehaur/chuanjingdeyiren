@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互动古文：穿井得一人 · 吕氏春秋 (中英双语·词解版)</title>
+    <!-- 引入独立CSS -->
     <link rel="stylesheet" href="classic_style.css">
     
+    <!-- 引入独立的 5 个 JS 数据包 -->
     <script src="chuanjingdeyiren_text.js"></script>
     <script src="chuanjingdeyiren_translation.js"></script>
     <script src="chuanjingdeyiren_analysis.js"></script>
@@ -21,6 +23,7 @@
     </div>
     
     <div class="poem-container">
+        <!-- 古文原文动态容器 -->
         <div id="dynamic-poem-container"></div>
         
         <div class="translation-block" id="translationBlock">
@@ -55,10 +58,9 @@
 </div>
  
 <script>
-    // 备份一份最原始的题目数据，供后续无限次重置洗牌使用
     let originalQuizQuestions = [];
 
-    // 弹性层级立体注音引擎
+    // 【终极重构注音引擎】：加入最全的标点与特殊符号过滤（破折号、箭头、引号、括号），让它们自动不消耗拼音！
     function alignText(zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -66,7 +68,8 @@
         let pIdx = 0;
         let html = '';
         for (let c of chars) {
-            if (/[，。？！：“”‘’（）《》、\-\:]/.test(c)) {
+            // 精准拦截：增加对中文破折号、各类括号、特殊符号如箭头的全面过滤
+            if (/[，。？！：“”‘’（）《》、\-\:；—\(\)→\s]/.test(c)) {
                 html += `<span class="punctuation">${c}</span>`;
             } else {
                 const p = pys[pIdx] || '';
@@ -77,7 +80,7 @@
         return html;
     }
 
-    // 特别定制拼音对齐引擎
+    // 同样升级此处的过滤器
     function alignTextWithPrefix(prefix, zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -86,7 +89,7 @@
         html += `<span class="char-box" style="margin-right: 8px !important;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: #1e293b;">${prefix}</span></span>`;
         let pIdx = 0;
         for (let c of chars) {
-            if (/[，。？！：“”‘’（）《》、\-\:]/.test(c)) {
+            if (/[，。？！：“”‘’（）《》、\-\:；—\(\)→\s]/.test(c)) {
                 html += `<span class="punctuation">${c}</span>`;
             } else {
                 const p = pys[pIdx] || '';
@@ -158,7 +161,6 @@
         container.innerHTML = html;
     }
 
-    // 【终极重构版】：完美兼容并读取外层 JS 数据包的数组型分行数据，实现最清爽的结构层对齐！
     function renderShortQ() {
         const container = document.getElementById('shortq-content');
         if (!container) return;
@@ -166,7 +168,6 @@
         shortQData.forEach(item => {
             let strategyZhHtml = '';
             
-            // 直接循环 item.sZh 数组本身，彻底省去了在前端执行文本切分的繁琐逻辑
             item.sZh.forEach((lineText, lineIdx) => {
                 if(lineIdx > 0) strategyZhHtml += '<br>';
                 const linePy = item.sPy && item.sPy[lineIdx] ? item.sPy[lineIdx] : '';

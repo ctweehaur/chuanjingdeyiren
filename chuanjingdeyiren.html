@@ -162,7 +162,9 @@
             html += `
                 <div class="sa-card">
                     <div class="sa-q-header">
-                        <div class="sa-q-num">${item.id}</div>
+                        <div class="sa-q-num-box">
+                            <span class="sa-q-num">${item.id}</span>
+                        </div>
                         <div class="q-text-group">
                             <h4 class="q-zh">${alignText(item.qZh, item.qPy)}</h4>
                         </div>
@@ -255,7 +257,6 @@
                         const explanationPy = this.getAttribute('data-explanation-correct-py');
                         const explanationEn = this.getAttribute('data-explanation-correct-en');
                         fbDiv.className = 'feedback success';
-                        // 【对齐重构】：将大标签强行伪装成一个 char-box 风格的排头兵，共享原生字行间距基线线
                         fbDiv.innerHTML = `
                             <div class="fb-line"><span class="fb-label success-txt">✅ 回答正确！</span></div>
                             <div class="fb-line"><span class="fb-label">📖 正确解析：</span><span class="fb-content">${alignText(explanation, explanationPy)}</span></div>
@@ -271,7 +272,6 @@
                         const correctExpEn = correctBtn ? correctBtn.getAttribute('data-explanation-correct-en') : "";
                         
                         fbDiv.className = 'feedback error';
-                        // 【对齐重构】：同理，彻底抹平错误反馈区的上下错位
                         fbDiv.innerHTML = `
                             <div class="fb-line"><span class="fb-label error-txt">❌ 回答错误。正确答案是：</span><span class="fb-content-main">${correctOptText}</span></div>
                             <div class="fb-en">💬 Correct Answer: ${correctOptEn}</div>

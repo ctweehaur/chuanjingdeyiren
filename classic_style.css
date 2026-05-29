@@ -86,10 +86,24 @@ body {
     height: 32px !important;       
 }
 
-/* 隐藏逻辑控制 —— 修复核心：加入了 .exp-en，确保悬浮气泡里的英文听从开关控制 */
+/* ==========================================================================
+   隐藏逻辑控制 —— 终极全面封锁：
+   确保全站所有动态生成、静态生成、反馈区域、思路区域的英文全部死死受控！
+   ========================================================================== */
 body.hide-pinyin .py-text { visibility: hidden !important; opacity: 0 !important; }
 body.hide-pinyin .exp-pinyin { display: none !important; }
-body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-option-en, body.hide-english .ana-en, body.hide-english .exp-en { display: none !important; }
+
+/* 封锁名单：白话翻译、大题干、选项、赏析、悬浮气泡、答题反馈、简答思路、标准答案中的所有英文 */
+body.hide-english .trans-en, 
+body.hide-english .q-en, 
+body.hide-english .quiz-option-en, 
+body.hide-english .ana-en, 
+body.hide-english .exp-en,
+body.hide-english .fb-en,
+body.hide-english .strategy-en,
+body.hide-english .sa-en { 
+    display: none !important; 
+}
 
 /* 正文原文区域 */
 .poem-container { background: #fefcf5; border-radius: var(--border-radius-md); padding: 35px 30px; margin-bottom: 25px; border: 1px solid #ede9d0; margin-top: 15px; text-align: left !important; }
@@ -203,7 +217,9 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .feedback.success { background-color: #ecfdf5; color: #065f46; border-left: 4px solid #10b981; display: block; }
 .feedback.error { background-color: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b; display: block; }
 .feedback strong { font-size: 16px; font-weight: 700; }
-.fb-en { font-size: 13px !important; font-style: normal !important; color: #64748b !important; margin-top: 6px; line-height: 1.5; text-align: left !important; }
+
+/* 答题反馈区英文 —— 规范 14px，且听从 hide-english 开关调遣 */
+.fb-en { font-size: 14px !important; font-style: normal !important; color: #64748b !important; margin-top: 8px; line-height: 1.5; text-align: left !important; }
 
 /* ==========================================
    功能面板：简答题特训
@@ -224,7 +240,9 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .strategy-box .char-box .zh-text { font-size: 15px !important; height: 20px !important; color: var(--text-main); }
 .strategy-box .char-box .py-text { font-size: 10px !important; height: 12px !important; line-height: 12px !important; }
 .strategy-box .punctuation { font-size: 15px !important; height: 20px !important; margin: 0 1px !important; }
-.strategy-en { font-size: 14px !important; color: #718096 !important; font-style: normal !important; margin-top: 6px; line-height: 1.5; }
+
+/* 简答题思路区英文 —— 规范 14px，且听从 hide-english 开关调遣 */
+.strategy-en { font-size: 14px !important; color: #718096 !important; font-style: normal !important; margin-top: 8px; line-height: 1.5; }
 
 /* 标准答案查看按钮 */
 .sa-answer-btn { width: 100%; background: #f8fafc; border: 2px solid #cbd5e1; color: var(--text-secondary); padding: 12px; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; margin-top: 5px; box-shadow: none !important; }
@@ -238,10 +256,12 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .sa-model-answer .char-box .zh-text { font-size: 16px !important; height: 22px !important; font-weight: 600 !important; color: #065f46; }
 .sa-model-answer .char-box .py-text { font-size: 10px !important; height: 12px !important; line-height: 12px !important; }
 .sa-model-answer .punctuation { font-size: 16px !important; height: 22px !important; margin: 0 1px !important; }
+
+/* 标准答案区英文 —— 规范 14px，且听从 hide-english 开关调遣 */
 .sa-en { font-size: 14px !important; font-style: normal !important; color: #065f46 !important; margin-top: 8px; line-height: 1.5; }
 
 /* ==========================================
-   生词悬浮气泡（统一受控于 hide-english 开关）
+   生词悬浮气泡
    ========================================== */
 .floating-tooltip { position: absolute; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 20px; width: 300px; box-shadow: 0 20px 40px rgba(0,0,0,0.12); text-align: left; display: none; z-index: 9999; opacity: 0; transform: translateY(15px) translateX(-50%); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; }
 .floating-tooltip.show { display: block; opacity: 1; transform: translateY(0) translateX(-50%); }
@@ -250,7 +270,6 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .exp-pinyin { color: var(--accent-orange); font-size: 16px; font-weight: bold; background: #fffbeb; padding: 2px 8px; border-radius: 6px; }
 .exp-zh { color: var(--text-main); font-size: 15px; margin-bottom: 0px; line-height: 1.6; }
 
-/* 气泡内英文框：字号调整为统一的 14px 规范，并移除了可能残留的多余间距 */
 .exp-en { font-size: 14px !important; color: var(--text-secondary); font-style: normal; line-height: 1.5; background: #f8fafc; padding: 8px; border-radius: 6px; margin-top: 10px; }
 .exam-tag { background-color: var(--accent-red); color: white; font-size: 12px; padding: 3px 8px; border-radius: 20px; margin-left: auto; display: none; font-weight: bold;}
 

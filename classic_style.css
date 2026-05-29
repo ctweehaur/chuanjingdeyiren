@@ -209,28 +209,72 @@ body.hide-english .sa-en {
 
 .quiz-option-en { font-size: 14px !important; color: var(--text-secondary) !important; font-style: normal !important; margin-top: 6px; line-height: 1.4; text-align: left !important; }
 
-/* 答题反馈区域 */
-.feedback { margin-top: 18px; padding: 16px; border-radius: 10px; font-size: 15px; line-height: 2.2; display: none; animation: fadeIn 0.3s ease; text-align: left !important;}
+/* ==========================================================
+   【终极重构修复】：客观题自测反馈区域精准居中对齐补丁
+   ========================================================== */
+.feedback { 
+    margin-top: 18px; 
+    padding: 16px; 
+    border-radius: 10px; 
+    font-size: 15px; 
+    line-height: 2.2; 
+    display: none; 
+    animation: fadeIn 0.3s ease; 
+    text-align: left !important;
+}
+
+/* 核心修复：强行让“选项分析标签”与右侧带有立体注音的数据块保持完美水平中轴线齐平 */
+.feedback > div {
+    display: flex !important;
+    align-items: center !important; 
+    flex-wrap: wrap !important;
+    width: 100% !important;
+}
+
+/* 对反馈块内部多行文本折行后的高度呼吸间距进行像素级微调 */
+.feedback br {
+    display: block !important;
+    content: "" !important;
+    margin-top: 10px !important;
+}
+
 .feedback .char-box .zh-text { font-size: 15px !important; height: 20px !important; }
 .feedback .char-box .py-text { font-size: 10px !important; height: 12px !important; line-height: 12px !important; }
 .feedback .punctuation { font-size: 15px !important; height: 20px !important; margin: 0 1px !important; }
 .feedback.success { background-color: #ecfdf5; color: #065f46; border-left: 4px solid #10b981; display: block; }
 .feedback.error { background-color: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b; display: block; }
-.feedback strong { font-size: 16px; font-weight: 700; }
-
-/* 答题反馈区英文 —— 规范 14px，且听从 hide-english 开关调遣 */
-.fb-en { font-size: 14px !important; font-style: normal !important; color: #64748b !important; margin-top: 8px; line-height: 1.5; text-align: left !important; }
+.feedback strong { font-size: 16px; font-weight: 700; display: inline-block; vertical-align: middle; }
+.fb-en { font-size: 14px !important; font-style: normal !important; color: #64748b !important; margin-top: 8px; line-height: 1.5; text-align: left !important; width: 100% !important; }
 
 /* ==========================================
    功能面板：简答题特训
    ========================================== */
 .sa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 25px; text-align: left; }
-.sa-q-header { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 16px; text-align: left !important; }
 
-.sa-q-header .char-box .zh-text { font-size: 18px !important; height: 24px !important; font-weight: 700 !important; color: var(--text-poem); }
-.sa-q-header .char-box .py-text { font-size: 11px !important; height: 14px !important; line-height: 14px !important; }
-.sa-q-header .punctuation { font-size: 18px !important; height: 24px !important; margin: 0 1px !important; font-weight: 700 !important; }
-.sa-q-num { background: #f3e8ff; color: #7c3aed; font-weight: bold; padding: 6px 12px; border-radius: 8px; font-size: 16px; min-width: 40px; text-align: center; margin-top: 4px;}
+/* ==========================================================
+   【终极重构修复】：简答题特训 Q1/Q2 紫色方块与题干完美居中对齐补丁
+   ========================================================== */
+.sa-q-header { 
+    display: flex !important; 
+    align-items: center !important; /* 核心修复：强行让紫色小标签和右边的带拼音题干在同一水平线居中 */
+    gap: 15px; 
+    margin-bottom: 16px; 
+    text-align: left !important; 
+}
+
+.sa-q-num { 
+    background: #f3e8ff; 
+    color: #7c3aed; 
+    font-weight: bold; 
+    padding: 6px 12px; 
+    border-radius: 8px; 
+    font-size: 16px; 
+    min-width: 40px; 
+    text-align: center; 
+    margin-top: 0 !important; /* 核心修复：移除旧版多余的拉伸高度，完全交付给 flex 垂直平衡 */
+    flex-shrink: 0 !important;
+}
+
 .sa-q-header .q-en { font-size: 14px !important; margin-top: 6px; }
 
 /* 答题思路容器 */
@@ -240,8 +284,6 @@ body.hide-english .sa-en {
 .strategy-box .char-box .zh-text { font-size: 15px !important; height: 20px !important; color: var(--text-main); }
 .strategy-box .char-box .py-text { font-size: 10px !important; height: 12px !important; line-height: 12px !important; }
 .strategy-box .punctuation { font-size: 15px !important; height: 20px !important; margin: 0 1px !important; }
-
-/* 简答题思路区英文 —— 规范 14px，且听从 hide-english 开关调遣 */
 .strategy-en { font-size: 14px !important; color: #718096 !important; font-style: normal !important; margin-top: 8px; line-height: 1.5; }
 
 /* 标准答案查看按钮 */
@@ -256,8 +298,6 @@ body.hide-english .sa-en {
 .sa-model-answer .char-box .zh-text { font-size: 16px !important; height: 22px !important; font-weight: 600 !important; color: #065f46; }
 .sa-model-answer .char-box .py-text { font-size: 10px !important; height: 12px !important; line-height: 12px !important; }
 .sa-model-answer .punctuation { font-size: 16px !important; height: 22px !important; margin: 0 1px !important; }
-
-/* 标准答案区英文 —— 规范 14px，且听从 hide-english 开关调遣 */
 .sa-en { font-size: 14px !important; font-style: normal !important; color: #065f46 !important; margin-top: 8px; line-height: 1.5; }
 
 /* ==========================================

@@ -55,7 +55,6 @@
 </div>
  
 <script>
-    // 备份原始题目数据，供无限次重置洗牌使用
     let originalQuizQuestions = [];
 
     // 统一的弹性层级立体注音引擎
@@ -77,14 +76,13 @@
         return html;
     }
 
-    // 【超级对齐补丁】：将题号或选项字母前缀作为首个字符，无缝嵌入汉字注音流，共享完全相同的基线
+    // 题号与前缀对齐引擎
     function alignTextWithPrefix(prefix, zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
         const pys = py ? py.trim().split(/\s+/) : [];
         let html = '';
         
-        // 核心突破：让字母前缀作为排头兵，直接享用原生拼音占位符控制，解决各种开关下的对齐顽疾
         html += `<span class="char-box" style="margin-right: 8px !important;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: #1e293b;">${prefix}</span></span>`;
         
         let pIdx = 0;
@@ -201,7 +199,7 @@
         return arr;
     }
     
-    // 【终极重构对齐逻辑】：使用支持多行换行的 Flex 机制，确保英文翻译百分百掉到中文下方
+    // 【完美对齐+控制开关联动修复】：恢复原汁原味的 quiz-option-en / q-en 控制类名，结合 100% 宽度强行换行
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container || originalQuizQuestions.length === 0) return;
@@ -227,7 +225,7 @@
                             ${alignTextWithPrefix(optLetter, opt.text, opt.py)}
                         </div>
                         
-                        <div class="trans-en" style="width: 100% !important; margin-left: 26px !important; margin-top: 6px !important; text-align: left !important; color: #475569; font-size: 14px; line-height: 1.4; display: block !important;">
+                        <div class="quiz-option-en" style="width: 100% !important; margin-left: 26px !important; margin-top: 6px !important; text-align: left !important; color: #475569; font-size: 14px; line-height: 1.4;">
                             ${opt.en}
                         </div>
                     </button>`;
@@ -238,7 +236,7 @@
                     <div style="width: 100% !important; text-align: left !important;">
                         ${alignTextWithPrefix(q.id + '.', q.text, q.py)}
                     </div>
-                    <div class="trans-en" style="width: 100% !important; margin-left: 26px !important; margin-top: 6px !important; color: #64748b; font-size: 14px; text-align: left; line-height: 1.4;">
+                    <div class="q-en" style="width: 100% !important; margin-left: 26px !important; margin-top: 6px !important; color: #64748b; font-size: 14px; text-align: left; line-height: 1.4;">
                         ${q.en}
                     </div>
                 </div>

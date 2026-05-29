@@ -3,25 +3,26 @@
  */
 
 const shortQData = [
-    {
+{
         id: "Q1",
-        qZh: "为什么“得一人”会 被 误解？请结合文本分析。",
+        qZh: "为什么“得一人”会被误解？请结合文本分析。",
         qPy: "wèi shén me dé yī rén huì bèi wù jiě qǐng jié hé wén běn fān xī",
         qEn: "Why was 'gained one person' misunderstood? Please analyze based on the text.",
-        // 彻底切分成独立的数组子项，从根本上解决换行和注音对齐难题
         sZh: [
             "第一步：丁氏原话“穿井得一人”在文中对应哪句解释？",
             "第二步：“得一人”在古代汉语中有哪两种可能的理解？",
             "第三步：传播者犯了什么错误？"
         ],
         sPy: [
-            "dì yī bù dīng shì yuán huà chuān jǐng dé yī rén zài wén zhōng duì yìng nǎ jù jiě饰",
+            // 修正 1：把末尾残留的“饰”字对应的拼音去掉，让拼音和汉字完美一个萝卜一个坑
+            "dì yī bù dīng shì yuán huà chuān jǐng dé yī rén zài wén zhōng duì yìng nǎ jù jiě shì",
             "dì èr bù dé yī rén zài gǔ dài hàn yǔ zhōng yǒu nǎ liǎng zhǒng kě néng de lǐ jiě",
+            // 修正 2：把 zhuàn bō zhě 改为正宗的 chuán bō zhě（二声）
             "dì sān bù chuán bō zhě fàn le shén me cuò wù"
         ],
         sEn: "Step 1: Which explanation in the text corresponds to Ding's original words?<br>Step 2: What are the two possible interpretations of 'gained one person' in classical Chinese?<br>Step 3: What mistake did the transmitters make?",
         aZh: "丁氏原意是“多得到一个劳动力”，而“得一人”字面上可理解为“获得一个人（实体）”。听者没有结合上下文，传播时失实，导致误解。",
-        aPy: "dīng shì yuán yì shì duō dé dào yí gè láo dòng lì ér dé yī rén zì miàn shàng kě lǐ jiě wéi huò dé yí gè rén shí tǐ tīng zhě méi yǒu jié hé shàng xià wén chuán bō shí shī shí dǎo zhì wù jiě",
+        aPy: "dīng shì yuán yì scholarly dì yí gè láo... dīng shì yuán yì shì duō dé dào yí gè láo dòng lì ér dé yī rén zì miàn shàng kě lǐ jiě wéi huò dé yí gè rén shí tǐ tīng zhě méi yǒu jié hé shàng xià wén chuán bō shí shī shí dǎo zhì wù jiě",
         aEn: "Ding's original meaning was 'gaining an extra labor force,' whereas 'gained one person' could literally be interpreted as 'finding a physical human being.' The listeners failed to consider the context and transmitted inaccurate information, leading to the misunderstanding."
     },
     {

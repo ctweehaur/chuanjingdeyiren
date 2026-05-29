@@ -86,10 +86,10 @@ body {
     height: 32px !important;       
 }
 
-/* 隐藏逻辑控制 */
+/* 隐藏逻辑控制 —— 修复核心：加入了 .exp-en，确保悬浮气泡里的英文听从开关控制 */
 body.hide-pinyin .py-text { visibility: hidden !important; opacity: 0 !important; }
 body.hide-pinyin .exp-pinyin { display: none !important; }
-body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-option-en, body.hide-english .ana-en { display: none !important; }
+body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-option-en, body.hide-english .ana-en, body.hide-english .exp-en { display: none !important; }
 
 /* 正文原文区域 */
 .poem-container { background: #fefcf5; border-radius: var(--border-radius-md); padding: 35px 30px; margin-bottom: 25px; border: 1px solid #ede9d0; margin-top: 15px; text-align: left !important; }
@@ -135,7 +135,7 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 @keyframes fadeSlideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ==========================================
-   功能面板：全诗赏析（统一字号层级）
+   功能面板：全诗赏析
    ========================================== */
 .analysis-card { background: #f8fafc; border-radius: var(--border-radius-md); padding: 25px 22px; margin-bottom: 20px; border-left: 5px solid var(--accent-green); text-align: left; }
 .ana-title-group { margin-bottom: 14px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px; }
@@ -144,7 +144,6 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .ana-title-group .char-box .zh-text { font-size: 18px !important; height: 24px !important; font-weight: 700 !important; }
 .ana-title-group .char-box .py-text { font-size: 11px !important; height: 14px !important; line-height: 14px !important; }
 
-/* 统一的赏析区英文 */
 .ana-en { font-size: 14px !important; color: var(--text-secondary) !important; font-style: normal !important; margin-top: 6px; line-height: 1.5; }
 
 .ana-text-group { margin-top: 10px; }
@@ -165,17 +164,15 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .collapsible-content { margin-top: 25px; text-align: left; display: none; animation: slideDown 0.4s ease; }
 
 /* ==========================================
-   功能面板：客观题自测（统一字号层级）
+   功能面板：客观题自测
    ========================================== */
 .quiz-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 25px; text-align: left;}
 .question-header { margin-bottom: 16px; text-align: left !important; }
 
-/* 题干部分字号统一：汉字 18px */
 .question-header .char-box .zh-text { font-size: 18px !important; height: 24px !important; font-weight: 700 !important; color: var(--text-poem); }
 .question-header .char-box .py-text { font-size: 11px !important; height: 14px !important; line-height: 14px !important; }
 .question-header .punctuation { font-size: 18px !important; height: 24px !important; margin: 0 1px !important; font-weight: 700 !important; }
 
-/* 题干英文：统一 14px 正常体 */
 .q-en { font-size: 14px !important; color: var(--text-secondary) !important; font-style: normal !important; margin-top: 6px; line-height: 1.5; text-align: left !important; }
 
 /* 选项按钮 */
@@ -191,13 +188,11 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .option-btn.correct { background: #ecfdf5; border-color: #34d399; }
 .option-btn.wrong { background: #fef2f2; border-color: #f87171; }
 
-/* 选项内容字号统一：汉字 16px */
 .opt-zh { display: block !important; width: 100% !important; text-align: left !important; }
 .option-btn .char-box .zh-text { font-size: 16px !important; height: 22px !important; font-weight: 600 !important; color: var(--text-main); }
 .option-btn .char-box .py-text { font-size: 10px !important; height: 12px !important; line-height: 12px !important; }
 .option-btn .punctuation { font-size: 16px !important; height: 22px !important; margin: 0 1px !important; }
 
-/* 选项英文：统一 14px 正常体 */
 .quiz-option-en { font-size: 14px !important; color: var(--text-secondary) !important; font-style: normal !important; margin-top: 6px; line-height: 1.4; text-align: left !important; }
 
 /* 答题反馈区域 */
@@ -211,12 +206,11 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .fb-en { font-size: 13px !important; font-style: normal !important; color: #64748b !important; margin-top: 6px; line-height: 1.5; text-align: left !important; }
 
 /* ==========================================
-   功能面板：简答题特训（统一字号层级）
+   功能面板：简答题特训
    ========================================== */
 .sa-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 25px; margin-bottom: 25px; text-align: left; }
 .sa-q-header { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 16px; text-align: left !important; }
 
-/* 简答题题干字号统一：汉字 18px */
 .sa-q-header .char-box .zh-text { font-size: 18px !important; height: 24px !important; font-weight: 700 !important; color: var(--text-poem); }
 .sa-q-header .char-box .py-text { font-size: 11px !important; height: 14px !important; line-height: 14px !important; }
 .sa-q-header .punctuation { font-size: 18px !important; height: 24px !important; margin: 0 1px !important; font-weight: 700 !important; }
@@ -227,7 +221,6 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .strategy-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 18px; border-radius: 8px; margin-bottom: 18px; }
 .strategy-title { font-weight: bold; color: #b85c00; margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
 
-/* 思路正文字号统一：汉字 15px */
 .strategy-box .char-box .zh-text { font-size: 15px !important; height: 20px !important; color: var(--text-main); }
 .strategy-box .char-box .py-text { font-size: 10px !important; height: 12px !important; line-height: 12px !important; }
 .strategy-box .punctuation { font-size: 15px !important; height: 20px !important; margin: 0 1px !important; }
@@ -242,22 +235,23 @@ body.hide-english .trans-en, body.hide-english .q-en, body.hide-english .quiz-op
 .sa-model-answer { background: #ecfdf5; border: 1px solid #a7f3d0; padding: 20px; border-radius: 10px; color: #065f46; position: relative; }
 .sa-badge { position: absolute; top: -12px; right: 20px; background: #10b981; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold; }
 
-/* 标准答案字号统一：汉字 16px */
 .sa-model-answer .char-box .zh-text { font-size: 16px !important; height: 22px !important; font-weight: 600 !important; color: #065f46; }
 .sa-model-answer .char-box .py-text { font-size: 10px !important; height: 12px !important; line-height: 12px !important; }
 .sa-model-answer .punctuation { font-size: 16px !important; height: 22px !important; margin: 0 1px !important; }
 .sa-en { font-size: 14px !important; font-style: normal !important; color: #065f46 !important; margin-top: 8px; line-height: 1.5; }
 
 /* ==========================================
-   生词悬浮气泡
+   生词悬浮气泡（统一受控于 hide-english 开关）
    ========================================== */
 .floating-tooltip { position: absolute; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; border-radius: var(--border-radius-md); padding: 20px; width: 300px; box-shadow: 0 20px 40px rgba(0,0,0,0.12); text-align: left; display: none; z-index: 9999; opacity: 0; transform: translateY(15px) translateX(-50%); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; }
 .floating-tooltip.show { display: block; opacity: 1; transform: translateY(0) translateX(-50%); }
 .exp-header { display: flex; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; }
 .exp-word { font-size: 26px; font-weight: bold; color: var(--primary-blue); margin-right: 12px; font-family: 'STKaiti', 'KaiTi', '楷体', serif; }
 .exp-pinyin { color: var(--accent-orange); font-size: 16px; font-weight: bold; background: #fffbeb; padding: 2px 8px; border-radius: 6px; }
-.exp-zh { color: var(--text-main); font-size: 15px; margin-bottom: 10px; line-height: 1.6; }
-.exp-en { color: var(--text-secondary); font-size: 14px; font-style: normal; line-height: 1.5; background: #f8fafc; padding: 8px; border-radius: 6px; }
+.exp-zh { color: var(--text-main); font-size: 15px; margin-bottom: 0px; line-height: 1.6; }
+
+/* 气泡内英文框：字号调整为统一的 14px 规范，并移除了可能残留的多余间距 */
+.exp-en { font-size: 14px !important; color: var(--text-secondary); font-style: normal; line-height: 1.5; background: #f8fafc; padding: 8px; border-radius: 6px; margin-top: 10px; }
 .exam-tag { background-color: var(--accent-red); color: white; font-size: 12px; padding: 3px 8px; border-radius: 20px; margin-left: auto; display: none; font-weight: bold;}
 
 /* 动效 */

@@ -57,7 +57,6 @@
 <script>
     let originalQuizQuestions = [];
 
-    // 统一的弹性层级立体注音引擎
     function alignText(zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -76,15 +75,12 @@
         return html;
     }
 
-    // 题号与前缀对齐引擎
     function alignTextWithPrefix(prefix, zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
         const pys = py ? py.trim().split(/\s+/) : [];
         let html = '';
-        
         html += `<span class="char-box" style="margin-right: 8px !important;"><span class="py-text">&nbsp;</span><span class="zh-text" style="font-weight: bold; color: #1e293b;">${prefix}</span></span>`;
-        
         let pIdx = 0;
         for (let c of chars) {
             if (/[，。？！：“”‘’（）《》、\-\:]/.test(c)) {
@@ -102,7 +98,6 @@
         if (typeof quizQuestions !== 'undefined') {
             originalQuizQuestions = JSON.parse(JSON.stringify(quizQuestions));
         }
-        
         renderPoem();
         renderTranslation();
         renderAnalysis();
@@ -170,9 +165,9 @@
                         <div class="sa-q-num">${item.id}</div>
                         <div class="q-text-group">
                             <h4 class="q-zh">${alignText(item.qZh, item.qPy)}</h4>
-                            <div class="q-en">${item.qEn}</div>
                         </div>
                     </div>
+                    <div class="q-en">${item.qEn}</div>
                     <div class="strategy-box">
                         <div class="strategy-title">💡 答题思路</div>
                         <div class="strategy-zh">${alignText(item.sZh, item.sPy)}</div>
@@ -199,7 +194,6 @@
         return arr;
     }
     
-    // 【完美对齐+控制开关联动修复】：恢复原汁原味的 quiz-option-en / q-en 控制类名，结合 100% 宽度强行换行
     function renderQuizCards() {
         const container = document.getElementById('quiz-dynamic-container');
         if (!container || originalQuizQuestions.length === 0) return;
@@ -219,24 +213,22 @@
             q.options.forEach((opt, idx) => {
                 const optLetter = letters[idx];
                 optionsHtml += `
-                    <button class="option-btn" style="display: flex !important; flex-wrap: wrap !important; text-align: left !important; width: 100% !important; padding: 14px 18px !important; align-items: flex-start !important; justify-content: flex-start !important;" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
-                        
-                        <div class="opt-zh" style="width: 100% !important; text-align: left !important; display: block !important;">
+                    <button class="option-btn" data-correct="${opt.correct}" data-explanation-correct="${opt.correct ? opt.explanation : ''}" data-explanation-correct-py="${opt.correct ? opt.explanationPy : ''}" data-explanation-correct-en="${opt.correct ? opt.explanationEn : ''}" data-explanation-wrong="${!opt.correct ? opt.explanation : ''}" data-explanation-wrong-py="${!opt.correct ? opt.explanationPy : ''}" data-explanation-wrong-en="${!opt.correct ? opt.explanationEn : ''}" data-opt-text="${opt.text}" data-opt-py="${opt.py}" data-opt-en="${opt.en}">
+                        <div class="opt-zh">
                             ${alignTextWithPrefix(optLetter, opt.text, opt.py)}
                         </div>
-                        
-                        <div class="quiz-option-en" style="width: 100% !important; margin-left: 26px !important; margin-top: 6px !important; text-align: left !important; color: #475569; font-size: 14px; line-height: 1.4;">
+                        <div class="quiz-option-en">
                             ${opt.en}
                         </div>
                     </button>`;
             });
             
             card.innerHTML = `
-                <div class="question-header" style="display: flex !important; flex-wrap: wrap !important; text-align: left !important; width: 100% !important; margin-bottom: 16px !important;">
-                    <div style="width: 100% !important; text-align: left !important;">
+                <div class="question-header">
+                    <div class="q-zh-wrapper">
                         ${alignTextWithPrefix(q.id + '.', q.text, q.py)}
                     </div>
-                    <div class="q-en" style="width: 100% !important; margin-left: 26px !important; margin-top: 6px !important; color: #64748b; font-size: 14px; text-align: left; line-height: 1.4;">
+                    <div class="q-en">
                         ${q.en}
                     </div>
                 </div>
@@ -263,7 +255,11 @@
                         const explanationPy = this.getAttribute('data-explanation-correct-py');
                         const explanationEn = this.getAttribute('data-explanation-correct-en');
                         fbDiv.className = 'feedback success';
-                        fbDiv.innerHTML = `✅ 回答正确！<br><br>📖 <strong>正确解析：</strong>${alignText(explanation, explanationPy)}<div class="fb-en" style="margin-top:6px;">💬 Correct Explanation: ${explanationEn}</div>`;
+                        // 【对齐重构】：将大标签强行伪装成一个 char-box 风格的排头兵，共享原生字行间距基线线
+                        fbDiv.innerHTML = `
+                            <div class="fb-line"><span class="fb-label success-txt">✅ 回答正确！</span></div>
+                            <div class="fb-line"><span class="fb-label">📖 正确解析：</span><span class="fb-content">${alignText(explanation, explanationPy)}</span></div>
+                            <div class="fb-en">💬 Correct Explanation: ${explanationEn}</div>`;
                     } else {
                         this.classList.add('wrong');
                         const wrongExp = this.getAttribute('data-explanation-wrong');
@@ -275,15 +271,14 @@
                         const correctExpEn = correctBtn ? correctBtn.getAttribute('data-explanation-correct-en') : "";
                         
                         fbDiv.className = 'feedback error';
+                        // 【对齐重构】：同理，彻底抹平错误反馈区的上下错位
                         fbDiv.innerHTML = `
-                            ❌ 回答错误。正确答案是：<strong>${correctOptText}</strong>
-                            <div class="fb-en" style="margin-top:4px;">💬 Correct Answer: ${correctOptEn}</div>
-                            <br>
-                            📖 <strong>你选择的选项分析：</strong>${alignText(wrongExp, wrongExpPy)}
-                            <div class="fb-en" style="margin-top:4px;">💬 Your Choice Analysis: ${wrongExpEn}</div>
-                            <br>
-                            📖 <strong>正确选项解析：</strong>${alignText(correctExp, correctExpPy)}
-                            <div class="fb-en" style="margin-top:4px;">💬 Correct Option Analysis: ${correctExpEn}</div>`;
+                            <div class="fb-line"><span class="fb-label error-txt">❌ 回答错误。正确答案是：</span><span class="fb-content-main">${correctOptText}</span></div>
+                            <div class="fb-en">💬 Correct Answer: ${correctOptEn}</div>
+                            <div class="fb-line" style="margin-top: 8px;"><span class="fb-label">📖 你选择的选项分析：</span><span class="fb-content">${alignText(wrongExp, wrongExpPy)}</span></div>
+                            <div class="fb-en">💬 Your Choice Analysis: ${wrongExpEn}</div>
+                            <div class="fb-line" style="margin-top: 8px;"><span class="fb-label">📖 正确选项解析：</span><span class="fb-content">${alignText(correctExp, correctExpPy)}</span></div>
+                            <div class="fb-en">💬 Correct Option Analysis: ${correctExpEn}</div>`;
                     }
                 });
             });

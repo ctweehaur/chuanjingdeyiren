@@ -34,7 +34,7 @@
     
     <div class="controls-wrapper">
         <div class="control-panel"><div class="control-label">🗣️ 拼音辅助 <span>(Pinyin)</span></div><label class="switch"><input type="checkbox" id="pinyin-toggle"><span class="slider"></span></label></div>
-        <div class="control-panel"><div class="control-label">🔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
+        <div class="control-panel"><div class="control-label">𔔤 英文辅助 <span>(English)</span></div><label class="switch"><input type="checkbox" id="en-toggle"><span class="slider"></span></label></div>
     </div>
 
     <div class="action-group">
@@ -55,8 +55,10 @@
 </div>
  
 <script>
+    // 备份一份最原始的题目数据，供后续无限次重置洗牌使用
     let originalQuizQuestions = [];
 
+    // 弹性层级立体注音引擎
     function alignText(zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -75,6 +77,7 @@
         return html;
     }
 
+    // 特别定制拼音对齐引擎
     function alignTextWithPrefix(prefix, zh, py) {
         if (!zh) return '';
         const chars = zh.trim().split('');
@@ -155,10 +158,21 @@
         container.innerHTML = html;
     }
 
+    // 【终极重构版】：完美兼容并读取外层 JS 数据包的数组型分行数据，实现最清爽的结构层对齐！
     function renderShortQ() {
         const container = document.getElementById('shortq-content');
+        if (!container) return;
         let html = '';
         shortQData.forEach(item => {
+            let strategyZhHtml = '';
+            
+            // 直接循环 item.sZh 数组本身，彻底省去了在前端执行文本切分的繁琐逻辑
+            item.sZh.forEach((lineText, lineIdx) => {
+                if(lineIdx > 0) strategyZhHtml += '<br>';
+                const linePy = item.sPy && item.sPy[lineIdx] ? item.sPy[lineIdx] : '';
+                strategyZhHtml += `<span class="strategy-step-line">${alignText(lineText, linePy)}</span>`;
+            });
+
             html += `
                 <div class="sa-card">
                     <div class="sa-q-header">
@@ -172,7 +186,7 @@
                     <div class="q-en">${item.qEn}</div>
                     <div class="strategy-box">
                         <div class="strategy-title">💡 答题思路</div>
-                        <div class="strategy-zh">${alignText(item.sZh, item.sPy)}</div>
+                        <div class="strategy-zh" style="display: block !important; line-height: 2.6 !important;">${strategyZhHtml}</div>
                         <div class="strategy-en">${item.sEn}</div>
                     </div>
                     <button class="sa-answer-btn" onclick="toggleAnswer(this)">📖 点击查看标准答案</button>
